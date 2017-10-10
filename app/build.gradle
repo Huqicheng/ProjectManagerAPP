@@ -31,4 +31,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/.idea/netty-all-4.0.14.Final.jar')
     compile files('libs/.idea/gson-2.2.4.jar')
+    compile files('libs/.idea/commons-logging-1.1.1.jar')
+    compile files('libs/.idea/commons-pool-1.6.jar')
 }

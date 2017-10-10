@@ -91,10 +91,10 @@ public class NettyClientBootstrap {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel socketChannel) throws Exception {
-            	SSLEngine engine = SslContextFactory.getClientContext().createSSLEngine();
-            	engine.setUseClientMode(true);
-                engine.setWantClientAuth(false);
-                socketChannel.pipeline().addLast(new SslHandler(engine));
+            	//SSLEngine engine = SslContextFactory.getClientContext().createSSLEngine();
+            	//engine.setUseClientMode(true);
+                //engine.setWantClientAuth(false);
+                //socketChannel.pipeline().addLast(new SslHandler(engine));
             	
             	
 

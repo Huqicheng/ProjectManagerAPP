@@ -1,5 +1,7 @@
 package com.example.huqicheng.client;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 
@@ -61,11 +63,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         switch (msgType){
             case LOGIN:{
                 //向服务器发起登录
-            	BaseMsg loginMsg=new BaseMsg();
-                loginMsg.setType(MsgType.LOGIN);
-                loginMsg.putParams("user", "huqicheng");
-                loginMsg.putParams("pwd", "huqicheng");
-                channelHandlerContext.writeAndFlush(new Gson().toJson(loginMsg));
+                Log.d("Debug:", "messageReceived: msg ");
             }break;
             case PING:{
                 System.out.println("receive ping from server----------");

@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity  implements ServiceConnectio
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        Log.d("debug:", "onServiceconnected: ");
         System.out.println("Service connected");
     }
 
