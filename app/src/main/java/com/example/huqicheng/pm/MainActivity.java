@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private static ProgressFragment progressFragment = null;
     private static SettingFragment settingFragment = null;
 
-    Fragment fragment = null;
+    
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         this.chatFragment = ChatFragment.newInstance();
         this.progressFragment = ProgressFragment.newInstance();
         this.ft = getFragmentManager().beginTransaction();
-        fragment = calendarFragment;
+
         //add fragments to transaction
         FragmentTransaction calendarFrament = ft.add(R.id.content, this.calendarFragment, "calendarFrament");
         ft.add(R.id.content, this.settingFragment, "settingFragment");
