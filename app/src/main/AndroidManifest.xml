@@ -19,6 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".dateSelected" />
+        <activity android:name=".editClicked"></activity>
 
         <service
             android:name="com.example.huqicheng.service.MyService"
