@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private static ProgressFragment progressFragment = null;
     private static SettingFragment settingFragment = null;
 
-    
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 

@@ -7,14 +7,7 @@ public enum  MsgType {
 	 * params : None
 	 */
     PING,
-    /*
-     * 
-     */
-    ASK,
-    /*
-     * 
-     */
-    REPLY,
+
     /*
      * Authentication
      * params: cookie.clientId -- String
