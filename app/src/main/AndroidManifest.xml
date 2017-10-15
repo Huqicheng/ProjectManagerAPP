@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".dateSelected" />
         <activity android:name=".editClicked"></activity>
+        <activity android:name=".WeixinChatDemoActivity"></activity>
 
         <service
             android:name="com.example.huqicheng.service.MyService"

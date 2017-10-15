@@ -1,12 +1,19 @@
 package com.example.huqicheng.pm;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.example.huqicheng.adapter.GroupAdapter;
+import com.example.huqicheng.bll.GroupBiz;
+import com.example.huqicheng.entity.Group;
 
 
 /**
@@ -18,14 +25,10 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ChatFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ListView lvGroups;
+    private GroupAdapter adapter;
+    private GroupBiz groupBiz;
 
     private OnFragmentInteractionListener mListener;
 
@@ -53,19 +56,39 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        View v = inflater.inflate(R.layout.fragment_chat, container, false);
+        this.lvGroups = v.findViewById(R.id.lvGroups);
+        this.adapter = new GroupAdapter(getActivity(),null);
+        lvGroups.setAdapter(adapter);
+
+        groupBiz = new GroupBiz();
+        this.adapter.add(groupBiz.loadGroups());
+
+        this.lvGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                toChatActivity(adapter.getItem(i));
+            }
+        });
+        return v;
     }
 
+    private void toChatActivity(Group group){
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("group",group);
+        intent.putExtras(bundle);
+        intent.setClass(getActivity(),WeixinChatDemoActivity.class);
+        startActivityForResult(intent,1);
+
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -73,22 +96,7 @@ public class ChatFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
     /**
      * This interface must be implemented by activities that contain this

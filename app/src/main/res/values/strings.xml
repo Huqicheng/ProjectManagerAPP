@@ -19,4 +19,8 @@
     <string name="attendee">Attendee</string>
     <string name="add1">Add</string>
     <!-- end for calendar-->
+
+    <!--begin for chat-->
+    <string name="hello">您好~微信聊天</string>
+    <!--end for chat-->
 </resources>

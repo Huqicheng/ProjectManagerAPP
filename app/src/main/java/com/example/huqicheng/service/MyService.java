@@ -25,20 +25,20 @@ public class MyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                do {
-                    System.out.println("Service is running......");
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } while (true);
-            }
-        }.start();
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                super.run();
+//                do {
+//                    System.out.println("Service is running......");
+//                    try {
+//                        sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                } while (true);
+//            }
+//        }.start();
         return super.onStartCommand(intent, flags, startId);
     }
 
