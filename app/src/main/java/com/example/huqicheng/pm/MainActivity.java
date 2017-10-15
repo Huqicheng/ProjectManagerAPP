@@ -90,12 +90,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         //add fragments to transaction
         FragmentTransaction calendarFrament = ft.add(R.id.content, this.calendarFragment, "calendarFrament");
-        ft.add(R.id.content, this.settingFragment, "settingFragment");
-        ft.add(R.id.content, this.chatFragment, "chatFragment");
-        ft.add(R.id.content, this.progressFragment, "progressFragment");
-        ft.hide(progressFragment);
-        ft.hide(chatFragment);
-        ft.hide(settingFragment);
+
+
         ft.commit();
 
 

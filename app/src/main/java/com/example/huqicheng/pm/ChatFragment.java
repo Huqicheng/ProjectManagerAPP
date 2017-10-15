@@ -1,10 +1,10 @@
 package com.example.huqicheng.pm;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +57,7 @@ public class ChatFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
@@ -65,11 +66,6 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
         this.lvGroups = v.findViewById(R.id.lvGroups);
-        this.adapter = new GroupAdapter(getActivity(),null);
-        lvGroups.setAdapter(adapter);
-
-        groupBiz = new GroupBiz();
-        this.adapter.add(groupBiz.loadGroups());
 
         this.lvGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,7 +73,20 @@ public class ChatFragment extends Fragment {
                 toChatActivity(adapter.getItem(i));
             }
         });
+
+
         return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.adapter = new GroupAdapter(getActivity(),null);
+        groupBiz = new GroupBiz();
+
+        lvGroups.setAdapter(adapter);
+        this.adapter.add(groupBiz.loadGroups());
+        this.adapter.notifyDataSetChanged();
     }
 
     private void toChatActivity(Group group){
@@ -85,7 +94,7 @@ public class ChatFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable("group",group);
         intent.putExtras(bundle);
-        intent.setClass(getActivity(),WeixinChatDemoActivity.class);
+        intent.setClass(getActivity(),WeChatActivity.class);
         startActivityForResult(intent,1);
 
     }

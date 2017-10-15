@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author way
  */
-public class WeixinChatDemoActivity extends Activity implements OnClickListener {
+public class WeChatActivity extends Activity implements OnClickListener {
 
 	private Group group;
 	private Button mBtnSend;// 发送btn
