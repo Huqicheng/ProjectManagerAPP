@@ -13,6 +13,8 @@ import android.support.design.widget.BottomNavigationView;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -106,6 +108,26 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         Log.d("debug:", "onServiceconnected: ");
         System.out.println("Service connected");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.navigation,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        ft=getFragmentManager().beginTransaction();
+        if(id==R.id.navigation_setting){
+
+            ft.replace(R.id.content,settingFragment);
+            ft.commit();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

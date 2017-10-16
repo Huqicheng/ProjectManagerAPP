@@ -19,7 +19,13 @@
     <string name="attendee">Attendee</string>
     <string name="add1">Add</string>
     <!-- end for calendar-->
-
+    <string-array name="languages">
+        <item>group 1</item>
+        <item>group 2</item>
+        <item>group 3</item>
+        <item>group 4</item>
+        <item>group 5</item>
+    </string-array>
     <!--begin for chat-->
     <string name="hello">您好~微信聊天</string>
     <!--end for chat-->
