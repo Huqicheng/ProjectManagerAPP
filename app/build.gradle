@@ -30,6 +30,7 @@ dependencies {
     compile files('libs/.idea/commons-logging-1.1.1.jar')
     compile files('libs/.idea/commons-pool-1.6.jar')
     compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:preference-v7:26.+'
     compile 'com.android.support:design:26.+'
     compile 'com.android.support:support-vector-drawable:26.+'
     compile 'com.android.support:support-v4:26.+'
