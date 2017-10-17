@@ -9,5 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="setting" />
-
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="show events"
+        android:summaryOff="Hidden"
+        android:summaryOn="Shown"
+        android:title="Show events" />
 </FrameLayout>

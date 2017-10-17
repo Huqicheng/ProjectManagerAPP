@@ -1,6 +1,7 @@
 package com.example.huqicheng.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class GroupAdapter extends BaseAdapter{
 
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
+        Log.d("Debug:", "get view at "+i);
         ViewHolder holder = null;
         if(convertView == null){
             convertView = inflater.inflate(R.layout.item_groups,null);

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="checkbox_preference"
+        android:summary="this is a check_box"
+        android:title="checkbox_setting" />
+    <EditTextPreference
+        android:dialogTitle="Please enter your marked group number"
+        android:key="edittext_preference"
+        android:summary="example"
+        android:title="enter your name" />
+
+    <ListPreference
+        android:dialogTitle="please select one"
+        android:entries="@array/languages"
+        android:entryValues="@array/languages"
+        android:key="list_preference"
+        android:summary="example"
+        android:title="select one group to be top" />
+</PreferenceScreen>
