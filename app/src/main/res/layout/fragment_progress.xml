@@ -30,18 +30,34 @@
     </RelativeLayout>
 
 
+    <!--<Button-->
+        <!--android:id="@+id/complete_btn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Completed"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_toEndOf="@+id/imcomplete_btn" />-->
+    <!--<Button-->
+        <!--android:id="@+id/imcomplete_btn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParent="true"-->
+        <!--android:text="Imcomplete"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_toEndOf="@+id/all_btn" />-->
+
     <Button
-        android:id="@+id/add_btn"
+        android:id="@+id/all_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:text="All"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="New Task" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="8dp" />
 
 
     <ListView
-        android:id="@+id/tasklist"
+        android:id="@+id/eventlist"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:cacheColorHint="@android:color/transparent"
@@ -54,7 +70,7 @@
         android:paddingTop="15dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/progressBar"
-        android:layout_above="@+id/add_btn">
+        android:layout_above="@+id/all_btn">
 
     </ListView>
 
