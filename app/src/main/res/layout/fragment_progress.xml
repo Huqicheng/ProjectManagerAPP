@@ -1,13 +1,63 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.huqicheng.pm.ProgressFragment">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="progress" />
 
-</FrameLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar">
+        <ProgressBar
+            android:id="@+id/bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:max="100"
+            android:progress="20"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+        <TextView
+            android:id="@+id/progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="1 of 5 completed"
+            android:padding="5dp"
+            android:layout_below="@+id/bar" />
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="New Task" />
+
+
+    <ListView
+        android:id="@+id/tasklist"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:paddingBottom="8dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="15dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/progressBar"
+        android:layout_above="@+id/add_btn">
+
+    </ListView>
+
+
+
+</RelativeLayout>
