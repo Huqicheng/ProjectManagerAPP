@@ -66,7 +66,7 @@ public class editClicked extends AppCompatActivity {
         db = new dbHandler(this);
         db2 = new dbHandler2(this);
 
-        // receiveing the data from the Main-Activity
+        // receiving the data from the CalendarFragment
         Bundle dateRecieved = getIntent().getExtras();
         Date = dateRecieved.getInt("date message");
         day = dateRecieved.getInt("day message");
@@ -122,7 +122,7 @@ public class editClicked extends AppCompatActivity {
                 cal.set(Calendar.MINUTE, minute_x);
                 cal.set(Calendar.SECOND, 0);
 
-                //Hello Matha Fucka
+                //return calender time in milliseconds
                 long mills = cal.getTimeInMillis();
 
                 INTENT = new Intent(editClicked.this,AlarmReceiver.class);
