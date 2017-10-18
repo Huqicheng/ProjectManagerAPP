@@ -30,6 +30,7 @@ public class EventListAdapter extends BaseAdapter {
             this.eventList = eventList;
         else
             this.eventList = new ArrayList<>();
+        this.inflater = LayoutInflater.from(context);
 
     }
 
@@ -65,6 +66,7 @@ public class EventListAdapter extends BaseAdapter {
 
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
+        holder.description.setText(event.geteventDescription());
 
 
         return convertView;
