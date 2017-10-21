@@ -5,5 +5,5 @@ package com.example.huqicheng.config;
  */
 
 public class Config {
-    public static final String SERVER_IP = "192.168.11.9/PM";
+    public static final String SERVER_IP = "http://192.168.11.7:8080/PM";
 }
