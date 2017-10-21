@@ -1,12 +1,29 @@
 package com.example.huqicheng.pm;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CalendarView;
+import android.widget.ListView;
+
+import com.example.huqicheng.adapter.EventListAdapter;
+import com.example.huqicheng.dao.dbHandler;
+import com.example.huqicheng.dao.dbHandler2;
+import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.Group;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -18,6 +35,14 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProgressFragment extends Fragment {
+
+    dbHandler myDb;
+    private ListView events;
+    private EventListAdapter adapter;
+    dbHandler2 myDb2;
+    int Date;
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -46,7 +71,7 @@ public class ProgressFragment extends Fragment {
         Bundle args = new Bundle();
 //        args.putString(ARG_PARAM1, param1);
 //        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        //fragment.setArguments(args);
         return fragment;
     }
 
@@ -63,7 +88,55 @@ public class ProgressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_progress, container, false);
+        //myDb = new dbHandler(getActivity());
+        //Cursor res = myDb.getAllData();
+        //while (res.moveToNext()) {
+        //    if (res.getInt(0) != 0) {
+//                StringBuffer buffer = new StringBuffer();
+//
+//                buffer.append("Id :" + res.getString(0) + "\n");
+//                buffer.append("Event Name :" + res.getString(1) + "\n");
+//                buffer.append("Event Location :" + res.getString(2) + "\n");
+//                buffer.append("Event Discription :" + res.getString(3) + "\n\n");
+//                System.out.print(res.getString(1));
+
+           // }
+
+//        }
+       View view = inflater.inflate(R.layout.fragment_progress, container, false);
+        ArrayList<Event> eventList = new ArrayList<>();
+
+
+
+        for(int i = 0;i<10;i++){
+
+            Event e = new Event();
+            e.setEventID(i);
+            e.setEventTitle("Debug " + i);
+            e.setEventDescription("woa " + i);
+            eventList.add(e);
+        }
+        ListView listView = (ListView) view.findViewById(R.id.eventlist);
+        EventListAdapter ela = new EventListAdapter(getActivity(),null);
+        listView.setAdapter(ela);
+        ela.add(eventList);
+
+
+
+
+
+        return view;
+
+    }
+
+    private void toEditActivity(Event e){
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event",e);
+        intent.putExtras(bundle);
+        intent.setClass(getActivity(),editClicked.class);
+        startActivityForResult(intent,1);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

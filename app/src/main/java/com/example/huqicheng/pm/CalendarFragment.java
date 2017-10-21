@@ -101,6 +101,7 @@ public class CalendarFragment extends Fragment {
                 Date = Integer.parseInt(date);
                 Log.e(TAG, "int date=" + Date + "");
                 Log.e(TAG, "string date=" + date + "");
+
                 //firstly check if an entry exists for the current date.
                 Cursor res = myDb.getAllData();
 
