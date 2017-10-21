@@ -32,7 +32,7 @@ public class EventListAdapter extends BaseAdapter {
             this.eventList = new ArrayList<>();
 
 
-
+        inflater = this.inflater = LayoutInflater.from(context);
 
     }
 
