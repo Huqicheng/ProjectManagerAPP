@@ -2,6 +2,8 @@ package com.example.huqicheng.pm;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.huqicheng.config.Config;
 import com.example.huqicheng.entity.User;
+import com.example.huqicheng.nao.UserNao;
 import com.example.huqicheng.utils.FileUtils;
 import com.example.huqicheng.utils.PersistentCookieStore;
 import com.google.gson.Gson;
@@ -34,7 +37,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnFacebook;
     private Button btnGoogle;
     private Intent intent = null;
-    PersistentCookieStore store = PersistentCookieStore.getInstance();
+    private Handler handler = null;
+
+    PersistentCookieStore store = PersistentCookieStore.getInstance(Config.SERVER_IP);
 
 
     @Override
@@ -47,6 +52,21 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
         initViews();
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case 1:
+                        intent = new Intent(LoginActivity.this, MainActivity.class);
+
+                        startActivity(intent);
+
+                        finish();
+
+                }
+            }
+        };
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,8 +98,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void writeUserInfoToFile(){
         try {
-            store.add(new URI(Config.SERVER_IP),new HttpCookie("username","q45hu2"));
-            store.add(new URI(Config.SERVER_IP),new HttpCookie("password","q45hu"));
+            store.add(new URI(Config.SERVER_IP),new HttpCookie("username","q45hu"));
+            store.add(new URI(Config.SERVER_IP),new HttpCookie("password","12345678"));
             new Thread(store).start();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -106,14 +126,27 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void onClickLogin(){
-        writeUserInfoToFile();
+        new Thread(){
+            @Override
+            public void run() {
+                UserNao un = new UserNao();
+                boolean isSuccess = un.doLogin();
+
+                if(isSuccess){
+                    writeUserInfoToFile();
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+                    handler.handleMessage(msg);
+
+                }
+            }
+        }.start();
 
 
-        intent = new Intent(this, MainActivity.class);
 
-        startActivity(intent);
 
-        this.finish();
+
+
     }
 
     private void initViews() {
