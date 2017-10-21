@@ -3,6 +3,7 @@ package com.example.huqicheng.pm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -10,7 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.huqicheng.entity.User;
+import com.example.huqicheng.utils.FileUtils;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -29,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+        doAutomaticLogin();
 
         setContentView(R.layout.activity_login);
         initViews();
@@ -56,6 +62,30 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void doAutomaticLogin(){
+        try {
+            if(FileUtils.readFromFile("cookie").equals("")){
+                Log.d("debug: ","no items in cookie");
+                return;
+            }else{
+                onClickLogin();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeUserInfoToFile(){
+        User user = new User();
+        user.setUsername("q45hu");
+        user.setPassword("12345678");
+        try {
+            FileUtils.writeToFile("cookie",new Gson().toJson(user),this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void onClickRestore(){
         intent = new Intent(this, RestorePasswordActivity.class);
 
@@ -74,6 +104,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void onClickLogin(){
+        writeUserInfoToFile();
+
+
         intent = new Intent(this, MainActivity.class);
 
         startActivity(intent);
