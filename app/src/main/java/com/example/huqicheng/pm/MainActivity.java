@@ -121,11 +121,35 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         ft=getFragmentManager().beginTransaction();
-        if(id==R.id.navigation_setting){
+        switch (item.getItemId()) {
+            case R.id.navigation_calendar:
+                //show calendarFragment and hide the others
+                System.out.print("calendar");
+                ft.replace(R.id.content, calendarFragment);
+                ft.commit();
 
-            ft.replace(R.id.content,settingFragment);
-            ft.commit();
-            return true;
+
+                return true;
+            case R.id.navigation_chat:
+                System.out.print("chat");
+                ft.replace(R.id.content, chatFragment);
+                ft.commit();
+
+
+                return true;
+            case R.id.navigation_progress:
+                ft.replace(R.id.content,progressFragment);
+                ft.commit();
+
+
+
+                return true;
+            case R.id.navigation_setting:
+                ft.replace(R.id.content,settingFragment);
+                ft.commit();
+
+
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
