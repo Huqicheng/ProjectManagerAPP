@@ -31,6 +31,8 @@ public class EventListAdapter extends BaseAdapter {
         else
             this.eventList = new ArrayList<>();
 
+        inflater = this.inflater = LayoutInflater.from(context);
+
     }
 
     @Override

@@ -19,7 +19,7 @@ public class ClientUtils {
 		// TODO Auto-generated method stub
 		Constants.setClientId("1");
         try {
-			client=new NettyClientBootstrap(8080,"192.168.11.10");
+			client=new NettyClientBootstrap(8080,"192.168.137.1");
 			client.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

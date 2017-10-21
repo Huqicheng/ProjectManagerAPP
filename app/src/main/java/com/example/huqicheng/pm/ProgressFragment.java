@@ -99,26 +99,26 @@ public class ProgressFragment extends Fragment {
 
 //        }
        View view = inflater.inflate(R.layout.fragment_progress, container, false);
-//        ArrayList<Event> eventList = new ArrayList<>();
-//        for(int i = 0;i<3;i++){
-//            Event e = new Event();
-//            e.setEventID(i);
-//            e.setEventTitle("Debug " + i);
-//            e.setEventDescription("woa " + i);
-//            eventList.add(e);
-//        }
-//        ListView listView = (ListView) view.findViewById(R.id.eventlist);
-//        EventListAdapter ela = new EventListAdapter(getActivity(),null);
-//        listView.setAdapter(ela);
-//        ela.add(eventList);
-
-        String [] event_title = {"Debug1", "Debug1", "Debug3","Debug4","Debug5"};
-        String [] event_description = {"ha!", "woa!", "ah!","ho!","rah!"};
+        ArrayList<Event> eventList = new ArrayList<>();
+        for(int i = 0;i<3;i++){
+            Event e = new Event();
+            e.setEventID(i);
+            e.setEventTitle("Debug " + i);
+            e.setEventDescription("woa " + i);
+            eventList.add(e);
+        }
         ListView listView = (ListView) view.findViewById(R.id.eventlist);
-        ArrayAdapter<String> listViewAdapter1 = new ArrayAdapter<String>(getActivity(),R.layout.event_list_row,R.id.title,event_title);
-        listView.setAdapter(listViewAdapter1);
-        ArrayAdapter<String> listViewAdapter2 = new ArrayAdapter<String>(getActivity(),R.layout.event_list_row,R.id.description,event_description);
-        listView.setAdapter(listViewAdapter2);
+        EventListAdapter ela = new EventListAdapter(getActivity(),null);
+        listView.setAdapter(ela);
+        ela.add(eventList);
+
+//        String [] event_title = {"Debug1", "Debug1", "Debug3","Debug4","Debug5"};
+//        String [] event_description = {"ha!", "woa!", "ah!","ho!","rah!"};
+//        ListView listView = (ListView) view.findViewById(R.id.eventlist);
+//        ArrayAdapter<String> listViewAdapter1 = new ArrayAdapter<String>(getActivity(),R.layout.event_list_row,R.id.title,event_title);
+//        listView.setAdapter(listViewAdapter1);
+//        ArrayAdapter<String> listViewAdapter2 = new ArrayAdapter<String>(getActivity(),R.layout.event_list_row,R.id.description,event_description);
+//        listView.setAdapter(listViewAdapter2);
         return view;
 
     }
