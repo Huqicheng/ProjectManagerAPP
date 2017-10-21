@@ -35,4 +35,6 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:26.+'
     compile 'com.android.support:support-v4:26.+'
     testCompile 'junit:junit:4.12'
+    compile files('libs/.idea/apache-httpcomponents-httpcore.jar')
+    compile files('libs/.idea/httpclient-4.5.2.jar')
 }

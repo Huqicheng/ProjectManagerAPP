@@ -11,11 +11,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.huqicheng.config.Config;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.utils.FileUtils;
+import com.example.huqicheng.utils.PersistentCookieStore;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.HttpCookie;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,13 +34,16 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnFacebook;
     private Button btnGoogle;
     private Intent intent = null;
+    PersistentCookieStore store = PersistentCookieStore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        new Thread(store).start();
 
-        doAutomaticLogin();
+        //doAutomaticLogin();
 
         setContentView(R.layout.activity_login);
         initViews();
@@ -63,27 +72,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void doAutomaticLogin(){
-        try {
-            if(FileUtils.readFromFile("cookie").equals("")){
-                Log.d("debug: ","no items in cookie");
-                return;
-            }else{
-                onClickLogin();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
     }
 
     private void writeUserInfoToFile(){
-        User user = new User();
-        user.setUsername("q45hu");
-        user.setPassword("12345678");
         try {
-            FileUtils.writeToFile("cookie",new Gson().toJson(user),this);
-        } catch (IOException e) {
+            store.add(new URI(Config.SERVER_IP),new HttpCookie("username","q45hu2"));
+            store.add(new URI(Config.SERVER_IP),new HttpCookie("password","q45hu"));
+            new Thread(store).start();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
+
     }
 
     private void onClickRestore(){
