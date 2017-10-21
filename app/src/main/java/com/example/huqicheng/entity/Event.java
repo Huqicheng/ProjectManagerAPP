@@ -4,7 +4,7 @@ package com.example.huqicheng.entity;
  * Created by jiaxinf on 2017-10-17.
  */
 
-public class Event {
+public class Event implements java.io.Serializable{
     long eventID;
     String title;
     String description;

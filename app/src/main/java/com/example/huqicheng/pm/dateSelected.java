@@ -82,7 +82,6 @@ public class dateSelected extends AppCompatActivity {
         this.context=this;
 
         //save button clicked
-    //
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

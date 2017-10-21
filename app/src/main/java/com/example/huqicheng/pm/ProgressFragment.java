@@ -1,6 +1,7 @@
 package com.example.huqicheng.pm;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.ListView;
@@ -18,6 +20,7 @@ import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.dao.dbHandler;
 import com.example.huqicheng.dao.dbHandler2;
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.Group;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,8 @@ import java.util.List;
 public class ProgressFragment extends Fragment {
 
     dbHandler myDb;
+    private ListView events;
+    private EventListAdapter adapter;
     dbHandler2 myDb2;
     int Date;
 
@@ -100,7 +105,11 @@ public class ProgressFragment extends Fragment {
 //        }
        View view = inflater.inflate(R.layout.fragment_progress, container, false);
         ArrayList<Event> eventList = new ArrayList<>();
-        for(int i = 0;i<3;i++){
+
+
+
+        for(int i = 0;i<10;i++){
+
             Event e = new Event();
             e.setEventID(i);
             e.setEventTitle("Debug " + i);
@@ -112,14 +121,21 @@ public class ProgressFragment extends Fragment {
         listView.setAdapter(ela);
         ela.add(eventList);
 
-//        String [] event_title = {"Debug1", "Debug1", "Debug3","Debug4","Debug5"};
-//        String [] event_description = {"ha!", "woa!", "ah!","ho!","rah!"};
-//        ListView listView = (ListView) view.findViewById(R.id.eventlist);
-//        ArrayAdapter<String> listViewAdapter1 = new ArrayAdapter<String>(getActivity(),R.layout.event_list_row,R.id.title,event_title);
-//        listView.setAdapter(listViewAdapter1);
-//        ArrayAdapter<String> listViewAdapter2 = new ArrayAdapter<String>(getActivity(),R.layout.event_list_row,R.id.description,event_description);
-//        listView.setAdapter(listViewAdapter2);
+
+
+
+
         return view;
+
+    }
+
+    private void toEditActivity(Event e){
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("event",e);
+        intent.putExtras(bundle);
+        intent.setClass(getActivity(),editClicked.class);
+        startActivityForResult(intent,1);
 
     }
 
