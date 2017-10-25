@@ -1,7 +1,9 @@
 package com.example.huqicheng.pm;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -12,6 +14,11 @@ import android.widget.TextView;
 import com.example.huqicheng.adapter.ChatMsgViewAdapter;
 import com.example.huqicheng.entity.ChatMsgEntity;
 import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.message.BaseMsg;
+import com.example.huqicheng.service.MsgService;
+import com.example.huqicheng.service.MyService;
+import com.example.huqicheng.service.OnChatMsgRecievedListener;
+import com.example.huqicheng.utils.ClientUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +38,16 @@ public class WeChatActivity extends Activity implements OnClickListener {
 	private ListView mListView;
 	private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();// 消息对象数组
+	private OnChatMsgRecievedListener listener = new OnChatMsgRecievedListener() {
+		@Override
+		public void onChatMsgRecieved(BaseMsg msg) {
+			//TODO update UI
+
+			Log.d("Msg Recieved", msg.getParams().toString());
+		}
+	};
+
+	private Intent intent;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,6 +58,14 @@ public class WeChatActivity extends Activity implements OnClickListener {
 
 		initData();// 初始化数据
 		mListView.setSelection(mAdapter.getCount() - 1);
+
+		ClientUtils.setListenerForWeChat(listener);
+
+
+
+
+
+
 	}
 
 	/**
@@ -133,5 +158,11 @@ public class WeChatActivity extends Activity implements OnClickListener {
 	private String getDate() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		return format.format(new Date());
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		ClientUtils.setListenerForWeChat(null);
 	}
 }

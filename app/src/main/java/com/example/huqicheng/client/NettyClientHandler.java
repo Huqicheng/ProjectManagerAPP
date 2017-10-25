@@ -59,6 +59,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
     	System.out.println(msg);
         BaseMsg baseMsg = new Gson().fromJson(msg, BaseMsg.class);
+        ClientUtils.onChatMsgRecievedForWeChat(baseMsg);
     	MsgType msgType=baseMsg.getType();
         switch (msgType){
             case LOGIN:{
