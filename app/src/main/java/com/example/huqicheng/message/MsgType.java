@@ -16,7 +16,8 @@ public enum  MsgType {
     LOGIN,
     /*
      * Group Chat
-     * params: body -- String         
+     * params: body -- String
+     * params: username -- String
      */
     ChatMsg,
     /*

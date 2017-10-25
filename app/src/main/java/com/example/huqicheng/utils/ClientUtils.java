@@ -3,6 +3,7 @@ package com.example.huqicheng.utils;
 import com.example.huqicheng.message.*;
 
 import com.example.huqicheng.client.NettyClientBootstrap;
+import com.google.gson.Gson;
 
 public class ClientUtils {
 	private static NettyClientBootstrap client = null;
@@ -16,8 +17,10 @@ public class ClientUtils {
 	}
 
 	private static void startClient() {
-		// TODO Auto-generated method stub
+		// TODO use the real Client Id of this client
 		Constants.setClientId("1");
+
+
         try {
 			client=new NettyClientBootstrap(8080,"192.168.137.1");
 			client.start();
@@ -27,7 +30,7 @@ public class ClientUtils {
 		}
 	}
 	
-	public static void send(String groupId, BaseMsg msg){
-		
+	public static void send(BaseMsg msg){
+		client.socketChannel.writeAndFlush(new Gson().toJson(msg));
 	}
 }
