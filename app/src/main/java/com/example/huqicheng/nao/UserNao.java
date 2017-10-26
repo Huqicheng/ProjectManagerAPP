@@ -26,8 +26,8 @@ public class UserNao {
     }
 
     //placeholder
-    public boolean doLogin(){
-        return true;
+    public User doLogin(){
+        return new User();
     }
 
     public User doLogin(User user){

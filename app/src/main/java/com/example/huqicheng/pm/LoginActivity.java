@@ -130,9 +130,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void run() {
                 UserNao un = new UserNao();
-                boolean isSuccess = un.doLogin();
+                User user = new User();
+                user.setPassword("12345678");
+                user.setUsername("q45hu");
+                User res = un.doLogin();
 
-                if(isSuccess){
+                if(res != null){
                     writeUserInfoToFile();
                     Message msg = Message.obtain();
                     msg.what = 1;
