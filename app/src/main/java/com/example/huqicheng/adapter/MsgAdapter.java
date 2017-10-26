@@ -34,14 +34,15 @@ public class MsgAdapter {
         params = msg.getParams();
         msgEntity.setName((String) params.get("username"));
         msgEntity.setMessage((String) params.get("body"));
-        msgEntity.setDate( msg.getDate().toString() );
+        msgEntity.setDate(msg.getDate().toString());
 
         return msgEntity;
     }
-
+}
+/*
     public static void main(String str[]) {
         //test
-        /*
+
         BaseMsg baseMsg = new BaseMsg();
         baseMsg.setDate(new Date(2017, 10, 25, 15, 38, 30));
         baseMsg.putParams("username","Mark1212132321");
@@ -66,5 +67,5 @@ public class MsgAdapter {
         System.out.print(targetMsgEntity.getName() + "\n");
     }
 */
-}
+
 
