@@ -8,7 +8,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="fitCenter"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:focusable="false"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,6 +33,7 @@
             android:padding="3dp"
             android:textSize="12sp"
             android:textStyle="italic"
+            android:singleLine="true"
             android:text="created by haha"/>
 
 

@@ -42,16 +42,6 @@ public class ProgressFragment extends Fragment {
     dbHandler2 myDb2;
     int Date;
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     public ProgressFragment() {
@@ -78,36 +68,16 @@ public class ProgressFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //myDb = new dbHandler(getActivity());
-        //Cursor res = myDb.getAllData();
-        //while (res.moveToNext()) {
-        //    if (res.getInt(0) != 0) {
-//                StringBuffer buffer = new StringBuffer();
-//
-//                buffer.append("Id :" + res.getString(0) + "\n");
-//                buffer.append("Event Name :" + res.getString(1) + "\n");
-//                buffer.append("Event Location :" + res.getString(2) + "\n");
-//                buffer.append("Event Discription :" + res.getString(3) + "\n\n");
-//                System.out.print(res.getString(1));
+        super.onCreateView(inflater,container,savedInstanceState);
 
-           // }
-
-//        }
        View view = inflater.inflate(R.layout.fragment_progress, container, false);
         ArrayList<Event> eventList = new ArrayList<>();
-
-
-
         for(int i = 0;i<10;i++){
 
             Event e = new Event();
@@ -117,9 +87,19 @@ public class ProgressFragment extends Fragment {
             eventList.add(e);
         }
         ListView listView = (ListView) view.findViewById(R.id.eventlist);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("clicked item: ", i + "at pos " + l);
+
+            }
+        });
         EventListAdapter ela = new EventListAdapter(getActivity(),null);
         listView.setAdapter(ela);
         ela.add(eventList);
+
+
 
 
 
