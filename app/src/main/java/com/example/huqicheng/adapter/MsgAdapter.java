@@ -2,6 +2,7 @@ package com.example.huqicheng.adapter;
 
 import com.example.huqicheng.entity.ChatMsgEntity;
 import com.example.huqicheng.message.BaseMsg;
+import com.example.huqicheng.message.MsgType;
 import com.example.huqicheng.utils.DateUtils;
 
 import java.util.Date;
@@ -15,9 +16,11 @@ import java.lang.System.*;
  */
 
 public class MsgAdapter {
-    public BaseMsg ChatMsgEntity2BaseMsg(ChatMsgEntity msgEntity) {
+    public BaseMsg ChatMsgEntity2BaseMsg(ChatMsgEntity msgEntity, long groupId) {
 
         BaseMsg baseMsg = new BaseMsg();
+        baseMsg.setType(MsgType.ChatMsg);
+        baseMsg.setGroupId(groupId+"");
         baseMsg.putParams("username", msgEntity.getName());
         baseMsg.putParams("body", msgEntity.getMessage());
 
@@ -28,13 +31,14 @@ public class MsgAdapter {
     }
 
 
-    public ChatMsgEntity BaseMsg2ChatMsgEntity(BaseMsg msg) {
+    public ChatMsgEntity BaseMsg2ChatMsgEntity(BaseMsg msg,String clientId) {
         ChatMsgEntity msgEntity = new ChatMsgEntity();
         Map<String, Object> params = new HashMap<String, Object>();
         params = msg.getParams();
         msgEntity.setName((String) params.get("username"));
         msgEntity.setMessage((String) params.get("body"));
         msgEntity.setDate(msg.getDate().toString());
+        msgEntity.setComMeg(!msg.getClientId().equals(clientId));
 
         return msgEntity;
     }
