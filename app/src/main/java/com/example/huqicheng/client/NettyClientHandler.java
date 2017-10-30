@@ -49,6 +49,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                     BaseMsg pingMsg=new BaseMsg();
                     pingMsg.setType(MsgType.PING);
                     ctx.writeAndFlush(new Gson().toJson(pingMsg));
+
                     System.out.println("send ping to server----------");
                     break;
                 default:

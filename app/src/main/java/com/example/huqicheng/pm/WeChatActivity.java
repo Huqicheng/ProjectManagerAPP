@@ -3,6 +3,8 @@ package com.example.huqicheng.pm;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.huqicheng.adapter.ChatMsgViewAdapter;
+import com.example.huqicheng.adapter.MsgAdapter;
 import com.example.huqicheng.entity.ChatMsgEntity;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.message.BaseMsg;
@@ -24,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.RunnableFuture;
 
 /**
  * @author way
@@ -31,6 +35,7 @@ import java.util.List;
 public class WeChatActivity extends Activity implements OnClickListener {
 
 	private Group group;
+
 	private Button mBtnSend;// 发送btn
 	private Button mBtnBack;// 返回btn
 	private TextView mTextViewGrpName;
@@ -38,28 +43,92 @@ public class WeChatActivity extends Activity implements OnClickListener {
 	private ListView mListView;
 	private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();// 消息对象数组
-	private OnChatMsgRecievedListener listener = new OnChatMsgRecievedListener() {
-		@Override
-		public void onChatMsgRecieved(BaseMsg msg) {
-			//TODO update UI
-
-			Log.d("Msg Recieved", msg.getParams().toString());
-		}
-	};
-
+	private Handler handler;
 	private Intent intent;
 
+	void addMsg(final ChatMsgEntity entity){
+
+
+		mDataArrays.add(entity);
+		mAdapter.notifyDataSetChanged();
+		//mListView.setSelection(mListView.getCount() - 1);
+
+	}
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_main);
 		group = (Group) this.getIntent().getSerializableExtra("group");
 
+
 		initView();// 初始化view
 
 		initData();// 初始化数据
-		mListView.setSelection(mAdapter.getCount() - 1);
 
-		ClientUtils.setListenerForWeChat(listener);
+		handler = new Handler(){
+			@Override
+			public void handleMessage(final Message msg) {
+				switch (msg.what){
+					//a new msg comes
+					case 1:
+
+
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Thread th = Thread.currentThread();
+								Log.d("msg",th.getName());
+								mDataArrays.add(new MsgAdapter().BaseMsg2ChatMsgEntity((BaseMsg) msg.obj,"1"));
+								mAdapter.notifyDataSetChanged();
+								mListView.setSelection(mListView.getCount() - 1);
+							}
+						});
+
+
+						break;
+
+				}
+			}
+		};
+
+
+
+		ClientUtils.setListenerForWeChat(new OnChatMsgRecievedListener() {
+			@Override
+			public void onChatMsgRecieved(BaseMsg msg) {
+				//TODO update UI
+
+				Log.d("Msg Recieved", msg.getParams().toString());
+
+
+				if(msg.getGroupId() == null){
+					Log.d("Msg Recieved", "msg group id is null ");
+					return;
+				}
+
+				if(!msg.getGroupId().equals(getId(1111)+"")){
+					Log.d("Msg Recieved", "msg is not for this group ");
+					return;
+				}
+
+				Log.d("Msg Recieved", msg.getGroupId());
+
+
+				Message m = Message.obtain();
+				m.what = 1;
+				m.obj = msg;
+
+				handler.handleMessage(m);
+
+			}
+
+
+			@Override
+			public long getId(long id) {
+				return group.getGroupId();
+			}
+		});
+
+		mListView.setSelection(mListView.getCount() - 1);
 
 
 
@@ -136,17 +205,28 @@ public class WeChatActivity extends Activity implements OnClickListener {
 		String contString = mEditTextContent.getText().toString();
 		if (contString.length() > 0) {
 			ChatMsgEntity entity = new ChatMsgEntity();
-			entity.setName("apple");
+			entity.setName("pie");
 			entity.setDate(getDate());
 			entity.setMessage(contString);
 			entity.setMsgType(false);
 
-			mDataArrays.add(entity);
-			mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
+			final ChatMsgEntity temp = entity;
+
+			new Thread(){
+				@Override
+				public void run() {
+					ClientUtils.send(new MsgAdapter().ChatMsgEntity2BaseMsg(temp,1));
+				}
+			}.start();
+
+
+			//mDataArrays.add(entity);
+			//mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
 
 			mEditTextContent.setText("");// 清空编辑框数据
 
-			mListView.setSelection(mListView.getCount() - 1);// 发送一条消息时，ListView显示选择最后一项
+			// 发送一条消息时，ListView显示选择最后一项
+
 		}
 	}
 

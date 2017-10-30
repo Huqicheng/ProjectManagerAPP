@@ -36,7 +36,7 @@ public class ClientUtils {
 
 
         try {
-			client=new NettyClientBootstrap(8080,"192.168.137.1");
+			client=new NettyClientBootstrap(8080,"192.168.11.11");
 			client.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -45,6 +45,9 @@ public class ClientUtils {
 	}
 	
 	public static void send(BaseMsg msg){
+		if(client == null || client.socketChannel == null){
+			return;
+		}
 		client.socketChannel.writeAndFlush(new Gson().toJson(msg));
 	}
 }
