@@ -30,30 +30,34 @@
     </RelativeLayout>
 
 
-    <!--<Button-->
-        <!--android:id="@+id/complete_btn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Completed"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_toEndOf="@+id/imcomplete_btn" />-->
-    <!--<Button-->
-        <!--android:id="@+id/imcomplete_btn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParent="true"-->
-        <!--android:text="Imcomplete"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_toEndOf="@+id/all_btn" />-->
+    <ImageButton
+        android:id="@+id/complete_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/eventlist"
+        android:background="@drawable/complete"
+        android:clickable="true"
+        android:elevation="0dp" />
+
+    <ImageButton
+        android:id="@+id/delete_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:clickable="true"
+        android:background="@drawable/delete"
+        android:layout_below="@+id/eventlist"
+        android:layout_alignParentStart="true" />
 
     <Button
-        android:id="@+id/all_btn"
+        android:id="@+id/show_btn"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="All"
+        android:text="Show Completed"
+        android:visibility="invisible"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="8dp" />
+        android:layout_centerHorizontal="true" />
 
 
     <ListView
@@ -66,7 +70,7 @@
         android:paddingTop="15dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/progressBar"
-        android:layout_above="@+id/all_btn">
+        android:layout_above="@+id/show_btn">
 
     </ListView>
 
