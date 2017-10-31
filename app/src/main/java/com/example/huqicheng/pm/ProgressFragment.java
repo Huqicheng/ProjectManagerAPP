@@ -14,7 +14,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.dao.dbHandler;
@@ -38,19 +43,13 @@ public class ProgressFragment extends Fragment {
 
     dbHandler myDb;
     private ListView events;
+    public ArrayList<Event> eventList;
     private EventListAdapter adapter;
+    TextView progress_text;
+    ProgressBar bar;
+    int progress_Max = 100;
     dbHandler2 myDb2;
     int Date;
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -78,36 +77,16 @@ public class ProgressFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //myDb = new dbHandler(getActivity());
-        //Cursor res = myDb.getAllData();
-        //while (res.moveToNext()) {
-        //    if (res.getInt(0) != 0) {
-//                StringBuffer buffer = new StringBuffer();
-//
-//                buffer.append("Id :" + res.getString(0) + "\n");
-//                buffer.append("Event Name :" + res.getString(1) + "\n");
-//                buffer.append("Event Location :" + res.getString(2) + "\n");
-//                buffer.append("Event Discription :" + res.getString(3) + "\n\n");
-//                System.out.print(res.getString(1));
-
-           // }
-
-//        }
+        super.onCreateView(inflater,container,savedInstanceState);
+        //init event listview
        View view = inflater.inflate(R.layout.fragment_progress, container, false);
-        ArrayList<Event> eventList = new ArrayList<>();
-
-
-
+        eventList = new ArrayList<>();
         for(int i = 0;i<10;i++){
 
             Event e = new Event();
@@ -117,16 +96,49 @@ public class ProgressFragment extends Fragment {
             eventList.add(e);
         }
         ListView listView = (ListView) view.findViewById(R.id.eventlist);
-        EventListAdapter ela = new EventListAdapter(getActivity(),null);
-        listView.setAdapter(ela);
-        ela.add(eventList);
-
-
-
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Log.d("clicked item: ", i + "at pos " + l);
+            }
+        });
+        adapter = new EventListAdapter(getActivity(),null);
+        listView.setAdapter(adapter);
+        adapter.add(eventList);
+        progress_text = (TextView) view.findViewById(R.id.progress_text);
+        bar = (ProgressBar) view.findViewById(R.id.bar);
+        bar.setProgress(0);
+        progress_text.setText(adapter.checkCount + " of " + eventList.size() + " completed ");
+        ProgressButtonClick(view);
 
         return view;
 
+    }
+
+    public void ProgressButtonClick(View view) {
+        //mark selected events as complete
+        ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
+        complete_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                //Log.d("complete", adapter.checkCount + "");
+                progress_text.setText(adapter.checkCount+" of " + eventList.size() + " completed ");
+                bar.setProgress(adapter.checkCount*progress_Max/eventList.size());
+            }
+
+        });
+
+        //delete selected events
+        ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
+        del_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                Log.d("delete", adapter.checkCount + "");
+            }
+
+        });
     }
 
     private void toEditActivity(Event e){
@@ -138,6 +150,7 @@ public class ProgressFragment extends Fragment {
         startActivityForResult(intent,1);
 
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
