@@ -1,4 +1,4 @@
-package com.example.huqicheng.entity;
+package entity;
 
 import java.util.Date;
 
@@ -12,9 +12,19 @@ public class Group implements java.io.Serializable{
     String groupDescription;
     Date createdAt;
     Date updatedAt;
-    Project project;
+    int projectId;
+    
+    
 
-    public long getGroupId() {
+    public int getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(int projectId) {
+		this.projectId = projectId;
+	}
+
+	public long getGroupId() {
         return groupId;
     }
 
@@ -34,9 +44,7 @@ public class Group implements java.io.Serializable{
         return updatedAt;
     }
 
-    public Project getProject() {
-        return project;
-    }
+   
 
     public void setGroupId(long groupId) {
         this.groupId = groupId;
@@ -58,7 +66,5 @@ public class Group implements java.io.Serializable{
         this.updatedAt = updatedAt;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
+   
 }
