@@ -69,17 +69,17 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("debug:","service");
-        client = ClientUtils.getInstance();
-
-        Log.d("debug:","start");
-
-        BaseMsg loginMsg=new BaseMsg();
-        loginMsg.setType(MsgType.LOGIN);
-        loginMsg.putParams("user", "huqicheng");
-        loginMsg.putParams("pwd", "huqicheng");
-        if(client.socketChannel != null){
-            client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
-        }
+//        Log.d("debug:","service");
+//        client = ClientUtils.getInstance();
+//
+//        Log.d("debug:","start");
+//
+//        BaseMsg loginMsg=new BaseMsg();
+//        loginMsg.setType(MsgType.LOGIN);
+//        loginMsg.putParams("user", "huqicheng");
+//        loginMsg.putParams("pwd", "huqicheng");
+//        if(client.socketChannel != null){
+//            client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
+//        }
     }
 }
