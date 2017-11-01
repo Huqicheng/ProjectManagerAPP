@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50627
 File Encoding         : 65001
 
-Date: 2017-10-31 00:58:13
+Date: 2017-11-01 17:15:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -123,12 +123,13 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `User_username_unique` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'ellen', 'ex@example.com', '123', 'normal', null, '2017-10-29 22:13:06', '2017-10-29 22:13:06', null);
+INSERT INTO `user` VALUES ('1', 'ellen', 'ex@example.com', '123', 'normal', 'facebook_ellen', '2017-10-29 22:13:06', '2017-10-29 22:13:06', null);
+INSERT INTO `user` VALUES ('5', 'q45hu', 'q45hu@uwaterloo.ca', '12345678', 'normal', null, '2017-11-01 16:17:01', '2017-11-01 16:17:01', null);
 
 -- ----------------------------
 -- Table structure for `user_group`
@@ -217,6 +218,40 @@ END
 DELIMITER ;
 
 -- ----------------------------
+-- Procedure structure for `log_in_by_email`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `log_in_by_email`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `log_in_by_email`(
+IN email varchar(255),
+IN pwd varchar(255)
+)
+BEGIN   
+select * 
+from user 
+where user.email = email 
+and user.password = pwd;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `log_in_by_facebook`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `log_in_by_facebook`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `log_in_by_facebook`(
+IN facebook varchar(255)
+)
+BEGIN   
+select * 
+from user 
+where user.facebook = facebook;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
 -- Procedure structure for `log_in_by_username`
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `log_in_by_username`;
@@ -227,6 +262,75 @@ IN pwd varchar(255)
 )
 BEGIN   
 	select * from user where user.username = username and user.password = pwd;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `register_new_account`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `register_new_account`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `register_new_account`(
+IN username varchar(255),
+IN email varchar(255),
+IN pwd varchar(255),
+IN accountType varchar(255),
+OUT id int
+)
+BEGIN
+IF exists(select id from user where user.email = email or user.username = username) THEN
+
+select 0 into id;
+
+ELSE
+   
+insert 
+into user(username,email,password,accountType,createdAt,updatedAt,facebook)
+values(username,email,pwd,accountType,now(),now(),"facebook");
+
+select MAX(id) into id
+from user;
+
+END IF;
+
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `update_user_info`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `update_user_info`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_user_info`(
+IN id int,
+IN email varchar(255),
+IN facebook varchar(255),
+OUT result int
+)
+BEGIN
+IF exists(select id from user where user.email = email) THEN
+
+select 0 into result;
+
+ELSE
+
+IF facebook != "facebook" and exists(select id from user where user.facebook = facebook) THEN
+
+select 0 into result;
+
+ELSE
+
+UPDATE user
+set email = email,facebook = facebook
+where id = id;
+
+select 1 into result;
+
+end if;
+
+end if; 
 END
 ;;
 DELIMITER ;
