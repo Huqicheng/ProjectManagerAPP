@@ -44,6 +44,15 @@ public class HttpUtils {
 
     }
 
+    /*
+    * method: execute
+    * params: url  String
+    *         params Map<NameValuePair>
+    *         method int (HttpUtils.GET/HttpUtils.POST)
+    *
+    * example: com.example.huqicheng.nao.UserNao
+    */
+
     public static HttpEntity execute(String url, List<NameValuePair> params,int method){
         HttpEntity entity = null;
         HttpClient client = new DefaultHttpClient();
@@ -82,11 +91,6 @@ public class HttpUtils {
 
             if(request == null) return null;
 
-
-            // add cookies to http request
-            BasicHttpContext mHttpContext = new BasicHttpContext();
-
-            mHttpContext.setAttribute(ClientContext.COOKIE_STORE, store);
 
             HttpResponse response = client.execute(request);
 
