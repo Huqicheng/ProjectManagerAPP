@@ -41,14 +41,14 @@ import java.util.List;
  */
 public class ProgressFragment extends Fragment {
 
-    dbHandler myDb;
+    //dbHandler myDb;
     private ListView events;
     public ArrayList<Event> eventList;
     private EventListAdapter adapter;
     TextView progress_text;
     ProgressBar bar;
     int progress_Max = 100;
-    dbHandler2 myDb2;
+    //dbHandler2 myDb2;
     int Date;
 
     private OnFragmentInteractionListener mListener;
@@ -146,7 +146,7 @@ public class ProgressFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable("event",e);
         intent.putExtras(bundle);
-        intent.setClass(getActivity(),editClicked.class);
+        intent.setClass(getActivity(),dateSelected.class);
         startActivityForResult(intent,1);
 
     }

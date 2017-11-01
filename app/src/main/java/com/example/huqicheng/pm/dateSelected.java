@@ -8,17 +8,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.app.Fragment;
 
 import com.example.huqicheng.dao.dbHandler;
 import com.example.huqicheng.dao.dbHandler2;
+import com.example.huqicheng.entity.Event;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class dateSelected extends AppCompatActivity {
     Intent intent;
@@ -26,7 +30,7 @@ public class dateSelected extends AppCompatActivity {
     private Button save,add,setTime;
     private Button startTime;
     private TextView textClock,textDate;
-    private int Date;
+    private int date;
     private dbHandler db;
     private dbHandler2 db2;
     private int day,month,year;
@@ -70,13 +74,19 @@ public class dateSelected extends AppCompatActivity {
         db2 = new dbHandler2(this);
 
         //getting date from mainactivity
-        Bundle dateRecieved = getIntent().getExtras();
-        Date = dateRecieved.getInt("date message");
-        day = dateRecieved.getInt("day message");
-        month = dateRecieved.getInt("month message");
-        year = dateRecieved.getInt("year message");
-        int currMonth=month+1;
-        textDate.setText(currMonth+" / "+day+" / "+year);
+        Intent eventintent = this.getIntent();
+        Event event = (Event)eventintent.getSerializableExtra("event");
+        Bundle dateReceived = getIntent().getExtras();
+        Date date = event.getCreatedAt();
+        final int date11 = event.getCreatedAt().hashCode();
+
+        year = event.getCreatedAt().getYear();
+        month = event.getCreatedAt().getMonth();
+        day = event.getCreatedAt().getDay();
+
+
+        int currMonth = month+1;
+        textDate.setText(date.toString());
 
         alarmManager= (AlarmManager)getSystemService(ALARM_SERVICE);
         this.context=this;
@@ -85,7 +95,7 @@ public class dateSelected extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean result = db.insertData(Date, eventName.getText().toString(), eventLocation.getText().toString(), eventDiscription.getText().toString());
+                boolean result = db.insertData(date11, eventName.getText().toString(), eventLocation.getText().toString(), eventDiscription.getText().toString());
                 //checking if data was inserted or not.
                 if (result == false)
                     Toast.makeText(dateSelected.this, "Failed to Insert Data", Toast.LENGTH_LONG).show();
@@ -133,7 +143,7 @@ public class dateSelected extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String d= Date+""+incrementer;
+                String d= date11+""+incrementer;
                 incrementer++;
                 int changeDateId=Integer.parseInt(d);
                 boolean result = db2.insertAttendees(changeDateId, Attendees.getText().toString());
