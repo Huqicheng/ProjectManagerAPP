@@ -9,16 +9,18 @@ import java.util.Date;
  */
 
 public class Event implements java.io.Serializable{
+	/** users can edit title,description,deadline **/
     long eventID;
+	int groupId;
+	int assignedTo; //assign to user_ID
+	int assignedBy; //event assigned by user_ID
+	String groupName;
     String title;
     String description;
-    String deadLine;
-    int assignedBy;
     String eventStatus;
+	Date deadLine;
     Date createdAt;
     Date updatedAt;
-    int groupId;
-    String groupName;
 
     public String getTitle() {
 		return title;
@@ -36,13 +38,17 @@ public class Event implements java.io.Serializable{
 		this.description = description;
 	}
 
-	public String getDeadLine() {
+	public Date getDeadLine() {
 		return deadLine;
 	}
 
-	public void setDeadLine(String deadLine) {
+	public void setDeadLine(Date deadLine) {
 		this.deadLine = deadLine;
 	}
+
+	public int getAssignedTo() {return assignedTo;}
+
+	public void setAssignedTo(int assignedTo) {this.assignedTo = assignedTo;}
 
 	public int getAssignedBy() {
 		return assignedBy;
