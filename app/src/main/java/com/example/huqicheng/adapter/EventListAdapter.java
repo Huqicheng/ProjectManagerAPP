@@ -78,7 +78,7 @@ public class EventListAdapter extends BaseAdapter {
 
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
-        holder.description.setText(event.geteventDescription());
+        holder.description.setText(event.getEventDescription());
         cb = (CheckBox) convertView.findViewById(R.id.chk_box);
         selectedEvents = new LinkedList();
         final ViewHolder finalHolder = holder;

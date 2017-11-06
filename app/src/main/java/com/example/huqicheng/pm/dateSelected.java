@@ -51,8 +51,9 @@ public class dateSelected extends AppCompatActivity {
         //Initializing the buttons
         save = (Button) findViewById(R.id.btnSave);
         //add = (Button) findViewById(R.id.button2);
-        setTime=(Button) findViewById(R.id.btnSettime);
         startTime = (Button) findViewById(R.id.btnTimepicker);
+        setTime=(Button) findViewById(R.id.btnSettime);
+
 
         //Initializing the TextViews of the Activity
         textClock = (TextView) findViewById(R.id.tvDispaytime);

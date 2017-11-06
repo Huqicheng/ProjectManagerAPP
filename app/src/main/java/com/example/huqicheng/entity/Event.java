@@ -10,33 +10,19 @@ import java.util.Date;
 
 public class Event implements java.io.Serializable{
 	/** users can edit title,description,deadline **/
-    long eventID;
+    long eventId;
 	int groupId;
 	int assignedTo; //assign to user_ID
 	int assignedBy; //event assigned by user_ID
 	String groupName;
-    String title;
-    String description;
+    String eventTitle;
+    String eventDescription;
+	String eventLocation;
     String eventStatus;
 	Date deadLine;
     Date createdAt;
     Date updatedAt;
 
-    public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	public Date getDeadLine() {
 		return deadLine;
@@ -98,31 +84,31 @@ public class Event implements java.io.Serializable{
 		this.groupName = groupName;
 	}
 
-	public long getEventID() {
-		return eventID;
-	}
-
 	public String getEventTitle() {
-        return title;
+        return eventTitle;
     }
 
-    public String geteventDescription() {
-        return description;
+    public String getEventDescription() {
+        return eventDescription;
     }
 
     public long getEventId() {
-        return eventID;
+        return eventId;
     }
 
-    public void setEventID(long groupId) {
-        this.eventID = groupId;
+	public String getEventLocation() {return eventLocation;}
+
+	public void setEventLocation(String eventLocation) {this.eventLocation = eventLocation;}
+
+	public void setEventID(long eventId) {
+        this.eventId = eventId;
     }
 
     public void setEventTitle(String eventTitle) {
-        this.title = eventTitle;
+        this.eventTitle = eventTitle;
     }
 
     public void setEventDescription(String eventDescription) {
-        this.description = eventDescription;
+        this.eventDescription = eventDescription;
     }
 }
