@@ -6,158 +6,128 @@
 
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/etEventname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="31dp"
+        android:layout_alignBaseline="@+id/tvEventname"
+        android:layout_alignBottom="@+id/tvEventname"
+        android:layout_alignParentEnd="true"
         android:ems="10"
         android:inputType="textPersonName"
-        android:layout_below="@+id/button"
-        android:layout_alignParentEnd="true" />
+        android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:layout_marginTop="19dp"
-        android:layout_below="@+id/editText"
-        android:layout_alignParentEnd="true" />
-
-    <EditText
-        android:id="@+id/editText4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:id="@+id/button"
+        android:id="@+id/etEventlocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="12dp"
-        android:text="@string/save" />
+        android:layout_below="@+id/etEventname"
+        android:layout_marginTop="49dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/etEventDiscription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:layout_above="@+id/textView4"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="17dp" />
+        android:textSize="18sp"
+        android:layout_alignBaseline="@+id/tvEventDiscription"
+        android:layout_alignBottom="@+id/tvEventDiscription"
+        android:layout_alignParentEnd="true" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add"
-        android:layout_alignBottom="@+id/editText5"
-        android:layout_alignLeft="@+id/button"
-        android:layout_alignStart="@+id/button" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event_name"
+        android:layout_marginTop="11dp"
+        android:text="@string/save"
         android:textSize="18sp"
-        android:layout_alignBaseline="@+id/editText"
-        android:layout_alignBottom="@+id/editText"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:id="@+id/textView2"
+    <Button
+        android:id="@+id/btnTimepicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/event_location"
+        android:text="CHOOSE TIME"
         android:textSize="18sp"
-        android:layout_alignBaseline="@+id/editText2"
-        android:layout_alignBottom="@+id/editText2"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="46dp"
+        android:layout_below="@+id/etEventDiscription"
+        android:layout_toStartOf="@+id/btnSettime" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <Button
+        android:id="@+id/btnSettime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editText4"
-        android:layout_alignParentLeft="true"
+        android:text="Set deadline"
+        android:textSize="18sp"
+        android:layout_alignBaseline="@+id/btnTimepicker"
+        android:layout_alignBottom="@+id/btnTimepicker"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/tvEventname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="17dp"
+        android:layout_below="@+id/textclockCurrenttime"
+        android:layout_marginTop="64dp"
+        android:text="@string/event_name"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvEventlocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etEventlocation"
+        android:layout_alignBottom="@+id/etEventlocation"
+        android:layout_alignParentStart="true"
+        android:text="@string/event_location"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvEventDiscription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/etEventlocation"
+        android:layout_marginTop="63dp"
         android:text="@string/event_discription"
         android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Time"
-        android:layout_alignBaseline="@+id/button6"
-        android:layout_alignBottom="@+id/button6"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/tvDispaytime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignStart="@+id/button2"
-        android:layout_centerVertical="true"
-        android:text="TextView"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnTimepicker"
+        android:layout_marginTop="39dp"
+        android:text="tvAlarmtime"
         android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/button6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set time at "
-        android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/editText2"
-        android:layout_alignStart="@+id/editText2" />
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/tvCurrentdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editText5"
-        android:layout_alignParentLeft="true"
+        android:layout_alignBaseline="@+id/btnSave"
+        android:layout_alignBottom="@+id/btnSave"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="11dp"
-        android:text="Attendee"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/button"
         android:text="TextView"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextClock
-        android:id="@+id/textClock2"
+        android:id="@+id/textclockCurrenttime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/textView14"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp" />
+        android:layout_below="@+id/btnSave"
+        android:layout_marginTop="19dp"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
