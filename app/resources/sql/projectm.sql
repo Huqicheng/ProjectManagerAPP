@@ -4,14 +4,15 @@ Navicat MySQL Data Transfer
 Source Server         : new
 Source Server Version : 50627
 Source Host           : localhost:3306
-Source Database       : pm
+Source Database       : projectm
 
 Target Server Type    : MYSQL
 Target Server Version : 50627
 File Encoding         : 65001
 
-Date: 2017-11-01 17:15:07
+Date: 2017-11-05 14:50:58
 */
+use pm;
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -33,12 +34,15 @@ CREATE TABLE `event` (
   PRIMARY KEY (`id`),
   KEY `event_user` (`assignedBy`),
   CONSTRAINT `event_user` FOREIGN KEY (`assignedBy`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of event
 -- ----------------------------
+INSERT INTO `event` VALUES ('1', '2', 'title2', '232323', '2017-11-04 00:00:00', '2', 'started', '2017-11-04 23:42:05', '2', '2017-11-04 23:42:05');
+INSERT INTO `event` VALUES ('2', '2', 'title2', '232323', '2017-11-04 00:00:00', '2', 'started', '2017-11-04 23:42:29', '2', '2017-11-04 23:42:29');
+INSERT INTO `event` VALUES ('3', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:05:58', '2', '2017-11-05 13:05:58');
+INSERT INTO `event` VALUES ('4', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:46:09', '2', '2017-11-05 13:46:09');
 
 -- ----------------------------
 -- Table structure for `group`
@@ -54,13 +58,13 @@ CREATE TABLE `group` (
   PRIMARY KEY (`id`),
   KEY `group_project` (`project_id`),
   CONSTRAINT `group_project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of group
 -- ----------------------------
-
+INSERT INTO `group` VALUES ('1', 'personal', null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `group` VALUES ('2', 'G8', 'description', '2', '2017-11-04 23:21:45', '2017-11-04 23:21:48');
 
 -- ----------------------------
 -- Table structure for `message`
@@ -76,7 +80,6 @@ CREATE TABLE `message` (
   KEY `sender_id` (`sender_id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 -- ----------------------------
 -- Records of message
@@ -97,13 +100,13 @@ CREATE TABLE `project` (
   PRIMARY KEY (`id`),
   KEY `project_user` (`creator`),
   CONSTRAINT `project_user` FOREIGN KEY (`creator`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of project
 -- ----------------------------
-
+INSERT INTO `project` VALUES ('1', 'personal', null, null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `project` VALUES ('2', 'pm', 'description', '2017-11-26 23:20:47', '2', '2017-11-04 23:20:55', '2017-11-04 23:21:03');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -122,13 +125,13 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `User_username_unique` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
-
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-
+INSERT INTO `user` VALUES ('1', 'sys_admin', null, null, null, null, '0000-00-00 00:00:00', '0000-00-00 00:00:00', null);
+INSERT INTO `user` VALUES ('2', 'q45hu', 'q45hu@uwaterloo.ca', '123', 'normal', 'q45hu', '2017-11-04 23:19:49', '2017-11-04 23:19:54', null);
 
 -- ----------------------------
 -- Table structure for `user_group`
@@ -143,11 +146,55 @@ CREATE TABLE `user_group` (
   CONSTRAINT `user_group2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 -- ----------------------------
 -- Records of user_group
 -- ----------------------------
+INSERT INTO `user_group` VALUES ('2', '2');
 
+-- ----------------------------
+-- Procedure structure for `assign_event`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `assign_event`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `assign_event`(
+IN group_id int,
+IN title varchar(255),
+IN description varchar(255),
+IN deadline datetime,
+IN assignedBy int,
+IN status varchar(255),
+IN assignedTo int,
+OUT event_id int
+)
+BEGIN
+
+insert 
+into event(group_id,eventName,eventDescription,eventDeadline,assignedBy,assignedTo,eventStatus,createdAt,updatedAt)
+values(group_id,title,description,deadline,assignedBy,assignedTo,status,now(),now());
+
+select max(id) into event_id
+from event;
+
+end
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `delete_event`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `delete_event`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_event`(
+IN event_id int
+)
+BEGIN
+
+delete from `event`
+where `event`.id = event_id;
+
+end
+;;
+DELIMITER ;
 
 -- ----------------------------
 -- Procedure structure for `get_dates_having_events`
@@ -160,12 +207,72 @@ IN eventStatus varchar(255)
 )
 BEGIN   
 	
-select DISTINCT DATE_FORMAT(eventDeadline,"%Y-%m-%d")
+select DISTINCT date(eventDeadline) as eventDate
 from event
 where event.assignedTo = user_id 
 and event.eventStatus = eventStatus;
   
 END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `get_event_by_date`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `get_event_by_date`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_event_by_date`(
+IN userId int,
+IN deadline datetime
+)
+BEGIN
+
+select event.*,groupName
+from event,`group`
+where event.assignedTo = userId
+and event.group_id = `group`.id
+and date(`event`.eventDeadline) = deadline;
+
+end
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `get_event_by_group`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `get_event_by_group`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_event_by_group`(
+IN groupId int,
+IN userId int
+)
+BEGIN
+
+select event.*,groupName
+from event,`group`
+where event.assignedTo = userId
+and event.group_id = `group`.id
+and `group`.id = groupId;
+
+end
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `get_event_by_id`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `get_event_by_id`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_event_by_id`(
+IN eventId int
+)
+BEGIN
+
+select event.*,groupName
+from event,`group`
+where event.id = eventId and event.group_id = `group`.id;
+
+end
 ;;
 DELIMITER ;
 
@@ -295,6 +402,25 @@ from user;
 END IF;
 
 END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `update_status_of_event`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `update_status_of_event`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_status_of_event`(
+IN event_id int,
+IN status varchar(255)
+)
+BEGIN
+
+update `event`
+set eventStatus = status
+where `event`.id = event_id;
+
+end
 ;;
 DELIMITER ;
 

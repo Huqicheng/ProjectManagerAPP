@@ -68,7 +68,9 @@ public class MyService extends Service {
 
     @Override
     public void onCreate() {
-//        super.onCreate();
+
+        super.onCreate();
+
 //        Log.d("debug:","service");
 //        client = ClientUtils.getInstance();
 //
