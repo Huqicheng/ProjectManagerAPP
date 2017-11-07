@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
 
     private TextView mTextMessage;
-    private Intent intent;
+
     private FragmentTransaction ft;
 
     //declare static fragments for MainActivity
@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private static ProgressFragment progressFragment = null;
     private static SettingFragment settingFragment = null;
 
-
+    private Intent intent=null;
+    private Intent intent1=null;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -54,8 +55,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
                     return true;
                 case R.id.navigation_chat:
+
+
+                    startActivity(intent1);
                     System.out.print("chat");
-                    ft.replace(R.id.content, chatFragment);
+                    //ft.replace(R.id.content, chatFragment);
                     ft.commit();
 
 
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        this.intent1=new Intent(this,ChatActivity.class);
         this.calendarFragment = CalendarFragment.newInstance();
         this.settingFragment = SettingFragment.newInstance();
         this.chatFragment = ChatFragment.newInstance();

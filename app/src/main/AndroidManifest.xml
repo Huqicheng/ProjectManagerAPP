@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
+        <activity android:name=".ChatActivity" />
         <activity android:name=".dateSelected" />
         <activity android:name=".WeChatActivity" />
         <activity android:name=".RegisterActivity" />
