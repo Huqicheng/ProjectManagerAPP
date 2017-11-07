@@ -35,6 +35,10 @@ public class EventNao {
             //modify url according to interface doc
             HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getDatesHavingEvents.do",params,HttpUtils.GET);
 
+            if(entity == null){
+                return null;
+            }
+
             //convert stream to json String
             String json = EntityUtils.toString(entity);
 
