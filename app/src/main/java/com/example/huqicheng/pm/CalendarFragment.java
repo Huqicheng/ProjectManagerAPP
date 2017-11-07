@@ -1,24 +1,32 @@
 package com.example.huqicheng.pm;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
+import android.widget.*;
 import android.widget.Toast;
 
-import com.example.huqicheng.dao.dbHandler;
-import com.example.huqicheng.dao.dbHandler2;
+import com.example.huqicheng.entity.Event;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,14 +37,12 @@ import com.example.huqicheng.dao.dbHandler2;
  * create an instance of this fragment.
  */
 public class CalendarFragment extends Fragment {
-
-    CalendarView calendarView;
+    MaterialCalendarView CalendarView;
+    //CalendarView calendarView;
     Intent intent;
-    String date;
-    int Date;
-    dbHandler myDb;
-    dbHandler2 myDb2;
-    dateSelected dateselected;
+    //dbHandler myDb;
+    //dbHandler2 myDb2;
+    //dateSelected dateselected;
     static int incrementer;
     static final String TAG="TAG";
 
@@ -82,65 +88,105 @@ public class CalendarFragment extends Fragment {
         }
     }
 
+    /**
+     * Decorate several days with a dot
+     */
+    public class HighlightDecorator implements DayViewDecorator {
+
+        private int color;
+        private HashSet<CalendarDay> dates;
+
+        public HighlightDecorator(int color, Collection<CalendarDay> dates) {
+            this.color = color;
+            this.dates = new HashSet<>(dates);
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            return dates.contains(day);
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new DotSpan(6, color));
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         // Inflate the layout for this fragment
-        myDb=new dbHandler(this.getActivity());
-        myDb2=new dbHandler2(this.getActivity());
-        calendarView=(CalendarView)v.findViewById(R.id.calendarView);
-        dateselected = new dateSelected();
-
-
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        CalendarView=(MaterialCalendarView)v.findViewById(R.id.calendarView);
+        /** add decorator **/
+        final List<CalendarDay> datesList = new ArrayList<>();
+        datesList.add(CalendarDay.from(2017,10,15));//actually it's 11.15,cause month value need to add 1
+        datesList.add(CalendarDay.from(2017,10,21));//11.21
+        datesList.add(CalendarDay.from(2017,11,10));//12.10
+        CalendarView.addDecorators(
+                new HighlightDecorator(Color.parseColor("#FF4081"),datesList )
+        );
+        /*
+        CalendarView.state().edit()
+                .setFirstDayOfWeek(Calendar.MONDAY)   //设置每周开始的第一天
+                .setMinimumDate(CalendarDay.from(2015, 4, 3))  //设置可以显示的最早时间
+                .setMaximumDate(CalendarDay.from(2018, 5, 12))//设置可以显示的最晚时间
+                .setCalendarDisplayMode(CalendarMode.MONTHS)//设置显示模式，可以显示月的模式，也可以显示周的模式
+                .commit();// 返回对象并保存
+*/
+        CalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-                date = i2 + "" + i1 + "" + i;
-                Date = Integer.parseInt(date);
-                Log.e(TAG, "int date=" + Date + "");
-                Log.e(TAG, "string date=" + date + "");
+            public void onDateSelected(@NonNull com.prolificinteractive.materialcalendarview.MaterialCalendarView widget, @NonNull com.prolificinteractive.materialcalendarview.CalendarDay date, boolean selected) {
+                Log.e(TAG, "int date=" + date.getYear() + "" + date.getMonth() + "" + date.getDay());
+                Log.e(TAG, "string date=" + date.toString() + "");
+                Log.e(TAG, "int date=" + date.hashCode());
 
-                //firstly check if an entry exists for the current date.
-                Cursor res = myDb.getAllData();
-
-                while (res.moveToNext()) {
-                    if (res.getInt(0) == Date) {    //only runs if it find the id for this date.
-                        StringBuffer buffer = new StringBuffer();
-
-                        buffer.append("Id :" + res.getString(0) + "\n");
-                        buffer.append("Event Name :" + res.getString(1) + "\n");
-                        buffer.append("Event Location :" + res.getString(2) + "\n");
-                        buffer.append("Event Discription :" + res.getString(3) + "\n\n");
-
-                        //when an id is present for event, than there must be an entry for attendees, So search by date(id) for attendees.
-                        Cursor cursor = myDb2.getAllData();
-                        while (cursor.moveToNext()) {
-                            String test = cursor.getInt(0) + "";
-                            if (test.contains(date)) {
-                                Log.e(TAG, "it reached here");
-                                buffer.append("Event Attendee :" + cursor.getString(1) + "\n\n");
-                            }
-                        }
-                        // show message
-                        showMessage("Data", buffer.toString());
-                        return;
-                    }
-                }
-                //if no entry is found then pass the id as Date and shift to activity_date_selected activity ).
                 intent = new Intent(getActivity(), dateSelected.class);
-                intent.putExtra("date message", Date);
-                intent.putExtra("day message", i2);
-                intent.putExtra("month message", i1);
-                intent.putExtra("year message", i);
+
+                if (datesList.contains(date)){
+                    //get evetn from database
+                    // get_event_by_date(CalendarDay.from(2015.4.3))
+                    Event event = new Event();
+                    event.setEventDescription("discuss ece650 assignment LOL");
+                    event.setEventTitle("meeting");
+                    event.setEventLocation("E3");
+                    StringBuffer buffer = new StringBuffer();
+
+                    buffer.append("Id :" + event.getEventId() + "\n");
+                    buffer.append("Event Title :" + event.getEventTitle() + "\n");
+                    buffer.append("Event Location :" + event.getEventLocation() + "\n");
+                    buffer.append("Event Discription :" + event.getEventDescription() + "\n\n");
+                    showMessage("Event", buffer.toString());
+                    return;
+                }
+
+
+                Bundle bundle = new Bundle();
+                Event event = new Event();
+                event.setEventID(date.hashCode());
+                event.setEventDescription("date message");
+                event.setCreatedAt(date.getDate());
+
+                bundle.putSerializable("event", event);//serializable
+                intent.putExtras(bundle);//send data
                 startActivity(intent);
                 /****            ****/
             }
         });
         return v;
     }
+
+    public void showMessage(String title,String content) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(content);
+        AlertDialog alert= builder.create();
+        alert.show();
+    }
     /***  show message ***/
+    /*
     // TODO: Rename method, update argument and hook method into UI event
     public void showMessage(String title,String Message){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -185,6 +231,8 @@ public class CalendarFragment extends Fragment {
         AlertDialog alert= builder.create();
         alert.show();
     }
+
+    */
 
 
 

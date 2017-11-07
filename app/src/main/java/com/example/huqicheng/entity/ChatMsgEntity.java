@@ -47,6 +47,14 @@ public class ChatMsgEntity {
 	public ChatMsgEntity() {
 	}
 
+	public boolean isComMeg() {
+		return isComMeg;
+	}
+
+	public void setComMeg(boolean comMeg) {
+		isComMeg = comMeg;
+	}
+
 	public ChatMsgEntity(String name, String date, String text, boolean isComMsg) {
 		super();
 		this.name = name;

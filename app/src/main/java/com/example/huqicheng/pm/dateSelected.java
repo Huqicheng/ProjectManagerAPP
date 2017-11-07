@@ -13,12 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import com.example.huqicheng.dao.dbHandler;
-import com.example.huqicheng.dao.dbHandler2;
+import com.example.huqicheng.entity.Event;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class dateSelected extends AppCompatActivity {
     Intent intent;
@@ -26,9 +25,9 @@ public class dateSelected extends AppCompatActivity {
     private Button save,add,setTime;
     private Button startTime;
     private TextView textClock,textDate;
-    private int Date;
-    private dbHandler db;
-    private dbHandler2 db2;
+    private int date;
+    //private dbHandler db;
+    //private dbHandler2 db2;
     private int day,month,year;
     private static final int uniqueID2=0;
     int hour_x,minute_x;
@@ -44,20 +43,21 @@ public class dateSelected extends AppCompatActivity {
         setContentView(R.layout.activity_date_selected);
 
         //Initializing the EditTexts
-        eventName = (EditText) findViewById(R.id.editText);
-        eventLocation = (EditText) findViewById(R.id.editText2);
-        eventDiscription = (EditText) findViewById(R.id.editText4);
-        Attendees = (EditText) findViewById(R.id.editText5);
+        eventName = (EditText) findViewById(R.id.etEventname);
+        eventLocation = (EditText) findViewById(R.id.etEventlocation);
+        eventDiscription = (EditText) findViewById(R.id.etEventDiscription);
+        //Attendees = (EditText) findViewById(R.id.editText5);
 
         //Initializing the buttons
-        save = (Button) findViewById(R.id.button);
-        add = (Button) findViewById(R.id.button2);
-        setTime=(Button) findViewById(R.id.button6);
-        startTime = (Button) findViewById(R.id.button5);
+        save = (Button) findViewById(R.id.btnSave);
+        //add = (Button) findViewById(R.id.button2);
+        startTime = (Button) findViewById(R.id.btnTimepicker);
+        setTime=(Button) findViewById(R.id.btnSettime);
+
 
         //Initializing the TextViews of the Activity
-        textClock = (TextView) findViewById(R.id.textView12);
-        textDate = (TextView) findViewById(R.id.textView14);
+        textClock = (TextView) findViewById(R.id.tvDispaytime);
+        textDate = (TextView) findViewById(R.id.tvCurrentdate);
 
         //creating the instance of the calander
         final Calendar calendar = Calendar.getInstance();
@@ -66,17 +66,24 @@ public class dateSelected extends AppCompatActivity {
         textClock.setText(hour_x + " : " + minute_x);
 
         //calling the constructor of the two databases
+        /*
         db = new dbHandler(this);
         db2 = new dbHandler2(this);
-
+        */
         //getting date from mainactivity
-        Bundle dateRecieved = getIntent().getExtras();
-        Date = dateRecieved.getInt("date message");
-        day = dateRecieved.getInt("day message");
-        month = dateRecieved.getInt("month message");
-        year = dateRecieved.getInt("year message");
-        int currMonth=month+1;
-        textDate.setText(currMonth+" / "+day+" / "+year);
+        Intent eventintent = this.getIntent();
+        Event event = (Event)eventintent.getSerializableExtra("event");
+        Bundle dateReceived = getIntent().getExtras();
+        Date date = event.getCreatedAt();
+        final int date11 = event.getCreatedAt().hashCode();
+
+        year = event.getCreatedAt().getYear();
+        month = event.getCreatedAt().getMonth();
+        day = event.getCreatedAt().getDay();
+
+
+        int currMonth = month+1;
+        textDate.setText(date.toString());
 
         alarmManager= (AlarmManager)getSystemService(ALARM_SERVICE);
         this.context=this;
@@ -85,7 +92,8 @@ public class dateSelected extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean result = db.insertData(Date, eventName.getText().toString(), eventLocation.getText().toString(), eventDiscription.getText().toString());
+                /*
+                boolean result = db.insertData(date11, eventName.getText().toString(), eventLocation.getText().toString(), eventDiscription.getText().toString());
                 //checking if data was inserted or not.
                 if (result == false)
                     Toast.makeText(dateSelected.this, "Failed to Insert Data", Toast.LENGTH_LONG).show();
@@ -95,6 +103,7 @@ public class dateSelected extends AppCompatActivity {
 
                     startActivity(intent);
                 }
+                */
             }
         });
 
@@ -130,10 +139,11 @@ public class dateSelected extends AppCompatActivity {
         });
 
         //add button clicked
+        /*
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String d= Date+""+incrementer;
+                String d= date11+""+incrementer;
                 incrementer++;
                 int changeDateId=Integer.parseInt(d);
                 boolean result = db2.insertAttendees(changeDateId, Attendees.getText().toString());
@@ -146,7 +156,7 @@ public class dateSelected extends AppCompatActivity {
                 Attendees.setText("");
             }
         });
-
+        */
         //setting up On click listener to open a dialog box.
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override

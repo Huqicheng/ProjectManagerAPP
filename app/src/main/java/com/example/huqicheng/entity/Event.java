@@ -1,35 +1,114 @@
 package com.example.huqicheng.entity;
 
+import java.util.Date;
+
+
+
 /**
  * Created by jiaxinf on 2017-10-17.
  */
 
 public class Event implements java.io.Serializable{
-    long eventID;
-    String title;
-    String description;
+	/** users can edit title,description,deadline **/
+    long eventId;
+	int groupId;
+	int assignedTo; //assign to user_ID
+	int assignedBy; //event assigned by user_ID
+	String groupName;
+    String eventTitle;
+    String eventDescription;
+	String eventLocation;
+    String eventStatus;
+	Date deadLine;
+    Date createdAt;
+    Date updatedAt;
 
-    public String getEventTitle() {
-        return title;
+
+	public Date getDeadLine() {
+		return deadLine;
+	}
+
+	public void setDeadLine(Date deadLine) {
+		this.deadLine = deadLine;
+	}
+
+	public int getAssignedTo() {return assignedTo;}
+
+	public void setAssignedTo(int assignedTo) {this.assignedTo = assignedTo;}
+
+	public int getAssignedBy() {
+		return assignedBy;
+	}
+
+	public void setAssignedBy(int assignedBy) {
+		this.assignedBy = assignedBy;
+	}
+
+	public String getEventStatus() {
+		return eventStatus;
+	}
+
+	public void setEventStatus(String eventStatus) {
+		this.eventStatus = eventStatus;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public int getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public String getEventTitle() {
+        return eventTitle;
     }
 
-    public String geteventDescription() {
-        return description;
+    public String getEventDescription() {
+        return eventDescription;
     }
 
     public long getEventId() {
-        return eventID;
+        return eventId;
     }
 
-    public void setEventID(long groupId) {
-        this.eventID = groupId;
+	public String getEventLocation() {return eventLocation;}
+
+	public void setEventLocation(String eventLocation) {this.eventLocation = eventLocation;}
+
+	public void setEventID(long eventId) {
+        this.eventId = eventId;
     }
 
     public void setEventTitle(String eventTitle) {
-        this.title = eventTitle;
+        this.eventTitle = eventTitle;
     }
 
     public void setEventDescription(String eventDescription) {
-        this.description = eventDescription;
+        this.eventDescription = eventDescription;
     }
 }
