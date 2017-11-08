@@ -25,21 +25,19 @@ public class UserNao {
 
     }
 
-    //placeholder
+    //fake data
     public User doLogin(){
         return new User();
     }
 
-    public User doLogin(User user){
+    public User doLoginByUsername(User user){
         User res = null;
         try{
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("username",user.getUsername()));
             params.add(new BasicNameValuePair("pwd",user.getPassword()));
+            params.add(new BasicNameValuePair("type","username"));
             HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/doLogin.do",params,HttpUtils.POST);
-
-
-
 
             String json = EntityUtils.toString(entity);
 
@@ -59,11 +57,7 @@ public class UserNao {
     }
 
     public static void main(String[] args){
-        UserNao nap = new UserNao();
-        User user = new User();
-        user.setUsername("q45hu");
-        user.setPassword("q45hu");
-        nap.doLogin(user);
+
     }
 
 
