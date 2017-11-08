@@ -87,7 +87,7 @@ public class ChatFragment extends Fragment {
 
 
 
-        this.adapter = new GroupAdapter(getActivity(),null);
+        this.adapter = new GroupAdapter(this.getActivity(),null,lvGroups);
         groupBiz = new GroupBiz();
 
         this.lvGroups.setAdapter(adapter);
