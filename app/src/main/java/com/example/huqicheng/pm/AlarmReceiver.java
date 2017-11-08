@@ -33,7 +33,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         notification.setContentText(discription);
         notification.setVibrate(setVibrate);
 
-        Intent tent = new Intent(context, MainActivity.class);
+        Intent tent = new Intent(context, CalendarActivity.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,tent,0);
         notification.setContentIntent(pendingIntent);
 
