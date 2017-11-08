@@ -10,9 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50627
 File Encoding         : 65001
 
-Date: 2017-11-05 14:50:58
+Date: 2017-11-08 15:58:34
 */
 
+use pm;
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -48,6 +49,7 @@ INSERT INTO `event` VALUES ('4', '2', 'title2', '232323', '2017-11-05 00:00:00',
 -- ----------------------------
 DROP TABLE IF EXISTS `group`;
 CREATE TABLE `group` (
+  `cover` varchar(255) DEFAULT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `groupName` varchar(255) DEFAULT NULL,
   `groupDescription` text,
@@ -62,8 +64,8 @@ CREATE TABLE `group` (
 -- ----------------------------
 -- Records of group
 -- ----------------------------
-INSERT INTO `group` VALUES ('1', 'personal', null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-INSERT INTO `group` VALUES ('2', 'G8', 'description', '2', '2017-11-04 23:21:45', '2017-11-04 23:21:48');
+INSERT INTO `group` VALUES (null, '1', 'personal', null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `group` VALUES ('images/group/2.gif', '2', 'G8', 'description', '2', '2017-11-04 23:21:45', '2017-11-04 23:21:48');
 
 -- ----------------------------
 -- Table structure for `message`
