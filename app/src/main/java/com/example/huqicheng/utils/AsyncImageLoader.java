@@ -8,6 +8,7 @@ import java.util.HashMap;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.example.huqicheng.nao.ImageNao;
 
@@ -45,7 +46,10 @@ public class AsyncImageLoader {
 						// ִload image here
 						task.bm = imageNao.getImage(task.path);
 
-						if(task.bm == null) return;
+						if(task.bm == null) {
+							Log.d("image loader","cannot load img "+task.path +" from server");
+							return;
+						}
 
 						// handle result of the async task
 						Message msg = Message.obtain();
@@ -75,20 +79,23 @@ public class AsyncImageLoader {
 
 	public Bitmap loadImage(String path) {
 		Bitmap bm = null;
-		// bitmap is in the cache?
-		if (caches.containsKey(path)) {
-			bm = caches.get(path).get();
-			if (bm != null) {
-				return bm;
-			} else {
-				caches.remove(path);
-			}
-		}
-		//bitmap is persisted?
-		bm = BitmapUtils.fromFile(path);
-		if(bm!=null){
-			return bm;
-		}
+
+		//TODO for debug, get data only from server
+
+//		// bitmap is in the cache?
+//		if (caches.containsKey(path)) {
+//			bm = caches.get(path).get();
+//			if (bm != null) {
+//				return bm;
+//			} else {
+//				caches.remove(path);
+//			}
+//		}
+//		//bitmap is persisted?
+//		bm = BitmapUtils.fromFile(path);
+//		if(bm!=null){
+//			return bm;
+//		}
 
 		// bitmap not existed, then create a new task to load it from server
 		ImageLoadTask task = new ImageLoadTask();
