@@ -1,6 +1,7 @@
 package com.example.huqicheng.bll;
 
 import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.nao.GroupNao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +12,11 @@ import java.util.List;
 
 public class GroupBiz {
 
-    public List<Group> loadGroups(){
-        List<Group> groups = new ArrayList<>();
-        for(int i=0;i<10;i++){
-            Group group = new Group();
-            group.setGroupId(i);
-            group.setGroupName("group"+i);
-            groups.add(group);
-        }
-        return groups;
+    private GroupNao groupNao = null;
+    public GroupBiz(){
+        groupNao = new GroupNao();
+    }
+    public List<Group> loadGroups(long user_id){
+        return groupNao.getGroups(user_id);
     }
 }

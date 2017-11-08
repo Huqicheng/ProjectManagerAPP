@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.config.Config;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.nao.UserNao;
@@ -33,14 +34,14 @@ public class LoginActivity extends AppCompatActivity {
     private Intent intent = null;
     private Handler handler = null;
 
-    PersistentCookieStore store = PersistentCookieStore.getInstance(Config.SERVER_IP);
+    //PersistentCookieStore store = PersistentCookieStore.getInstance(Config.SERVER_IP);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new Thread(store).start();
+
 
         //doAutomaticLogin();
 
@@ -51,12 +52,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what){
+                    case 0:
+                        //Toast.makeText(getApplicationContext(), "login failed" ,Toast.LENGTH_LONG).show();
+                        break;
                     case 1:
                         intent = new Intent(LoginActivity.this, CalendarActivity.class);
 
                         startActivity(intent);
 
                         finish();
+                        break;
 
                 }
             }
@@ -90,17 +95,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void writeUserInfoToFile(){
-        try {
-            store.add(new URI(Config.SERVER_IP),new HttpCookie("username","q45hu"));
-            store.add(new URI(Config.SERVER_IP),new HttpCookie("password","12345678"));
-            new Thread(store).start();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
-
-    }
 
     private void onClickRestore(){
         intent = new Intent(this, RestorePasswordActivity.class);
@@ -123,18 +118,22 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                UserNao un = new UserNao();
+                UserBiz userBiz = new UserBiz(LoginActivity.this);
                 User user = new User();
-                user.setPassword("12345678");
+                user.setPassword("123");
                 user.setUsername("q45hu");
-                User res = un.doLogin();
+                User res = userBiz.doLogin(user,"username");
 
                 if(res != null){
-                    writeUserInfoToFile();
+                    //writeUserInfoToFile();
                     Message msg = Message.obtain();
                     msg.what = 1;
                     handler.handleMessage(msg);
 
+                }else{
+                    Message msg = Message.obtain();
+                    msg.what = 0;
+                    handler.handleMessage(msg);
                 }
             }
         }.start();
