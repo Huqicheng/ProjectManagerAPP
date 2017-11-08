@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,11 @@ import android.widget.ListView;
 
 import com.example.huqicheng.adapter.GroupAdapter;
 import com.example.huqicheng.bll.GroupBiz;
+import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.entity.User;
+
+import java.util.List;
 
 
 /**
@@ -30,6 +37,8 @@ public class ChatFragment extends Fragment {
     private GroupAdapter adapter;
     private GroupBiz groupBiz;
 
+    User user = null;
+    Handler handler = null;
     private OnFragmentInteractionListener mListener;
 
     public ChatFragment() {
@@ -75,19 +84,78 @@ public class ChatFragment extends Fragment {
         });
 
 
+
+
+
+        this.adapter = new GroupAdapter(this.getActivity(),null,lvGroups);
+        groupBiz = new GroupBiz();
+
+        this.lvGroups.setAdapter(adapter);
+        user = new UserBiz(this.getActivity().getApplicationContext()).readUser();
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(final Message msg) {
+                switch (msg.what){
+                    case 0:
+                        //Toast.makeText(getApplicationContext(), "login failed" ,Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+
+
+
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                List<Group> groups = (List<Group>) msg.obj;
+                                Log.d("debug:",groups.size()+"");
+                                adapter.add(groups);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        break;
+
+                }
+            }
+        };
         return v;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        this.adapter = new GroupAdapter(getActivity(),null);
-        groupBiz = new GroupBiz();
 
-        lvGroups.setAdapter(adapter);
-        this.adapter.add(groupBiz.loadGroups());
-        this.adapter.notifyDataSetChanged();
+
+        this.loadGroups(user.getUserId());
+
     }
+
+    public void loadGroups(final long user_id){
+
+        new Thread(){
+            @Override
+            public void run() {
+                List<Group> groupList = new GroupBiz().loadGroups(user_id);
+
+                if(groupList == null){
+                    Message msg = Message.obtain();
+                    msg.what = 0;
+                    handler.handleMessage(msg);
+
+                }
+                else{
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+
+                    msg.obj = groupList;
+                    handler.handleMessage(msg);
+                }
+
+
+            }
+        }.start();
+    }
+
 
     private void toChatActivity(Group group){
         Intent intent = new Intent();

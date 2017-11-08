@@ -8,17 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
-import android.app.Fragment;
 
-import com.example.huqicheng.dao.dbHandler;
-import com.example.huqicheng.dao.dbHandler2;
 import com.example.huqicheng.entity.Event;
 
 import java.util.Calendar;
@@ -31,8 +26,8 @@ public class dateSelected extends AppCompatActivity {
     private Button startTime;
     private TextView textClock,textDate;
     private int date;
-    private dbHandler db;
-    private dbHandler2 db2;
+    //private dbHandler db;
+    //private dbHandler2 db2;
     private int day,month,year;
     private static final int uniqueID2=0;
     int hour_x,minute_x;
@@ -48,20 +43,21 @@ public class dateSelected extends AppCompatActivity {
         setContentView(R.layout.activity_date_selected);
 
         //Initializing the EditTexts
-        eventName = (EditText) findViewById(R.id.editText);
-        eventLocation = (EditText) findViewById(R.id.editText2);
-        eventDiscription = (EditText) findViewById(R.id.editText4);
-        Attendees = (EditText) findViewById(R.id.editText5);
+        eventName = (EditText) findViewById(R.id.etEventname);
+        eventLocation = (EditText) findViewById(R.id.etEventlocation);
+        eventDiscription = (EditText) findViewById(R.id.etEventDiscription);
+        //Attendees = (EditText) findViewById(R.id.editText5);
 
         //Initializing the buttons
-        save = (Button) findViewById(R.id.button);
-        add = (Button) findViewById(R.id.button2);
-        setTime=(Button) findViewById(R.id.button6);
-        startTime = (Button) findViewById(R.id.button5);
+        save = (Button) findViewById(R.id.btnSave);
+        //add = (Button) findViewById(R.id.button2);
+        startTime = (Button) findViewById(R.id.btnTimepicker);
+        setTime=(Button) findViewById(R.id.btnSettime);
+
 
         //Initializing the TextViews of the Activity
-        textClock = (TextView) findViewById(R.id.textView12);
-        textDate = (TextView) findViewById(R.id.textView14);
+        textClock = (TextView) findViewById(R.id.tvDispaytime);
+        textDate = (TextView) findViewById(R.id.tvCurrentdate);
 
         //creating the instance of the calander
         final Calendar calendar = Calendar.getInstance();
@@ -70,9 +66,10 @@ public class dateSelected extends AppCompatActivity {
         textClock.setText(hour_x + " : " + minute_x);
 
         //calling the constructor of the two databases
+        /*
         db = new dbHandler(this);
         db2 = new dbHandler2(this);
-
+        */
         //getting date from mainactivity
         Intent eventintent = this.getIntent();
         Event event = (Event)eventintent.getSerializableExtra("event");
@@ -95,6 +92,7 @@ public class dateSelected extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 boolean result = db.insertData(date11, eventName.getText().toString(), eventLocation.getText().toString(), eventDiscription.getText().toString());
                 //checking if data was inserted or not.
                 if (result == false)
@@ -105,6 +103,7 @@ public class dateSelected extends AppCompatActivity {
 
                     startActivity(intent);
                 }
+                */
             }
         });
 
@@ -140,6 +139,7 @@ public class dateSelected extends AppCompatActivity {
         });
 
         //add button clicked
+        /*
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,7 +156,7 @@ public class dateSelected extends AppCompatActivity {
                 Attendees.setText("");
             }
         });
-
+        */
         //setting up On click listener to open a dialog box.
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override

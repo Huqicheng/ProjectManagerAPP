@@ -4,7 +4,15 @@
     <string name="title_dashboard">Chat</string>
     <string name="title_notifications">Progress</string>
     <string name="title_setting">Setting</string>
+    <string-array name="planets_array">
+        <item>Create a group</item>
+        <item>Join a group</item>
+        <item>Leave a group</item>
+        <item>Retrieve group lists</item>
 
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
     <!-- begin for calendar-->
     <string name="save">Save</string>
     <string name="add">Add</string>

@@ -1,5 +1,6 @@
 package com.example.huqicheng.pm;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
@@ -119,7 +120,7 @@ public class CalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         CalendarView=(MaterialCalendarView)v.findViewById(R.id.calendarView);
         /** add decorator **/
-        List<CalendarDay> datesList = new ArrayList<>();
+        final List<CalendarDay> datesList = new ArrayList<>();
         datesList.add(CalendarDay.from(2017,10,15));//actually it's 11.15,cause month value need to add 1
         datesList.add(CalendarDay.from(2017,10,21));//11.21
         datesList.add(CalendarDay.from(2017,11,10));//12.10
@@ -143,6 +144,24 @@ public class CalendarFragment extends Fragment {
 
                 intent = new Intent(getActivity(), dateSelected.class);
 
+                if (datesList.contains(date)){
+                    //get evetn from database
+                    // get_event_by_date(CalendarDay.from(2015.4.3))
+                    Event event = new Event();
+                    event.setEventDescription("discuss ece650 assignment LOL");
+                    event.setEventTitle("meeting");
+                    event.setEventLocation("E3");
+                    StringBuffer buffer = new StringBuffer();
+
+                    buffer.append("Id :" + event.getEventId() + "\n");
+                    buffer.append("Event Title :" + event.getEventTitle() + "\n");
+                    buffer.append("Event Location :" + event.getEventLocation() + "\n");
+                    buffer.append("Event Discription :" + event.getEventDescription() + "\n\n");
+                    showMessage("Event", buffer.toString());
+                    return;
+                }
+
+
                 Bundle bundle = new Bundle();
                 Event event = new Event();
                 event.setEventID(date.hashCode());
@@ -156,6 +175,15 @@ public class CalendarFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    public void showMessage(String title,String content) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(content);
+        AlertDialog alert= builder.create();
+        alert.show();
     }
     /***  show message ***/
     /*
