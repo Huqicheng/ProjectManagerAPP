@@ -13,8 +13,8 @@ public class User {
     String password;
     String accountType;
     String facebook;
-    long createdAt;
-    long updateAt;
+    Date createdAt;
+    Date updateAt;
     String avatar;
 
 
@@ -42,7 +42,13 @@ public class User {
         return facebook;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
+    public Date getUpdateAt() {
+        return updateAt;
+    }
 
     public String getAvatar() {
         return avatar;
@@ -72,20 +78,11 @@ public class User {
         this.facebook = facebook;
     }
 
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
-    public long getUpdateAt() {
-
-        return updateAt;
-    }
-
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setUpdateAt(long updateAt) {
+    public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
     }
 
