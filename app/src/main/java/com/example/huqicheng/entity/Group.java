@@ -10,8 +10,8 @@ public class Group implements java.io.Serializable{
     long groupId;
     String groupName;
     String groupDescription;
-    Date createdAt;
-    Date updatedAt;
+    long createdAt;
+    long updatedAt;
     int projectId;
     
     
@@ -36,13 +36,7 @@ public class Group implements java.io.Serializable{
         return groupDescription;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
 
    
 
@@ -58,13 +52,19 @@ public class Group implements java.io.Serializable{
         this.groupDescription = groupDescription;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-   
 }
