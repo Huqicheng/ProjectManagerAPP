@@ -1,6 +1,5 @@
 package com.example.huqicheng.pm;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -20,7 +18,7 @@ import android.widget.TextView;
 
 import com.example.huqicheng.service.MyService;
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection,
+public class SettingActivity extends AppCompatActivity implements ServiceConnection,
         CalendarFragment.OnFragmentInteractionListener ,ChatFragment.OnFragmentInteractionListener,
         ProgressFragment.OnFragmentInteractionListener,
         SettingFragment.OnFragmentInteractionListener
@@ -31,14 +29,15 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     private FragmentTransaction ft;
 
-    //declare static fragments for MainActivity
-    private static CalendarFragment calendarFragment = null;
-    private static ChatFragment chatFragment = null;
-    private static ProgressFragment progressFragment = null;
+    //declare static fragments for CalendarActivity
     private static SettingFragment settingFragment = null;
 
+
     private Intent intent=null;
-    private Intent intent1=null;
+    private Intent chatIntent=null;
+    private Intent progressIntent=null;
+    private Intent calendarIntent=null;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -48,34 +47,28 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             switch (item.getItemId()) {
                 case R.id.navigation_calendar:
                     //show calendarFragment and hide the others
-                    System.out.print("calendar");
-                    ft.replace(R.id.content, calendarFragment);
-                    ft.commit();
+                    startActivity(calendarIntent);
+
 
 
                     return true;
                 case R.id.navigation_chat:
 
 
-                    startActivity(intent1);
-                    System.out.print("chat");
-                    //ft.replace(R.id.content, chatFragment);
-                    ft.commit();
+                    startActivity(chatIntent);
+
 
 
                     return true;
                 case R.id.navigation_progress:
-                    ft.replace(R.id.content,progressFragment);
-                    ft.commit();
+                    startActivity(progressIntent);
 
 
 
                     return true;
                 case R.id.navigation_setting:
-                    ft.replace(R.id.content,settingFragment);
+                    ft.replace(R.id.content, settingFragment);
                     ft.commit();
-
-
                     return true;
             }
             return false;
@@ -87,15 +80,16 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.intent1=new Intent(this,ChatActivity.class);
-        this.calendarFragment = CalendarFragment.newInstance();
+        this.chatIntent=new Intent(this,ChatActivity.class);
+        this.progressIntent=new Intent(this,ProgressActivity.class);
+        this.calendarIntent=new Intent(this,CalendarActivity.class);
+
         this.settingFragment = SettingFragment.newInstance();
-        this.chatFragment = ChatFragment.newInstance();
-        this.progressFragment = ProgressFragment.newInstance();
+
         this.ft = getFragmentManager().beginTransaction();
 
         //add fragments to transaction
-        FragmentTransaction calendarFrament = ft.add(R.id.content, this.calendarFragment, "calendarFrament");
+        FragmentTransaction settingFragment = ft.add(R.id.content, this.settingFragment, "settingFragment");
 
 
         ft.commit();
@@ -103,8 +97,10 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        intent = new Intent(MainActivity.this, MyService.class);
+        Menu menu=navigation.getMenu();
+        MenuItem menuItem=menu.getItem(3);
+        menuItem.setChecked(true);
+        intent = new Intent(SettingActivity.this, MyService.class);
         startService(intent);
     }
 
@@ -128,31 +124,28 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         switch (item.getItemId()) {
             case R.id.navigation_calendar:
                 //show calendarFragment and hide the others
-                System.out.print("calendar");
-                ft.replace(R.id.content, calendarFragment);
-                ft.commit();
+                startActivity(calendarIntent);
+
 
 
                 return true;
             case R.id.navigation_chat:
-                System.out.print("chat");
-                ft.replace(R.id.content, chatFragment);
-                ft.commit();
+
+
+                startActivity(chatIntent);
+
 
 
                 return true;
             case R.id.navigation_progress:
-                ft.replace(R.id.content,progressFragment);
-                ft.commit();
+                startActivity(progressIntent);
 
 
 
                 return true;
             case R.id.navigation_setting:
-                ft.replace(R.id.content,settingFragment);
+                ft.replace(R.id.content, settingFragment);
                 ft.commit();
-
-
                 return true;
         }
         return super.onOptionsItemSelected(item);

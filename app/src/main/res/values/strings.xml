@@ -5,14 +5,11 @@
     <string name="title_notifications">Progress</string>
     <string name="title_setting">Setting</string>
     <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+        <item>Create a group</item>
+        <item>Join a group</item>
+        <item>Leave a group</item>
+        <item>Retrieve group lists</item>
+
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

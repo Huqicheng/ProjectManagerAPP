@@ -50,53 +50,16 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
     private Intent intent;
     private FragmentTransaction ft;
 
-    //declare static fragments for MainActivity
-    private static CalendarFragment calendarFragment = null;
+    //declare static fragments for CalendarActivity
+
     private static ChatFragment chatFragment = null;
-    private static ProgressFragment progressFragment = null;
-    private static SettingFragment settingFragment = null;
 
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            ft=getFragmentManager().beginTransaction();
-            switch (item.getItemId()) {
-                case R.id.navigation_calendar:
-                    //show calendarFragment and hide the others
-                    System.out.print("calendar");
-                    ft.replace(R.id.content, calendarFragment);
-                    ft.commit();
+    private Intent progressIntent=null;
+    private Intent settingIntent=null;
+    private Intent calendarIntent=null;
 
 
-                    return true;
-                case R.id.navigation_chat:
-                    System.out.print("chat");
-                    ft.replace(R.id.content, chatFragment);
-                    ft.commit();
-
-
-                    return true;
-                case R.id.navigation_progress:
-                    ft.replace(R.id.content,progressFragment);
-                    ft.commit();
-
-
-
-                    return true;
-                case R.id.navigation_setting:
-                    ft.replace(R.id.content,settingFragment);
-                    ft.commit();
-
-
-                    return true;
-            }
-            return false;
-        }
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,10 +104,11 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
         if (savedInstanceState == null) {
             selectItem(0);
         }
-        this.calendarFragment = CalendarFragment.newInstance();
-        this.settingFragment = SettingFragment.newInstance();
+        this.progressIntent=new Intent(this,ProgressActivity.class);
+        this.calendarIntent=new Intent(this,CalendarActivity.class);
+        this.settingIntent=new Intent(this,SettingActivity.class);
         this.chatFragment = ChatFragment.newInstance();
-        this.progressFragment = ProgressFragment.newInstance();
+
         this.ft = getFragmentManager().beginTransaction();
 
         //add fragments to transaction
@@ -154,8 +118,6 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
         ft.commit();
 
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         intent = new Intent(ChatActivity.this, MyService.class);
         startService(intent);
@@ -181,29 +143,24 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
         switch (item.getItemId()) {
             case R.id.navigation_calendar:
                 //show calendarFragment and hide the others
-                System.out.print("calendar");
-                ft.replace(R.id.content, calendarFragment);
-                ft.commit();
+                startActivity(calendarIntent);
 
 
                 return true;
             case R.id.navigation_chat:
-                System.out.print("chat");
+
+
                 ft.replace(R.id.content, chatFragment);
                 ft.commit();
 
 
                 return true;
             case R.id.navigation_progress:
-                ft.replace(R.id.content,progressFragment);
-                ft.commit();
-
-
+                startActivity(progressIntent);
 
                 return true;
             case R.id.navigation_setting:
-                ft.replace(R.id.content,settingFragment);
-                ft.commit();
+                startActivity(settingIntent);
 
 
                 return true;
@@ -264,30 +221,8 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    /**
-     * Fragment that appears in the "content_frame", shows a planet
-     */
-    public static class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "planet_number";
 
-        public PlanetFragment() {
-            // Empty constructor required for fragment subclasses
-        }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
-            int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            String planet = getResources().getStringArray(R.array.planets_array)[i];
-
-            int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-                    "drawable", getActivity().getPackageName());
-            ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
-            getActivity().setTitle(planet);
-            return rootView;
-        }
-    }
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
         Log.d("debug:", "onServiceDisconnected: ");

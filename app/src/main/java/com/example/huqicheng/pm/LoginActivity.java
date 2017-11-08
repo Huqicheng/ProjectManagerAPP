@@ -5,26 +5,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.huqicheng.config.Config;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.nao.UserNao;
-import com.example.huqicheng.utils.FileUtils;
 import com.example.huqicheng.utils.PersistentCookieStore;
-import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -58,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 switch (msg.what){
                     case 1:
-                        intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent = new Intent(LoginActivity.this, CalendarActivity.class);
 
                         startActivity(intent);
 
