@@ -12,23 +12,32 @@ public class BaseMsg  implements Serializable {
     private MsgType type;
     private String clientId;
     private String groupId;
-    private Date date;
+    private long date;
+    private String avatar;
     private Map<String,Object> params;
     
     public BaseMsg() {
         this.clientId = Constants.getClientId();
         params = new HashMap<String,Object>();
     }
-    
-    public Date getDate() {
-		return date;
-	}
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	public String getClientId() {
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public String getClientId() {
         return clientId;
     }
 

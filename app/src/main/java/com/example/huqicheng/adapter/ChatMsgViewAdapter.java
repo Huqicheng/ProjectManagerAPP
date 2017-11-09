@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.huqicheng.entity.ChatMsgEntity;
 import com.example.huqicheng.pm.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,10 +31,20 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	private LayoutInflater mInflater;
 
 	public ChatMsgViewAdapter(Context context, List<ChatMsgEntity> coll) {
+		if(coll == null){
+			coll = new ArrayList<>();
+		}
 		this.coll = coll;
 		mInflater = LayoutInflater.from(context);
 	}
 
+	public void addFront(ChatMsgEntity entity){
+		this.coll.add(entity);
+	}
+
+	public void addBack(ChatMsgEntity entity){
+
+	}
 	public int getCount() {
 		return coll.size();
 	}
