@@ -109,6 +109,7 @@ public class WeChatActivity extends Activity implements OnClickListener {
 								MsgList list = (MsgList) msg.obj;
 								for(int i=0;i<list.getMsgs().size();i++){
 									lastMsg = list.getMsgs().get(i).getDate();
+
 									mDataArrays.add(0,msgAdapter.BaseMsg2ChatMsgEntity(list.getMsgs().get(i),user.getUserId()+""));
 
 								}
@@ -215,7 +216,7 @@ public class WeChatActivity extends Activity implements OnClickListener {
 		mTextViewGrpName = (TextView) findViewById(R.id.tvGrpName);
 		mTextViewGrpName.setText(group.getGroupName());
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
-		mAdapter = new ChatMsgViewAdapter(WeChatActivity.this, mDataArrays);
+		mAdapter = new ChatMsgViewAdapter(WeChatActivity.this, mDataArrays,mListView);
 		mListView.setAdapter(mAdapter);
 	}
 

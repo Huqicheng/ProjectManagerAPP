@@ -13,7 +13,7 @@ public class BaseMsg  implements Serializable {
     private String clientId;
     private String groupId;
     private long date;
-    private String avatar;
+    private String avator;
     private Map<String,Object> params;
     
     public BaseMsg() {
@@ -22,11 +22,11 @@ public class BaseMsg  implements Serializable {
     }
 
     public String getAvatar() {
-        return avatar;
+        return avator;
     }
 
     public void setAvatar(String avatar) {
-        this.avatar = avatar;
+        this.avator = avatar;
     }
 
     public long getDate() {

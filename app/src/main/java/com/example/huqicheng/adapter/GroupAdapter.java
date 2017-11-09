@@ -43,7 +43,7 @@ public class GroupAdapter extends BaseAdapter{
                     if(task.getBm() != null){
                         iv.setImageBitmap(task.getBm());
                     }else{
-                        iv.setImageResource(R.drawable.ic_launcher);
+                        iv.setImageResource(R.drawable.mini_avatar_shadow);
                     }
                 }
             }
@@ -90,7 +90,7 @@ public class GroupAdapter extends BaseAdapter{
             holder.ivGroup.setImageBitmap(bm);
         }else{
             // initialize the image as a default image
-            holder.ivGroup.setImageResource(R.drawable.ic_launcher);
+            holder.ivGroup.setImageResource(R.drawable.mini_avatar_shadow);
         }
 
 

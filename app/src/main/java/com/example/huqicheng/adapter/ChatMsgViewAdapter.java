@@ -1,14 +1,20 @@
 package com.example.huqicheng.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.huqicheng.entity.ChatMsgEntity;
 import com.example.huqicheng.pm.R;
+import com.example.huqicheng.utils.AsyncImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +35,29 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	private static final int ITEMCOUNT = 2;// 消息类型的总数
 	private List<ChatMsgEntity> coll;// 消息对象数组
 	private LayoutInflater mInflater;
+	private AsyncImageLoader loader;
 
-	public ChatMsgViewAdapter(Context context, List<ChatMsgEntity> coll) {
+	public ChatMsgViewAdapter(Context context, List<ChatMsgEntity> coll, final ListView lvMsgs) {
 		if(coll == null){
 			coll = new ArrayList<>();
 		}
 		this.coll = coll;
 		mInflater = LayoutInflater.from(context);
-	}
+
+		loader = new AsyncImageLoader(new AsyncImageLoader.Callback() {
+			@Override
+			public void imageLoaded(AsyncImageLoader.ImageLoadTask task) {
+				if(task != null){
+					ImageView iv = (ImageView)lvMsgs.findViewWithTag(task.getPath());
+					if(task.getBm() != null){
+						iv.setImageBitmap(task.getBm());
+					}else{
+						iv.setImageResource(R.drawable.mini_avatar_shadow);
+					}
+				}
+			}
+		});
+}
 
 	public void addFront(ChatMsgEntity entity){
 		this.coll.add(entity);
@@ -93,6 +114,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			}
 
 			viewHolder = new ViewHolder();
+			viewHolder.ivUserAvatar = (ImageView) convertView.findViewById(R.id.iv_userhead);
 			viewHolder.tvSendTime = (TextView) convertView
 					.findViewById(R.id.tv_sendtime);
 			viewHolder.tvUserName = (TextView) convertView
@@ -105,9 +127,21 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
+		Log.d("avatar:",entity.getAvatar());
 		viewHolder.tvSendTime.setText(entity.getDate());
 		viewHolder.tvUserName.setText(entity.getName());
 		viewHolder.tvContent.setText(entity.getMessage());
+
+		viewHolder.ivUserAvatar.setTag(entity.getAvatar());
+		Bitmap bm = loader.loadImage(entity.getAvatar());
+		if(bm != null){
+			viewHolder.ivUserAvatar.setImageBitmap(bm);
+		}else{
+			// initialize the image as a default image
+			viewHolder.ivUserAvatar.setImageResource(R.drawable.mini_avatar_shadow);
+		}
+
+
 		return convertView;
 	}
 
@@ -115,6 +149,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		public TextView tvSendTime;
 		public TextView tvUserName;
 		public TextView tvContent;
+		public ImageView ivUserAvatar;
 		public boolean isComMsg = true;
 	}
 

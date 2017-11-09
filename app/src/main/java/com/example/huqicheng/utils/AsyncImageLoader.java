@@ -82,20 +82,20 @@ public class AsyncImageLoader {
 
 		//TODO for debug, get data only from server
 
-//		// bitmap is in the cache?
-//		if (caches.containsKey(path)) {
-//			bm = caches.get(path).get();
-//			if (bm != null) {
-//				return bm;
-//			} else {
-//				caches.remove(path);
-//			}
-//		}
-//		//bitmap is persisted?
-//		bm = BitmapUtils.fromFile(path);
-//		if(bm!=null){
-//			return bm;
-//		}
+		// bitmap is in the cache?
+		if (caches.containsKey(path)) {
+			bm = caches.get(path).get();
+			if (bm != null) {
+				return bm;
+			} else {
+				caches.remove(path);
+			}
+		}
+		//bitmap is persisted?
+		bm = BitmapUtils.fromFile(path);
+		if(bm!=null){
+			return bm;
+		}
 
 		// bitmap not existed, then create a new task to load it from server
 		ImageLoadTask task = new ImageLoadTask();
