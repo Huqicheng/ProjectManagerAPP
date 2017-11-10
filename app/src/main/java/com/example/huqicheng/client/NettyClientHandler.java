@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.concurrent.TimeUnit;
 
 
+import com.example.huqicheng.dao.UserDao;
 import com.example.huqicheng.message.BaseMsg;
 import com.example.huqicheng.message.MsgType;
 import com.example.huqicheng.utils.ClientUtils;
@@ -19,6 +20,10 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 
 public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
+    String client_id;
+    public NettyClientHandler(String id){
+        client_id = id;
+    }
 	@Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		super.channelInactive(ctx);
@@ -27,7 +32,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
         ctx.channel().eventLoop().schedule(new Runnable() {
             @Override
             public void run() {
-            	NettyClientBootstrap client = ClientUtils.getInstance();
+            	NettyClientBootstrap client = ClientUtils.getInstance(client_id);
             	try {
 					client.start();
 				} catch (InterruptedException e) {

@@ -22,21 +22,21 @@ public class ClientUtils {
 		listenerForWeChat.onChatMsgRecieved(msg);
 	}
 	
-	public static NettyClientBootstrap getInstance(){
+	public static NettyClientBootstrap getInstance(String client_id){
 		if(client == null){
-			startClient();
+			startClient(client_id);
 		}
 		
 		return client;
 	}
 
-	private static void startClient() {
+	private static void startClient(String client_id) {
 		// TODO use the real Client Id of this client
-		Constants.setClientId("1");
+		Constants.setClientId(client_id);
 
 
         try {
-			client=new NettyClientBootstrap(8080,"192.168.11.10");
+			client=new NettyClientBootstrap(8000,"192.168.23.1",client_id);
 			client.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

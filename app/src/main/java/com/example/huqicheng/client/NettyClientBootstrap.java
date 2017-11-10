@@ -41,9 +41,11 @@ public class NettyClientBootstrap {
     private static String host;
     public static SocketChannel socketChannel;
     private int seconds = 1;
-    public NettyClientBootstrap(int port, String host) {
+    String client_id;
+    public NettyClientBootstrap(int port, String host,String client) {
         this.port = port;
         this.host = host;
+        this.client_id = client;
     }
     
     private class ConnectionListener implements ChannelFutureListener {  
@@ -106,7 +108,7 @@ public class NettyClientBootstrap {
                 socketChannel.pipeline().addLast(new StringDecoder());
                 //socketChannel.pipeline().addLast("length-decoder", new LengthFieldBasedFrameDecoder(369295620, 0, 4, 0, 4));
                 socketChannel.pipeline().addLast(new IdleStateHandler(20,10,0));
-                socketChannel.pipeline().addLast(new NettyClientHandler());
+                socketChannel.pipeline().addLast(new NettyClientHandler(client_id));
                 
             }
         });
@@ -117,16 +119,16 @@ public class NettyClientBootstrap {
         }
     }
     public static void main(String[]args){
-    	System.out.println("start");
-        NettyClientBootstrap bootstrap=ClientUtils.getInstance();
-
-        BaseMsg loginMsg=new BaseMsg();
-        loginMsg.setType(MsgType.LOGIN);
-        loginMsg.putParams("user", "huqicheng");
-        loginMsg.putParams("pwd", "huqicheng");
-        if(bootstrap != null){
-        	bootstrap.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
-        }
+//    	System.out.println("start");
+//        NettyClientBootstrap bootstrap=ClientUtils.getInstance();
+//
+//        BaseMsg loginMsg=new BaseMsg();
+//        loginMsg.setType(MsgType.LOGIN);
+//        loginMsg.putParams("user", "huqicheng");
+//        loginMsg.putParams("pwd", "huqicheng");
+//        if(bootstrap != null){
+//        	bootstrap.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
+//        }
         
 //        while (true){
 //            TimeUnit.SECONDS.sleep(3);

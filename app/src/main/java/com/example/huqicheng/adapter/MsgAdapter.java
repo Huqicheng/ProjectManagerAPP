@@ -1,5 +1,7 @@
 package com.example.huqicheng.adapter;
 
+import android.util.Log;
+
 import com.example.huqicheng.entity.ChatMsgEntity;
 import com.example.huqicheng.message.BaseMsg;
 import com.example.huqicheng.message.MsgType;
@@ -26,7 +28,7 @@ public class MsgAdapter {
 
         String pattern = "yyyy-MM-dd hh:mm:ss";
         Date date = DateUtils.parseStrToDate(msgEntity.getDate(), pattern);
-        baseMsg.setDate(date);
+        baseMsg.setDate(date.getTime());
         return baseMsg;
     }
 
@@ -37,7 +39,9 @@ public class MsgAdapter {
         params = msg.getParams();
         msgEntity.setName((String) params.get("username"));
         msgEntity.setMessage((String) params.get("body"));
-        msgEntity.setDate(msg.getDate().toString());
+        msgEntity.setAvatar(msg.getAvatar());
+        msgEntity.setDate(new Date(msg.getDate()).toString());
+        Log.d("msg","is come msg"+!msg.getClientId().equals(clientId));
         msgEntity.setComMeg(!msg.getClientId().equals(clientId));
 
         return msgEntity;

@@ -10,7 +10,16 @@ public class ChatMsgEntity {
 	private String name;//消息来自
 	private String date;//消息日期
 	private String message;//消息内容
+	private String avatar;
 	private boolean isComMeg = true;// 是否为收到的消息
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 
 	public String getName() {
 		return name;

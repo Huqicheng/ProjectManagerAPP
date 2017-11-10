@@ -8,16 +8,22 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.huqicheng.adapter.ChatMsgViewAdapter;
 import com.example.huqicheng.adapter.MsgAdapter;
+import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.ChatMsgEntity;
 import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.entity.MsgList;
+import com.example.huqicheng.entity.User;
 import com.example.huqicheng.message.BaseMsg;
+import com.example.huqicheng.nao.MessageNao;
 import com.example.huqicheng.service.MsgService;
 import com.example.huqicheng.service.MyService;
 import com.example.huqicheng.service.OnChatMsgRecievedListener;
@@ -45,6 +51,12 @@ public class WeChatActivity extends Activity implements OnClickListener {
 	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();// 消息对象数组
 	private Handler handler;
 	private Intent intent;
+	private User user;
+	private UserBiz userBiz;
+	private int lastItemPosition;
+
+	private boolean hasMore;
+	private long lastMsg;
 
 	void addMsg(final ChatMsgEntity entity){
 
@@ -57,6 +69,11 @@ public class WeChatActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_main);
+
+		userBiz = new UserBiz(getApplicationContext());
+
+		user = userBiz.readUser();
+
 		group = (Group) this.getIntent().getSerializableExtra("group");
 
 
@@ -70,16 +87,36 @@ public class WeChatActivity extends Activity implements OnClickListener {
 				switch (msg.what){
 					//a new msg comes
 					case 1:
-
-
 						runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
 								Thread th = Thread.currentThread();
 								Log.d("msg",th.getName());
-								mDataArrays.add(new MsgAdapter().BaseMsg2ChatMsgEntity((BaseMsg) msg.obj,"1"));
+								mDataArrays.add(new MsgAdapter().BaseMsg2ChatMsgEntity((BaseMsg) msg.obj,user.getUserId()+""));
 								mAdapter.notifyDataSetChanged();
 								mListView.setSelection(mListView.getCount() - 1);
+							}
+						});
+
+
+						break;
+
+					case 2:
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								MsgAdapter msgAdapter = new MsgAdapter();
+								MsgList list = (MsgList) msg.obj;
+								for(int i=0;i<list.getMsgs().size();i++){
+									lastMsg = list.getMsgs().get(i).getDate();
+
+									mDataArrays.add(0,msgAdapter.BaseMsg2ChatMsgEntity(list.getMsgs().get(i),user.getUserId()+""));
+
+								}
+								hasMore = list.isHasMore();
+
+								mAdapter.notifyDataSetChanged();
+
 							}
 						});
 
@@ -130,16 +167,46 @@ public class WeChatActivity extends Activity implements OnClickListener {
 
 		mListView.setSelection(mListView.getCount() - 1);
 
+		mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView absListView, int state) {
+				switch (state){
+					case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+						// get the top, load new message lists here
+						if(lastItemPosition == 0){
 
+							if(!hasMore) {
+								Toast.makeText(WeChatActivity.this,"no more messages",Toast.LENGTH_SHORT).show();
+								return;
+							}
+							Toast.makeText(WeChatActivity.this,"next",Toast.LENGTH_SHORT).show();
+							new Thread(){
+								@Override
+								public void run() {
+									MsgList list = getMsgs(lastMsg,10);
+									Message msg = Message.obtain();
+									msg.what = 2;
+									msg.obj = list;
+									handler.handleMessage(msg);
+								}
+							}.start();
+						}
 
+				}
+			}
 
+			@Override
+			public void onScroll(AbsListView absListView, int firstVisible, int visibleCount, int total) {
+				Log.d("", "onScroll: "+lastItemPosition);
+				lastItemPosition = firstVisible;
+			}
+		});
 
 
 	}
 
-	/**
-	 * 初始化view
-	 */
+
+
 	public void initView() {
 		mListView = (ListView) findViewById(R.id.listview);
 		mBtnSend = (Button) findViewById(R.id.btn_send);
@@ -149,63 +216,52 @@ public class WeChatActivity extends Activity implements OnClickListener {
 		mTextViewGrpName = (TextView) findViewById(R.id.tvGrpName);
 		mTextViewGrpName.setText(group.getGroupName());
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
-	}
-
-	private String[] msgArray = new String[] { "11", "2222？", "333", "4444",
-			"5555！", "666666666666666666666", "77777777777777", "34434343434343443",
-			"344434343434343434？", "34343434343434？", "34343434343？", "343434343！！" };
-
-	private String[] dataArray = new String[] { "2012-09-22 18:00:02",
-			"2012-09-22 18:10:22", "2012-09-22 18:11:24",
-			"2012-09-22 18:20:23", "2012-09-22 18:30:31",
-			"2012-09-22 18:35:37", "2012-09-22 18:40:13",
-			"2012-09-22 18:50:26", "2012-09-22 18:52:57",
-			"2012-09-22 18:55:11", "2012-09-22 18:56:45",
-			"2012-09-22 18:57:33", };
-	private final static int COUNT = 12;// 初始化数组总数
-
-	/**
-	 * 模拟加载消息历史，实际开发可以从数据库中读出
-	 */
-	public void initData() {
-		for (int i = 0; i < COUNT; i++) {
-			ChatMsgEntity entity = new ChatMsgEntity();
-			entity.setDate(dataArray[i]);
-			if (i % 2 == 0) {
-				entity.setName("apple");
-				entity.setMsgType(true);// 收到的消息
-			} else {
-				entity.setName("pie");
-				entity.setMsgType(false);// 自己发送的消息
-			}
-			entity.setMessage(msgArray[i]);
-			mDataArrays.add(entity);
-		}
-
-		mAdapter = new ChatMsgViewAdapter(this, mDataArrays);
+		mAdapter = new ChatMsgViewAdapter(WeChatActivity.this, mDataArrays,mListView);
 		mListView.setAdapter(mAdapter);
 	}
 
+
+	public void initData() {
+
+		new Thread(){
+			@Override
+			public void run() {
+				//load the latest ten messages from server
+				MsgList list = getMsgs(0,10);
+				Message msg = Message.obtain();
+				msg.what = 2;
+				msg.obj = list;
+				handler.handleMessage(msg);
+
+
+
+
+			}
+		}.start();
+
+	}
+
+	public synchronized MsgList getMsgs(long timestamp, int count){
+		return new MessageNao().loadMsgs(group.getGroupId(),count,timestamp);
+	}
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.btn_send:// 发送按钮点击事件
+		case R.id.btn_send:
 			send();
 			break;
-		case R.id.btn_back:// 返回按钮点击事件
-			finish();// 结束,实际开发中，可以返回主界面
+		case R.id.btn_back:
+			finish();
 			break;
 		}
 	}
 
-	/**
-	 * 发送消息
-	 */
+
 	private void send() {
 		String contString = mEditTextContent.getText().toString();
 		if (contString.length() > 0) {
 			ChatMsgEntity entity = new ChatMsgEntity();
-			entity.setName("pie");
+			entity.setName(user.getUsername());
 			entity.setDate(getDate());
 			entity.setMessage(contString);
 			entity.setMsgType(false);
@@ -215,25 +271,21 @@ public class WeChatActivity extends Activity implements OnClickListener {
 			new Thread(){
 				@Override
 				public void run() {
-					ClientUtils.send(new MsgAdapter().ChatMsgEntity2BaseMsg(temp,1));
+					ClientUtils.send(new MsgAdapter().ChatMsgEntity2BaseMsg(temp,group.getGroupId()));
 				}
 			}.start();
 
+			mEditTextContent.setText("");// clear editor
 
-			//mDataArrays.add(entity);
-			//mAdapter.notifyDataSetChanged();// 通知ListView，数据已发生改变
 
-			mEditTextContent.setText("");// 清空编辑框数据
-
-			// 发送一条消息时，ListView显示选择最后一项
 
 		}
 	}
 
 	/**
-	 * 发送消息时，获取当前事件
-	 * 
-	 * @return 当前时间
+	 * get current time
+	 *
+	 * @return current time
 	 */
 	private String getDate() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
