@@ -15,6 +15,7 @@ Date: 2017-11-11 18:45:37
 
 SET FOREIGN_KEY_CHECKS=0;
 
+use pm;
 -- ----------------------------
 -- Table structure for `event`
 -- ----------------------------
