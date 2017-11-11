@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class ProgressFragment extends Fragment {
     TextView progress_text;
     ProgressBar bar;
     int progress_Max = 100;
+    int complete_count = 0;
     //dbHandler2 myDb2;
     int Date;
 
@@ -79,13 +81,12 @@ public class ProgressFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
         //init event listview
-       View view = inflater.inflate(R.layout.fragment_progress, container, false);
+        View view = inflater.inflate(R.layout.fragment_progress, container, false);
         eventList = new ArrayList<>();
         for(int i = 0;i<10;i++){
 
@@ -100,6 +101,9 @@ public class ProgressFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Log.d("clicked item: ", i + "at pos " + l);
+                //CheckBox cb = (CheckBox)view.getTag(R.id.chk_box);
+                //Log.d("is ",ifChecked(cb));
+
             }
         });
         adapter = new EventListAdapter(getActivity(),null);
@@ -108,23 +112,45 @@ public class ProgressFragment extends Fragment {
         progress_text = (TextView) view.findViewById(R.id.progress_text);
         bar = (ProgressBar) view.findViewById(R.id.bar);
         bar.setProgress(0);
-        progress_text.setText(adapter.checkCount + " of " + eventList.size() + " completed ");
-        ProgressButtonClick(view);
+        progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
+        ProgressButtonClick(listView,view);
 
         return view;
 
     }
 
-    public void ProgressButtonClick(View view) {
+    private String ifChecked(CheckBox cb){
+        if (cb.isChecked()){
+            return "yes";
+        }
+        else {return "no";}
+    }
+
+    public void ProgressButtonClick(ListView lv, View view) {
+        final ListView l = lv;
         //mark selected events as complete
-        ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
+        final ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
         complete_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
             {
                 //Log.d("complete", adapter.checkCount + "");
-                progress_text.setText(adapter.checkCount+" of " + eventList.size() + " completed ");
-                bar.setProgress(adapter.checkCount*progress_Max/eventList.size());
+                SparseBooleanArray checked = l.getCheckedItemPositions();
+                int count = l.getCount();
+
+//                Log.d("this  is   ",""+count);
+                Log.d("that is " , "" + checked.size());
+//                for (int i = 0;i<count;i++){
+//                    if(checked.valueAt(i)){
+//                        adapter.remove(i);
+//                    }
+//                }
+                //checked.clear();
+                adapter.notifyDataSetChanged();
+
+                complete_count += adapter.checkCount;
+                progress_text.setText(complete_count+" of " + eventList.size() + " completed ");
+                bar.setProgress(complete_count*progress_Max/eventList.size());
             }
 
         });
@@ -140,7 +166,6 @@ public class ProgressFragment extends Fragment {
 
         });
     }
-
     private void toEditActivity(Event e){
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
