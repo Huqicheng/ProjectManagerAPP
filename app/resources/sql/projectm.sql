@@ -10,9 +10,8 @@ Target Server Type    : MYSQL
 Target Server Version : 50627
 File Encoding         : 65001
 
-Date: 2017-11-09 10:26:22
+Date: 2017-11-11 18:45:37
 */
-use pm;
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -34,15 +33,18 @@ CREATE TABLE `event` (
   PRIMARY KEY (`id`),
   KEY `event_user` (`assignedBy`),
   CONSTRAINT `event_user` FOREIGN KEY (`assignedBy`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of event
 -- ----------------------------
-INSERT INTO `event` VALUES ('1', '2', 'title2', '232323', '2017-11-04 00:00:00', '2', 'started', '2017-11-04 23:42:05', '2', '2017-11-04 23:42:05');
+INSERT INTO `event` VALUES ('1', '2', 'new task', 'new', '2017-11-11 17:50:54', '2', 'started', '2017-11-04 23:42:05', '2', '2017-11-04 23:42:05');
 INSERT INTO `event` VALUES ('2', '2', 'title2', '232323', '2017-11-04 00:00:00', '2', 'started', '2017-11-04 23:42:29', '2', '2017-11-04 23:42:29');
 INSERT INTO `event` VALUES ('3', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:05:58', '2', '2017-11-05 13:05:58');
 INSERT INTO `event` VALUES ('4', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:46:09', '2', '2017-11-05 13:46:09');
+INSERT INTO `event` VALUES ('5', '2', 'title2', '232323', '2017-11-11 18:04:02', '2', 'started', '2017-11-11 18:04:02', '2', '2017-11-11 18:04:02');
+INSERT INTO `event` VALUES ('6', '2', 'title2', '232323', '2017-11-11 18:05:55', '2', 'started', '2017-11-11 18:05:56', '2', '2017-11-11 18:05:56');
+INSERT INTO `event` VALUES ('7', '2', 'title2', '232323', '2017-11-11 18:06:38', '2', 'started', '2017-11-11 18:06:38', '2', '2017-11-11 18:06:38');
 
 -- ----------------------------
 -- Table structure for `group`
@@ -80,7 +82,7 @@ CREATE TABLE `message` (
   PRIMARY KEY (`id`),
   KEY `sender_id` (`sender_id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of message
@@ -120,6 +122,19 @@ INSERT INTO `message` VALUES ('54', '{\"body\":\"4444\",\"username\":\"q45hu\"}'
 INSERT INTO `message` VALUES ('55', '{\"body\":\"555\",\"username\":\"q45hu\"}', '2017-11-09 09:34:06', '2', '2');
 INSERT INTO `message` VALUES ('56', '{\"body\":\"555555\",\"username\":\"q45hu\"}', '2017-11-09 09:44:54', '2', '2');
 INSERT INTO `message` VALUES ('57', '{\"body\":\"666\",\"username\":\"q45hu\"}', '2017-11-09 09:45:31', '2', '2');
+INSERT INTO `message` VALUES ('58', '{\"body\":\"3333333\",\"username\":\"q45hu\"}', '2017-11-11 15:55:47', '2', '2');
+INSERT INTO `message` VALUES ('59', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-11 16:13:47', '2', '2');
+INSERT INTO `message` VALUES ('60', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-11 16:17:29', '2', '2');
+INSERT INTO `message` VALUES ('61', '{\"body\":\"333333\",\"username\":\"q45hu\"}', '2017-11-11 16:19:18', '2', '2');
+INSERT INTO `message` VALUES ('62', '{\"body\":\"3333333\",\"username\":\"q45hu\"}', '2017-11-11 16:19:30', '2', '2');
+INSERT INTO `message` VALUES ('63', '{\"body\":\"5555\",\"username\":\"q45hu\"}', '2017-11-11 16:20:01', '2', '2');
+INSERT INTO `message` VALUES ('64', '{\"body\":\"333333\",\"username\":\"q45hu\"}', '2017-11-11 16:21:33', '2', '2');
+INSERT INTO `message` VALUES ('65', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-11 16:23:28', '2', '2');
+INSERT INTO `message` VALUES ('66', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-11 16:24:46', '2', '2');
+INSERT INTO `message` VALUES ('67', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-11 16:29:20', '2', '2');
+INSERT INTO `message` VALUES ('68', '{\"body\":\"3333\",\"username\":\"q45hu\"}', '2017-11-11 16:31:32', '2', '2');
+INSERT INTO `message` VALUES ('69', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-11 16:34:18', '2', '2');
+INSERT INTO `message` VALUES ('70', '{\"body\":\"444\",\"username\":\"q45hu\"}', '2017-11-11 16:34:20', '2', '2');
 
 -- ----------------------------
 -- Table structure for `project`
@@ -199,17 +214,20 @@ IN description varchar(255),
 IN deadline datetime,
 IN assignedBy int,
 IN status varchar(255),
-IN assignedTo int,
-OUT event_id int
+IN assignedTo int
 )
 BEGIN
-
+DECLARE eid INT;
 insert 
 into event(group_id,eventName,eventDescription,eventDeadline,assignedBy,assignedTo,eventStatus,createdAt,updatedAt)
 values(group_id,title,description,deadline,assignedBy,assignedTo,status,now(),now());
 
-select max(id) into event_id
-from event;
+select MAX(id) into eid from event;
+
+select event.*,groupName
+from event,`group`
+where event.id = eid;
+
 
 end
 ;;
@@ -514,6 +532,36 @@ END
 DELIMITER ;
 
 -- ----------------------------
+-- Procedure structure for `update_event`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `update_event`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_event`(
+IN event_id int,
+IN assignTo int,
+IN title varchar(255),
+IN description varchar(255),
+IN deadline datetime
+)
+BEGIN
+
+update `event`
+set `event`.assignedTo = assignTo,
+`event`.eventName = title,
+`event`.eventDescription = description,
+`event`.eventDeadline = deadline,
+`event`.updatedAt = NOW()
+where `event`.id = event_id;
+
+select event.*,groupName
+from event,`group`
+where event.id = event_id;
+
+end
+;;
+DELIMITER ;
+
+-- ----------------------------
 -- Procedure structure for `update_status_of_event`
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `update_status_of_event`;
@@ -525,7 +573,8 @@ IN status varchar(255)
 BEGIN
 
 update `event`
-set eventStatus = status
+set eventStatus = status,
+`event`.updatedAt = NOW()
 where `event`.id = event_id;
 
 end
