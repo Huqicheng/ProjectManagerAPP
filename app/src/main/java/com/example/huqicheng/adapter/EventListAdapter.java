@@ -30,7 +30,8 @@ public class EventListAdapter extends BaseAdapter {
     ArrayList<Event> eventList;
     private LayoutInflater inflater;
     public int checkCount;
-    LinkedList selectedEvents;
+    public List<Integer> selectedEvents = new ArrayList<Integer>();
+
     public EventListAdapter(Context context, ArrayList<Event> eventList) {
 
         if(eventList != null)
@@ -57,11 +58,12 @@ public class EventListAdapter extends BaseAdapter {
     public long getItemId(int i) {
         return getItem(i).getEventId();
     }
+
+
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
-        Log.d("Debug:", "get view at "+i);
+        //Log.d("Debug:", "get view at "+i);
         EventListAdapter.ViewHolder holder = null;
-        final CheckBox cb;
         if(convertView == null){
             convertView = inflater.inflate(R.layout.event_list_row,null);
 
@@ -72,8 +74,7 @@ public class EventListAdapter extends BaseAdapter {
             holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
 
 
-            cb = (CheckBox) convertView.findViewById(R.id.chk_box);
-            selectedEvents = new LinkedList();
+
             final ViewHolder finalHolder = holder;
 
             final CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener(){
@@ -82,6 +83,10 @@ public class EventListAdapter extends BaseAdapter {
                     int pos = (Integer) buttonView.getTag();
                     eventList.get(pos).setSelected(buttonView.isChecked());
                     checkCount += isChecked ? 1 : -1 ;
+                    if (isChecked){
+                        Log.d("pos",""+pos);
+                        selectedEvents.add(pos);
+                    }
 
                     //Log.d("c",checkCount+" of " + eventList.size() + " completed ");
 //                if(isChecked){
@@ -123,6 +128,10 @@ public class EventListAdapter extends BaseAdapter {
             this.eventList.addAll(events);
         notifyDataSetChanged();
 
+    }
+    public void remove(Event e){
+        if (e!= null)
+            eventList.remove(e);
     }
 
     class ViewHolder{

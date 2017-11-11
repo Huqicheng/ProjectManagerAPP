@@ -49,6 +49,7 @@ public class ProgressFragment extends Fragment {
     TextView progress_text;
     ProgressBar bar;
     int progress_Max = 100;
+    int totalEvents = 0;
     int complete_count = 0;
     //dbHandler2 myDb2;
     int Date;
@@ -96,6 +97,7 @@ public class ProgressFragment extends Fragment {
             e.setEventDescription("woa " + i);
             eventList.add(e);
         }
+        totalEvents = eventList.size();
         ListView listView = (ListView) view.findViewById(R.id.eventlist);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,7 +115,7 @@ public class ProgressFragment extends Fragment {
         bar = (ProgressBar) view.findViewById(R.id.bar);
         bar.setProgress(0);
         progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
-        ProgressButtonClick(listView,view);
+        ProgressButtonClick(view,adapter,totalEvents);
 
         return view;
 
@@ -126,8 +128,7 @@ public class ProgressFragment extends Fragment {
         else {return "no";}
     }
 
-    public void ProgressButtonClick(ListView lv, View view) {
-        final ListView l = lv;
+    public void ProgressButtonClick(View view, final EventListAdapter a, final int eventCount) {
         //mark selected events as complete
         final ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
         complete_btn.setOnClickListener(new View.OnClickListener(){
@@ -135,22 +136,21 @@ public class ProgressFragment extends Fragment {
             public void onClick(View v)
             {
                 //Log.d("complete", adapter.checkCount + "");
-                SparseBooleanArray checked = l.getCheckedItemPositions();
-                int count = l.getCount();
+
 
 //                Log.d("this  is   ",""+count);
-                Log.d("that is " , "" + checked.size());
-//                for (int i = 0;i<count;i++){
-//                    if(checked.valueAt(i)){
-//                        adapter.remove(i);
-//                    }
-//                }
-                //checked.clear();
-                adapter.notifyDataSetChanged();
+//                Log.d("that is " , "" + checked.size());
+
 
                 complete_count += adapter.checkCount;
-                progress_text.setText(complete_count+" of " + eventList.size() + " completed ");
-                bar.setProgress(complete_count*progress_Max/eventList.size());
+                progress_text.setText(complete_count+" of " + eventCount + " completed ");
+                bar.setProgress(complete_count*progress_Max/eventCount);
+                for (Integer i :adapter.selectedEvents){
+                    a.remove(a.getItem(i));
+                }
+                //checked.clear();
+                a.notifyDataSetChanged();
+                Log.d("events left  ",""+eventList.size());
             }
 
         });
