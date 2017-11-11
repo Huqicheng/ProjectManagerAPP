@@ -22,6 +22,7 @@ public class Event implements java.io.Serializable{
 	Date deadLine;
     Date createdAt;
     Date updatedAt;
+	boolean isSelected;
 
 
 	public Date getDeadLine() {
@@ -111,4 +112,9 @@ public class Event implements java.io.Serializable{
     public void setEventDescription(String eventDescription) {
         this.eventDescription = eventDescription;
     }
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public  void setSelected(boolean isSelected){this.isSelected = isSelected;}
 }
