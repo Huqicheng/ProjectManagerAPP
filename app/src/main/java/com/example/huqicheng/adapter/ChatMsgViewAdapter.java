@@ -127,7 +127,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		Log.d("avatar:",entity.getAvatar());
+
 		viewHolder.tvSendTime.setText(entity.getDate());
 		viewHolder.tvUserName.setText(entity.getName());
 		viewHolder.tvContent.setText(entity.getMessage());

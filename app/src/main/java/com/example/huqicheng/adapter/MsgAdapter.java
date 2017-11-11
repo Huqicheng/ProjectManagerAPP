@@ -18,14 +18,15 @@ import java.lang.System.*;
  */
 
 public class MsgAdapter {
-    public BaseMsg ChatMsgEntity2BaseMsg(ChatMsgEntity msgEntity, long groupId) {
+    public BaseMsg ChatMsgEntity2BaseMsg(ChatMsgEntity msgEntity, long groupId, String avatar) {
 
         BaseMsg baseMsg = new BaseMsg();
         baseMsg.setType(MsgType.ChatMsg);
         baseMsg.setGroupId(groupId+"");
         baseMsg.putParams("username", msgEntity.getName());
         baseMsg.putParams("body", msgEntity.getMessage());
-
+        //System.out.println("avatar:"+avatar);
+        baseMsg.setAvatar(avatar);
         String pattern = "yyyy-MM-dd hh:mm:ss";
         Date date = DateUtils.parseStrToDate(msgEntity.getDate(), pattern);
         baseMsg.setDate(date.getTime());
