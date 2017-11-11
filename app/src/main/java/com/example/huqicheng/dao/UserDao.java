@@ -22,6 +22,7 @@ public class UserDao {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("userid", String.valueOf(user.getUserId()));
         editor.putString("username", user.getUsername());
+        editor.putString("avatar",user.getAvatar());
         editor.commit();
     }
 
@@ -29,6 +30,7 @@ public class UserDao {
         SharedPreferences.Editor editor = pref.edit();
         editor.remove("userid");
         editor.remove("username");
+        editor.remove("avatar");
         editor.commit();
     }
 
@@ -36,10 +38,12 @@ public class UserDao {
         User user = null;
         String id = pref.getString("userid", null);
         String name = pref.getString("username", null);
+        String avatar = pref.getString("avatar",null);
         if (id != null && name != null) {
             user = new User();
             user.setUserId(Long.parseLong(id));
             user.setUsername(name);
+            user.setAvatar(avatar);
         }
         return user;
     }

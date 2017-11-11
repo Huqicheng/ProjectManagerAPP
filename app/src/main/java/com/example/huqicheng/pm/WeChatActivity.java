@@ -117,6 +117,29 @@ public class WeChatActivity extends Activity implements OnClickListener {
 
 								mAdapter.notifyDataSetChanged();
 
+								mListView.setSelection(mListView.getCount() - 1);
+
+							}
+						});
+
+
+						break;
+					case 3:
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								MsgAdapter msgAdapter = new MsgAdapter();
+								MsgList list = (MsgList) msg.obj;
+								for(int i=0;i<list.getMsgs().size();i++){
+									lastMsg = list.getMsgs().get(i).getDate();
+
+									mDataArrays.add(0,msgAdapter.BaseMsg2ChatMsgEntity(list.getMsgs().get(i),user.getUserId()+""));
+
+								}
+								hasMore = list.isHasMore();
+
+								mAdapter.notifyDataSetChanged();
+
 							}
 						});
 
@@ -185,7 +208,7 @@ public class WeChatActivity extends Activity implements OnClickListener {
 								public void run() {
 									MsgList list = getMsgs(lastMsg,10);
 									Message msg = Message.obtain();
-									msg.what = 2;
+									msg.what = 3;
 									msg.obj = list;
 									handler.handleMessage(msg);
 								}
@@ -271,7 +294,7 @@ public class WeChatActivity extends Activity implements OnClickListener {
 			new Thread(){
 				@Override
 				public void run() {
-					ClientUtils.send(new MsgAdapter().ChatMsgEntity2BaseMsg(temp,group.getGroupId()));
+					ClientUtils.send(new MsgAdapter().ChatMsgEntity2BaseMsg(temp,group.getGroupId(),user.getAvatar()));
 				}
 			}.start();
 
