@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,26 +16,24 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.huqicheng.entity.Event;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-public class dateSelected extends AppCompatActivity {
+public class DateSelected extends AppCompatActivity {
     Intent intent;
     private EditText eventName,eventLocation,eventDiscription,Attendees;
     private Button save,add,setTime;
     private Button startTime;
     private TextView textClock,textDate;
-    private int date;
-    //private dbHandler db;
-    //private dbHandler2 db2;
-    private int day,month,year;
+    static final String TAG="TAG";
     private static final int uniqueID2=0;
     int hour_x,minute_x;
     private AlarmManager alarmManager;
     private Intent INTENT;
     private Context context;
-    private static int incrementer=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,27 +64,23 @@ public class dateSelected extends AppCompatActivity {
         minute_x = calendar.get(Calendar.MINUTE);
         textClock.setText(hour_x + " : " + minute_x);
 
-        //calling the constructor of the two databases
-        /*
-        db = new dbHandler(this);
-        db2 = new dbHandler2(this);
-        */
         //getting date from mainactivity
         Intent eventintent = this.getIntent();
         Event event = (Event)eventintent.getSerializableExtra("event");
-        Bundle dateReceived = getIntent().getExtras();
-        Date date = event.getCreatedAt();
-        final int date11 = event.getCreatedAt().hashCode();
+        if (event.getEventStatus().equals("started")) {
+            eventName.setText(event.getEventTitle());
+            eventLocation.setText(event.getEventLocation());
+            eventDiscription.setText(event.getEventDescription());
+        }
 
-        year = event.getCreatedAt().getYear();
-        month = event.getCreatedAt().getMonth();
-        day = event.getCreatedAt().getDay();
+        //get timestamp and string date
+        Timestamp datetimestamp = new Timestamp(event.getCreatedAt());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        // 格式化日期返回 String 类型，format 中传入 Date 类型或者其子类（例如Timestamp 类）
+        String s = sdf.format(datetimestamp);
 
-
-        int currMonth = month+1;
-        textDate.setText(date.toString());
-
-        alarmManager= (AlarmManager)getSystemService(ALARM_SERVICE);
+        textDate.setText(s);
+        //alarmManager= (AlarmManager)getSystemService(ALARM_SERVICE);
         this.context=this;
 
         //save button clicked
@@ -113,15 +108,15 @@ public class dateSelected extends AppCompatActivity {
 
                 //setting time for calendar instance
                 Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, month);
-                cal.set(Calendar.DAY_OF_MONTH, day);
+                //cal.set(Calendar.YEAR, year);
+                //cal.set(Calendar.MONTH, month);
+                //cal.set(Calendar.DAY_OF_MONTH, day);
                 cal.set(Calendar.HOUR_OF_DAY, hour_x);
                 cal.set(Calendar.MINUTE, minute_x);
                 cal.set(Calendar.SECOND, 0);
                 long mills = cal.getTimeInMillis();
 
-                INTENT = new Intent(dateSelected.this,AlarmReceiver.class);
+                INTENT = new Intent(DateSelected.this,AlarmReceiver.class);
 
 
                 String event=eventName.getText().toString();
@@ -132,7 +127,7 @@ public class dateSelected extends AppCompatActivity {
                 INTENT.putExtra("Event Discription message",Discri);
 
                 //Pending Intent to tell Alarm Manager to wait till the time in millis
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(dateSelected.this, 0, INTENT, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(DateSelected.this, 0, INTENT, PendingIntent.FLAG_UPDATE_CURRENT);
                 //calling the onReceive in the Alarm Manager.
                 alarmManager.set(AlarmManager.RTC_WAKEUP, mills, pendingIntent);
             }
@@ -169,7 +164,7 @@ public class dateSelected extends AppCompatActivity {
 
     protected Dialog onCreateDialog(int id) {
         if (id == uniqueID2)
-            return new TimePickerDialog(dateSelected.this, kTimePickerListener, hour_x, minute_x, false);
+            return new TimePickerDialog(DateSelected.this, kTimePickerListener, hour_x, minute_x, false);
         return null;
     }
 

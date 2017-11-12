@@ -3,6 +3,7 @@ package com.example.huqicheng.nao;
 import android.util.Log;
 
 import com.example.huqicheng.config.Config;
+import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.utils.HttpUtils;
 import com.google.gson.Gson;
@@ -23,17 +24,52 @@ import java.util.List;
  */
 
 public class EventNao {
-    public List<Date> getDatesHavingEvents(int user_id, String status){
-        List<Date> res = null;
+    public List<Long> getDatesHavingEvents(long user_id, String status){
+        List<Long> res = null;
         List<Long> tmp = null;
         try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("user_id",user_id+""));
             params.add(new BasicNameValuePair("status",status));
-
             //modify url according to interface doc
             HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getDatesHavingEvents.do",params,HttpUtils.GET);
+            if(entity == null){
+                return null;
+            }
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+            Log.d("debug: ",json);
+            // check if failed, you should return null
+            if(json.trim().equalsIgnoreCase("failed")) return null;
+            // decoding here
+            // Type:   simple objects: ObjectName.class
+            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
+            Type type = new TypeToken<ArrayList<Long>>(){}.getType();
+            tmp = new Gson().fromJson(json,type);
+
+            // convert Long to Date Object
+            for(Long timestamp:tmp){
+                res.add(timestamp);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        return res;
+    }
+
+    public List<Event> getEventsOfOneDate(long user_id, long time_stamp){
+        List<Event> res = null;
+        List<Event> tmp = null;
+        try{
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("user_id",user_id+""));
+            params.add(new BasicNameValuePair("timestamp",time_stamp+""));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getEventsOfOneDate.do",params,HttpUtils.GET);
 
             if(entity == null){
                 return null;
@@ -50,12 +86,12 @@ public class EventNao {
             // decoding here
             // Type:   simple objects: ObjectName.class
             //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
-            Type type = new TypeToken<ArrayList<Long>>(){}.getType();
+            Type type = new TypeToken<ArrayList<Event>>(){}.getType();
             tmp = new Gson().fromJson(json,type);
 
             // convert Long to Date Object
-            for(Long timestamp:tmp){
-                res.add(new Date(timestamp));
+            for(Event event:tmp){
+                res.add(event);
             }
 
 
@@ -64,6 +100,41 @@ public class EventNao {
 
         }
 
+        return res;
+    }
+    public String deleteEvent(long event_id) {
+        String res = "";
+        try {
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("event_id", event_id + ""));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP + "/deleteEvent.do", params, HttpUtils.GET);
+
+            if (entity == null) {
+                return null;
+            }
+
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+
+            Log.d("debug: ", json);
+
+            // check if failed, you should return null
+            if (json.trim().equalsIgnoreCase("failed")) return null;
+
+            // decoding here
+            // Type:   simple objects: ObjectName.class
+            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
+            Type type = new TypeToken<ArrayList<Event>>() {
+            }.getType();
+            res = new Gson().fromJson(json, String.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
         return res;
     }
 }

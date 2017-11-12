@@ -19,16 +19,16 @@ public class Event implements java.io.Serializable{
     String eventDescription;
 	String eventLocation;
     String eventStatus;
-	Date deadLine;
-    Date createdAt;
-    Date updatedAt;
+	long deadLine;   //timestamp
+    long createdAt;
+    long updatedAt;
 
 
-	public Date getDeadLine() {
+	public long getDeadLine() {
 		return deadLine;
 	}
 
-	public void setDeadLine(Date deadLine) {
+	public void setDeadLine(long deadLine) {
 		this.deadLine = deadLine;
 	}
 
@@ -52,19 +52,19 @@ public class Event implements java.io.Serializable{
 		this.eventStatus = eventStatus;
 	}
 
-	public Date getCreatedAt() {
+	public long getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(long createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getUpdatedAt() {
+	public long getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Date updatedAt) {
+	public void setUpdatedAt(long updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 

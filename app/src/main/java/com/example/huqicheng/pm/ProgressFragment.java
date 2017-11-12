@@ -146,7 +146,7 @@ public class ProgressFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable("event",e);
         intent.putExtras(bundle);
-        intent.setClass(getActivity(),dateSelected.class);
+        intent.setClass(getActivity(),DateSelected.class);
         startActivityForResult(intent,1);
 
     }

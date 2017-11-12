@@ -13,7 +13,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class AlarmReceiver extends BroadcastReceiver {
 
     public final String TAG="TAG";
-    private dateSelected date;
+    private DateSelected date;
     int uniqueID=0;
 
     @Override

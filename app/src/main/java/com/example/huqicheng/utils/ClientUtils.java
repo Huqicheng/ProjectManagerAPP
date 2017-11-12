@@ -36,7 +36,7 @@ public class ClientUtils {
 
 
         try {
-			client=new NettyClientBootstrap(8000,"192.168.23.1",client_id);
+			client=new NettyClientBootstrap(8000,"10.0.2.2",client_id);
 			client.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
