@@ -194,7 +194,7 @@ public class CalendarFragment extends Fragment {
                 event.setEventDescription("discuss ece650 assignment LOL");
                 event.setEventTitle("meeting");
                 event.setEventLocation("E3");
-                //intent = new Intent(getActivity(), DateSelected.class);
+                intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
                 event.setEventID(date.hashCode());
                 event.setEventDescription("date message");

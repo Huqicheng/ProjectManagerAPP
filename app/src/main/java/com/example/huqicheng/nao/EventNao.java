@@ -126,9 +126,7 @@ public class EventNao {
 
             // decoding here
             // Type:   simple objects: ObjectName.class
-            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
-            Type type = new TypeToken<ArrayList<Event>>() {
-            }.getType();
+            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType()
             res = new Gson().fromJson(json, String.class);
 
         } catch (Exception e) {
