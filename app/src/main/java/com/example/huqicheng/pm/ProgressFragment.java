@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.dao.dbHandler;
@@ -92,7 +93,8 @@ public class ProgressFragment extends Fragment {
         for(int i = 0;i<10;i++){
 
             Event e = new Event();
-            e.setEventID(i);
+            long id = Integer.valueOf(String.valueOf(20)+String.valueOf(i));
+            e.setEventID(id);
             e.setEventTitle("Debug " + i);
             e.setEventDescription("woa " + i);
             eventList.add(e);
@@ -115,56 +117,79 @@ public class ProgressFragment extends Fragment {
         bar = (ProgressBar) view.findViewById(R.id.bar);
         bar.setProgress(0);
         progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
-        ProgressButtonClick(view,adapter,totalEvents);
+        ProgressButtonClick(view);
 
         return view;
 
     }
 
-    private String ifChecked(CheckBox cb){
-        if (cb.isChecked()){
-            return "yes";
-        }
-        else {return "no";}
+    public void ProgressButtonClick(View view) {
+        //mark selected events as complete
+        ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
+        eventComplete(complete_btn);
+
+        //delete selected events
+        ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
+        eventDelete(del_btn);
     }
 
-    public void ProgressButtonClick(View view, final EventListAdapter a, final int eventCount) {
-        //mark selected events as complete
-        final ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
+    public void eventComplete(ImageButton complete_btn) {
         complete_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
             {
-                //Log.d("complete", adapter.checkCount + "");
+                complete_count += adapter.selectedEvents.size();
+                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
+                bar.setProgress(complete_count*progress_Max/totalEvents);
 
-
-//                Log.d("this  is   ",""+count);
-//                Log.d("that is " , "" + checked.size());
-
-
-                complete_count += adapter.checkCount;
-                progress_text.setText(complete_count+" of " + eventCount + " completed ");
-                bar.setProgress(complete_count*progress_Max/eventCount);
-                for (Integer i :adapter.selectedEvents){
-                    a.remove(a.getItem(i));
+                for (Long i : adapter.selectedEvents){
+                    adapter.remove(i);
+                    adapter.notifyDataSetChanged();
                 }
-                //checked.clear();
-                a.notifyDataSetChanged();
-                Log.d("events left  ",""+eventList.size());
+                MsgDisplay("complete.");
+                Log.d("esize", ""+eventList.size());
+                adapter.selectedEvents.clear();
+
             }
 
         });
+    }
 
-        //delete selected events
-        ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
+    public void eventDelete(ImageButton del_btn) {
         del_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
             {
-                Log.d("delete", adapter.checkCount + "");
+                totalEvents -= adapter.selectedEvents.size();
+                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
+                bar.setProgress(complete_count*progress_Max/totalEvents);
+                for (Long i : adapter.selectedEvents){
+                    adapter.remove(i);
+                    eventList.remove(i);
+                    adapter.notifyDataSetChanged();
+                }
+                MsgDisplay("deleted.");
+                adapter.selectedEvents.clear();
             }
 
         });
+    }
+
+    public void MsgDisplay(String s) {
+        //display opertaion messages
+
+        if(adapter.selectedEvents.size() == 1){
+            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" event " +s, Toast.LENGTH_SHORT).show();
+
+        }
+        else if (adapter.selectedEvents.size() >1){
+            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" events "+s, Toast.LENGTH_SHORT).show();
+
+        }
+        else{
+            Toast.makeText(getActivity(), "Please make a selection.", Toast.LENGTH_SHORT).show();
+
+        }
     }
     private void toEditActivity(Event e){
         Intent intent = new Intent();
