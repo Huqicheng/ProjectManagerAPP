@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.dao.dbHandler;
@@ -48,6 +50,8 @@ public class ProgressFragment extends Fragment {
     TextView progress_text;
     ProgressBar bar;
     int progress_Max = 100;
+    int totalEvents = 0;
+    int complete_count = 0;
     //dbHandler2 myDb2;
     int Date;
 
@@ -79,27 +83,31 @@ public class ProgressFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
         //init event listview
-       View view = inflater.inflate(R.layout.fragment_progress, container, false);
+        View view = inflater.inflate(R.layout.fragment_progress, container, false);
         eventList = new ArrayList<>();
         for(int i = 0;i<10;i++){
 
             Event e = new Event();
-            e.setEventID(i);
+            long id = Integer.valueOf(String.valueOf(20)+String.valueOf(i));
+            e.setEventID(id);
             e.setEventTitle("Debug " + i);
             e.setEventDescription("woa " + i);
             eventList.add(e);
         }
+        totalEvents = eventList.size();
         ListView listView = (ListView) view.findViewById(R.id.eventlist);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Log.d("clicked item: ", i + "at pos " + l);
+                //CheckBox cb = (CheckBox)view.getTag(R.id.chk_box);
+                //Log.d("is ",ifChecked(cb));
+
             }
         });
         adapter = new EventListAdapter(getActivity(),null);
@@ -108,7 +116,7 @@ public class ProgressFragment extends Fragment {
         progress_text = (TextView) view.findViewById(R.id.progress_text);
         bar = (ProgressBar) view.findViewById(R.id.bar);
         bar.setProgress(0);
-        progress_text.setText(adapter.checkCount + " of " + eventList.size() + " completed ");
+        progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
         ProgressButtonClick(view);
 
         return view;
@@ -118,29 +126,71 @@ public class ProgressFragment extends Fragment {
     public void ProgressButtonClick(View view) {
         //mark selected events as complete
         ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
+        eventComplete(complete_btn);
+
+        //delete selected events
+        ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
+        eventDelete(del_btn);
+    }
+
+    public void eventComplete(ImageButton complete_btn) {
         complete_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
             {
-                //Log.d("complete", adapter.checkCount + "");
-                progress_text.setText(adapter.checkCount+" of " + eventList.size() + " completed ");
-                bar.setProgress(adapter.checkCount*progress_Max/eventList.size());
-            }
+                complete_count += adapter.selectedEvents.size();
+                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
+                bar.setProgress(complete_count*progress_Max/totalEvents);
 
-        });
+                for (Long i : adapter.selectedEvents){
+                    adapter.remove(i);
+                    adapter.notifyDataSetChanged();
+                }
+                MsgDisplay("complete.");
+                Log.d("esize", ""+eventList.size());
+                adapter.selectedEvents.clear();
 
-        //delete selected events
-        ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
-        del_btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v)
-            {
-                Log.d("delete", adapter.checkCount + "");
             }
 
         });
     }
 
+    public void eventDelete(ImageButton del_btn) {
+        del_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                totalEvents -= adapter.selectedEvents.size();
+                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
+                bar.setProgress(complete_count*progress_Max/totalEvents);
+                for (Long i : adapter.selectedEvents){
+                    adapter.remove(i);
+                    eventList.remove(i);
+                    adapter.notifyDataSetChanged();
+                }
+                MsgDisplay("deleted.");
+                adapter.selectedEvents.clear();
+            }
+
+        });
+    }
+
+    public void MsgDisplay(String s) {
+        //display opertaion messages
+
+        if(adapter.selectedEvents.size() == 1){
+            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" event " +s, Toast.LENGTH_SHORT).show();
+
+        }
+        else if (adapter.selectedEvents.size() >1){
+            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" events "+s, Toast.LENGTH_SHORT).show();
+
+        }
+        else{
+            Toast.makeText(getActivity(), "Please make a selection.", Toast.LENGTH_SHORT).show();
+
+        }
+    }
     private void toEditActivity(Event e){
         Intent intent = new Intent();
         Bundle bundle = new Bundle();

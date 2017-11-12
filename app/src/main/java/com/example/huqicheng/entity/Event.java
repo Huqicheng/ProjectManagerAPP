@@ -20,15 +20,17 @@ public class Event implements java.io.Serializable{
 	String eventLocation;
     String eventStatus;
 	long deadLine;   //timestamp
-    long createdAt;
-    long updatedAt;
+	Date deadLine;
+    Date createdAt;
+    Date updatedAt;
+	boolean isSelected;
 
 
-	public long getDeadLine() {
+	public Date getDeadLine() {
 		return deadLine;
 	}
 
-	public void setDeadLine(long deadLine) {
+	public void setDeadLine(Date deadLine) {
 		this.deadLine = deadLine;
 	}
 
@@ -52,19 +54,19 @@ public class Event implements java.io.Serializable{
 		this.eventStatus = eventStatus;
 	}
 
-	public long getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(long createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public long getUpdatedAt() {
+	public Date getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(long updatedAt) {
+	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
@@ -111,4 +113,9 @@ public class Event implements java.io.Serializable{
     public void setEventDescription(String eventDescription) {
         this.eventDescription = eventDescription;
     }
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public  void setSelected(boolean isSelected){this.isSelected = isSelected;}
 }

@@ -30,7 +30,8 @@ public class EventListAdapter extends BaseAdapter {
     ArrayList<Event> eventList;
     private LayoutInflater inflater;
     public int checkCount;
-    LinkedList selectedEvents;
+    public List<Long> selectedEvents = new ArrayList<>();
+
     public EventListAdapter(Context context, ArrayList<Event> eventList) {
 
         if(eventList != null)
@@ -58,67 +59,87 @@ public class EventListAdapter extends BaseAdapter {
         return getItem(i).getEventId();
     }
 
+    public void remove(Long i){
+        long id = (long) i;
+        ArrayList<Event> tmp = new ArrayList<>(eventList);
+        for (Event e : tmp){
+            if (e.getEventId() == id){
+                eventList.remove(e);
+            }
+        }
+    }
+
+
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
-        Log.d("Debug:", "get view at "+i);
+        //Log.d("Debug:", "get view at "+i);
         EventListAdapter.ViewHolder holder = null;
-        final CheckBox cb;
         if(convertView == null){
             convertView = inflater.inflate(R.layout.event_list_row,null);
-
 
             holder = new ViewHolder();
             holder.title = (TextView)convertView.findViewById(R.id.title);
             holder.description = (TextView)convertView.findViewById(R.id.description);
+            holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
+
+
+            final CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener(){
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    long eid =  (long) buttonView.getTag();
+                    getEventById(eid).setSelected(buttonView.isChecked());
+                    countCheck(isChecked,eid);
+                }
+            };
+            holder.checkBox.setOnCheckedChangeListener(checkListener);
             convertView.setTag(holder);
+            convertView.setTag(R.id.chk_box,holder.checkBox);
 
         }else{
             holder = (EventListAdapter.ViewHolder)convertView.getTag();
         }
+        holder.checkBox.setTag(eventList.get(i).getEventId());
 
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
         holder.description.setText(event.getEventDescription());
-        cb = (CheckBox) convertView.findViewById(R.id.chk_box);
-        selectedEvents = new LinkedList();
-        final ViewHolder finalHolder = holder;
-
-        final CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkCount += isChecked ? 1 : -1 ;
-
-                //Log.d("c",checkCount+" of " + eventList.size() + " completed ");
-//                if(isChecked){
-//                    selectedEvents.add(finalHolder.title.getText().toString());
-//                    Log.d("add ",finalHolder.title.getText().toString()+"");
-//                }
-//                else {selectedEvents.remove(finalHolder.title.getText().toString());
-//                 Log.d("remove",finalHolder.title.getText().toString()+"");
-//                }
-                //Log.d("size",selectedEvents.size()+"");
-
-            }
-        };
-        cb.setOnCheckedChangeListener(checkListener);
-
+        holder.checkBox.setChecked(eventList.get(i).isSelected());
 
         return convertView;
     }
-    private int countCheck(boolean isChecked) {
-        checkCount += isChecked ? 1 : -1 ;
-        return checkCount;
-    }
+
     public void add(List<Event> events){
         if(events != null)
             this.eventList.addAll(events);
         notifyDataSetChanged();
 
     }
+    private void countCheck(boolean isChecked, long eid) {
+        Long iid = (Long) eid;
+//        checkCount += isChecked ? 1 : -1 ;
+        if (isChecked && !selectedEvents.contains(iid)){
+            selectedEvents.add(iid);
+        }
+        else{
+            selectedEvents.remove(iid);
+        }
+        Log.d("checked size", ""+selectedEvents.size());
+    }
+    private Event getEventById(long id){
+        Event returnE = new Event();
+        for (Event e : eventList){
+            if (e.getEventId() == id){
+                returnE = e;
+            }
+        }
+        return  returnE;
+
+    }
 
     class ViewHolder{
         TextView title;
         TextView description;
+        CheckBox checkBox;
 
     }
 }
