@@ -140,7 +140,7 @@ public class CalendarFragment extends Fragment {
         List<Event>eventList = new ArrayList<>();
         long time_stamp = 1509854400488L;
        try{
-           eventList = eventBiz.loadEventsOfOneDate(2,time_stamp);
+           //eventList = eventBiz.loadEventsOfOneDate(2,time_stamp);
            for (int i = 0; i < eventList.size();i++){
                Log.e(TAG, "eventList=" + eventList.toString());
            }

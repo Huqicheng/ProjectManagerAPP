@@ -23,6 +23,7 @@ import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.MsgList;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.message.BaseMsg;
+import com.example.huqicheng.message.MsgType;
 import com.example.huqicheng.nao.MessageNao;
 import com.example.huqicheng.service.MsgService;
 import com.example.huqicheng.service.MyService;
@@ -155,10 +156,12 @@ public class WeChatActivity extends Activity implements OnClickListener {
 		ClientUtils.setListenerForWeChat(new OnChatMsgRecievedListener() {
 			@Override
 			public void onChatMsgRecieved(BaseMsg msg) {
-				//TODO update UI
-
 				Log.d("Msg Recieved", msg.getParams().toString());
 
+				if(!msg.getType().equals(MsgType.ChatMsg) && !msg.getType().equals(MsgType.ReplyForChatMsg)){
+					Log.d("Msg Recieved", "msg is not a group chat messge ");
+					return;
+				}
 
 				if(msg.getGroupId() == null){
 					Log.d("Msg Recieved", "msg group id is null ");
@@ -169,9 +172,6 @@ public class WeChatActivity extends Activity implements OnClickListener {
 					Log.d("Msg Recieved", "msg is not for this group ");
 					return;
 				}
-
-				Log.d("Msg Recieved", msg.getGroupId());
-
 
 				Message m = Message.obtain();
 				m.what = 1;
