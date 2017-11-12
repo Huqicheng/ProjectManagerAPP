@@ -22,6 +22,7 @@ public class UserBiz {
 
     public User doLogin(User user,String type){
         User res = userNao.doLoginByUsername(user);
+        if(res == null) return null;
         userDao.saveUser(res);
         return res;
     }

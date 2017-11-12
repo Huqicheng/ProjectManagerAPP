@@ -129,7 +129,7 @@ public class CalendarFragment extends Fragment {
 
         /** get data from the database**/
         try {
-            stampList = eventBiz.loadDatesHavingEvents(2, status);
+            //stampList = eventBiz.loadDatesHavingEvents(2, status);
             for (int i = 0; i < stampList.size();i++){
                 Log.e(TAG, "timestamp=" + stampList.get(i));
             }
@@ -194,7 +194,7 @@ public class CalendarFragment extends Fragment {
                 event.setEventDescription("discuss ece650 assignment LOL");
                 event.setEventTitle("meeting");
                 event.setEventLocation("E3");
-                intent = new Intent(getActivity(), DateSelected.class);
+                //intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
                 event.setEventID(date.hashCode());
                 event.setEventDescription("date message");
