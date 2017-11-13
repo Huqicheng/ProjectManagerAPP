@@ -18,13 +18,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.huqicheng.adapter.CalendarEventListAdapter;
 import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.bll.EventBiz;
 import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
-import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
-import com.example.huqicheng.nao.MessageNao;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -32,9 +31,6 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
-import java.sql.Array;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -53,7 +49,7 @@ public class CalendarFragment extends Fragment {
     private EventBiz eventBiz;
     MaterialCalendarView CalendarView;
     ListView listView;
-    private EventListAdapter adapter;
+    private CalendarEventListAdapter adapter;
     public ArrayList<Event> eventList;
     public List<CalendarDay> datesList = new ArrayList<>();
     Intent intent;
@@ -133,64 +129,15 @@ public class CalendarFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_calendar, container, false);
         // Inflate the layout for this fragment
         CalendarView=(MaterialCalendarView)v.findViewById(R.id.calendarView);
-<<<<<<< HEAD
         listView = (ListView) v.findViewById(R.id.eventlist);
-=======
+
         /** add decorator **/
-        EventBiz eventBiz = new EventBiz();
-        List<Long> stampList = new ArrayList<>();
-        String status = "started";
-
-        /** get data from the database**/
-        try {
-            //stampList = eventBiz.loadDatesHavingEvents(2, status);
-            for (int i = 0; i < stampList.size();i++){
-                Log.e(TAG, "timestamp=" + stampList.get(i));
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        List<Event>eventList = new ArrayList<>();
-        long time_stamp = 1509854400488L;
-       try{
-           //eventList = eventBiz.loadEventsOfOneDate(2,time_stamp);
-           for (int i = 0; i < eventList.size();i++){
-               Log.e(TAG, "eventList=" + eventList.toString());
-           }
-       }catch(Exception e){
-           e.printStackTrace();
-       }
+        eventBiz = new EventBiz();
+        //load user
+        user = new UserBiz(getActivity()).readUser();
 
 
-        final List<CalendarDay> datesList = new ArrayList<>();
-        datesList.add(CalendarDay.from(2017,10,15));//actually it's 11.15,cause month value need to add 1
-        datesList.add(CalendarDay.from(2017,10,21));//11.21
-        datesList.add(CalendarDay.from(2017,11,10));//12.10
-        CalendarView.addDecorators(
-                new HighlightDecorator(Color.parseColor("#FF4081"),datesList )
-        );
-        /*
-        CalendarView.state().edit()
-                .setFirstDayOfWeek(Calendar.MONDAY)   //设置每周开始的第一天
-                .setMinimumDate(CalendarDay.from(2015, 4, 3))  //设置可以显示的最早时间
-                .setMaximumDate(CalendarDay.from(2018, 5, 12))//设置可以显示的最晚时间
-                .setCalendarDisplayMode(CalendarMode.MONTHS)//设置显示模式，可以显示月的模式，也可以显示周的模式
-                .commit();// 返回对象并保存
-*/
-        //event list
-        eventList = new ArrayList<>();
-        for(int i = 0;i<10;i++){
 
-            Event e = new Event();
-            e.setEventID(i);
-            e.setEventTitle("Debug " + i);
-            e.setEventDescription("woa " + i);
-            eventList.add(e);
-        }
-
-        ListView listView = (ListView) v.findViewById(R.id.eventlist);
->>>>>>> a6cd8774771660dd3d0c1bd7689719d6bbc38e87
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -204,9 +151,6 @@ public class CalendarFragment extends Fragment {
             }
         });
 
-        //load user
-        user = new UserBiz(getActivity()).readUser();
-
         CalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull com.prolificinteractive.materialcalendarview.MaterialCalendarView widget, @NonNull final com.prolificinteractive.materialcalendarview.CalendarDay date, boolean selected) {
@@ -217,25 +161,6 @@ public class CalendarFragment extends Fragment {
                         loadEvents(user.getUserId(), date.getDate().getTime());
                     }
                 }.start();
-                //Log.e(TAG, "listener string date=" + date.toString());
-/*
-                if (datesList.contains(date)){
-                    //get event from database
-
-                    event.setEventStatus("started");
-                    bundle.putSerializable("event", event);//serializable
-                    intent.putExtras(bundle);//send data
-                    startActivity(intent);
-                    return;
-                }
-
-                //intent to DateSelected activity
-
-                event.setEventStatus("initiated");
-                bundle.putSerializable("event", event);//serializable
-                intent.putExtras(bundle);//send data
-                startActivity(intent);
-                */
             }
         });
 
@@ -269,7 +194,7 @@ public class CalendarFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter = new EventListAdapter(getActivity(),null);
+                                adapter = new CalendarEventListAdapter(getActivity(),null);
                                 listView.setAdapter(adapter);
                                 adapter.add(events);
                                 adapter.notifyDataSetChanged();
