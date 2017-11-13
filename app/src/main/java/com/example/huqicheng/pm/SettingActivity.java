@@ -101,7 +101,7 @@ public class SettingActivity extends AppCompatActivity implements ServiceConnect
         MenuItem menuItem=menu.getItem(3);
         menuItem.setChecked(true);
         intent = new Intent(SettingActivity.this, MyService.class);
-        startService(intent);
+        //startService(intent);
     }
 
     @Override
@@ -159,5 +159,16 @@ public class SettingActivity extends AppCompatActivity implements ServiceConnect
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(this, CalendarActivity.class);
+        Bundle bundle = new Bundle();
+
+        backIntent.putExtras(bundle);
+        this.setResult(1, backIntent);
+        this.finish();
+        startActivity(backIntent);
+        //super.onBackPressed();
     }
 }

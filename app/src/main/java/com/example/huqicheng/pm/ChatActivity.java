@@ -120,7 +120,7 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
 
 
         intent = new Intent(ChatActivity.this, MyService.class);
-        startService(intent);
+       // startService(intent);
     }
 
     @Override
@@ -231,5 +231,16 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(this, CalendarActivity.class);
+        Bundle bundle = new Bundle();
+
+        backIntent.putExtras(bundle);
+        this.setResult(1, backIntent);
+        this.finish();
+        startActivity(backIntent);
+        //super.onBackPressed();
     }
 }
