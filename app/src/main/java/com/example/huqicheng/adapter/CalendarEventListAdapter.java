@@ -25,7 +25,7 @@ import java.util.List;
  * Created by jiaxinf on 2017-10-17.
  */
 
-public class EventListAdapter extends BaseAdapter {
+public class CalendarEventListAdapter extends BaseAdapter {
 
     public ArrayList<Event> getEventList() {
         return eventList;
@@ -34,9 +34,9 @@ public class EventListAdapter extends BaseAdapter {
     ArrayList<Event> eventList;
     private LayoutInflater inflater;
     public int checkCount;
-    public List<Long> selectedEvents = new ArrayList<>();
+    //public List<Long> selectedEvents = new ArrayList<>();
 
-    public EventListAdapter(Context context, ArrayList<Event> eventList) {
+    public CalendarEventListAdapter(Context context, ArrayList<Event> eventList) {
 
         if(eventList != null)
             this.eventList = eventList;
@@ -77,16 +77,16 @@ public class EventListAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
         //Log.d("Debug:", "get view at "+i);
-        EventListAdapter.ViewHolder holder = null;
+        CalendarEventListAdapter.ViewHolder holder = null;
         if(convertView == null){
-            convertView = inflater.inflate(R.layout.event_list_row,null);
+            convertView = inflater.inflate(R.layout.calendar_event_list,null);
 
             holder = new ViewHolder();
             holder.title = (TextView)convertView.findViewById(R.id.title);
             holder.description = (TextView)convertView.findViewById(R.id.description);
+
+            /*
             holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
-
-
             final CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener(){
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -96,13 +96,14 @@ public class EventListAdapter extends BaseAdapter {
                 }
             };
             holder.checkBox.setOnCheckedChangeListener(checkListener);
+            */
             convertView.setTag(holder);
-            convertView.setTag(R.id.chk_box,holder.checkBox);
+            //convertView.setTag(R.id.chk_box,holder.checkBox);
 
         }else{
-            holder = (EventListAdapter.ViewHolder)convertView.getTag();
+            holder = (CalendarEventListAdapter.ViewHolder)convertView.getTag();
         }
-        holder.checkBox.setTag(eventList.get(i).getEventID());
+        //holder.checkBox.setTag(eventList.get(i).getEventID());
 
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
@@ -118,6 +119,7 @@ public class EventListAdapter extends BaseAdapter {
         notifyDataSetChanged();
 
     }
+    /*
     private void countCheck(boolean isChecked, long eid) {
         Long iid = (Long) eid;
 //        checkCount += isChecked ? 1 : -1 ;
@@ -129,6 +131,7 @@ public class EventListAdapter extends BaseAdapter {
         }
         Log.d("checked size", ""+selectedEvents.size());
     }
+    */
     private Event getEventById(long id){
         Event returnE = new Event();
         for (Event e : eventList){
@@ -143,7 +146,7 @@ public class EventListAdapter extends BaseAdapter {
     class ViewHolder{
         TextView title;
         TextView description;
-        CheckBox checkBox;
+        //CheckBox checkBox;
 
     }
 

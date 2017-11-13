@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.config.Config;
@@ -53,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 switch (msg.what){
                     case 0:
-                        //Toast.makeText(getApplicationContext(), "login failed" ,Toast.LENGTH_LONG).show();
+                        //TODO show a dialog to notify that login is rejected by the server
                         break;
                     case 1:
                         intent = new Intent(LoginActivity.this, CalendarActivity.class);
@@ -118,10 +119,12 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
+                //TODO before login, check the login type is username or email and check whether input is legal or not
+
                 UserBiz userBiz = new UserBiz(LoginActivity.this);
                 User user = new User();
-                user.setPassword("123");
-                user.setUsername("q45hu");
+                user.setPassword(etPassword.getText().toString());
+                user.setUsername(etEmail.getText().toString());
                 User res = userBiz.doLogin(user,"username");
 
                 if(res != null){

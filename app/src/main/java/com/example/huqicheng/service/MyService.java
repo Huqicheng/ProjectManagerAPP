@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.example.huqicheng.client.NettyClientBootstrap;
+import com.example.huqicheng.dao.UserDao;
 import com.example.huqicheng.message.BaseMsg;
 import com.example.huqicheng.message.MsgType;
 import com.example.huqicheng.utils.ClientUtils;
@@ -71,17 +72,19 @@ public class MyService extends Service {
 
         super.onCreate();
 
-//        Log.d("debug:","service");
-//        client = ClientUtils.getInstance();
-//
-//        Log.d("debug:","start");
-//
-//        BaseMsg loginMsg=new BaseMsg();
-//        loginMsg.setType(MsgType.LOGIN);
-//        loginMsg.putParams("user", "huqicheng");
-//        loginMsg.putParams("pwd", "huqicheng");
-//        if(client.socketChannel != null){
-//            client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
-//        }
+
+        String client_id = new UserDao(getApplicationContext()).readUser().getUserId()+"";
+        Log.d("debug:","service");
+        client = ClientUtils.getInstance(client_id);
+
+        Log.d("debug:","start");
+
+        BaseMsg loginMsg=new BaseMsg();
+        loginMsg.setType(MsgType.LOGIN);
+        loginMsg.putParams("user", "huqicheng");
+        loginMsg.putParams("pwd", "huqicheng");
+        if(client.socketChannel != null){
+            client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
+        }
     }
 }
