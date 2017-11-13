@@ -1,8 +1,6 @@
 package com.example.huqicheng.pm;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,45 +12,52 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.example.huqicheng.bll.EventBiz;
+import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.User;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class DateSelected extends AppCompatActivity {
     Intent intent;
-    private EditText eventName,eventLocation,eventDiscription,Attendees;
-    private Button save,add,setTime;
-    private Button startTime;
+    private EditText eventName,eventDiscription;
+    private Button save;
+    private Button time_picker, set_deadline;
     private TextView textClock,textDate;
     static final String TAG="TAG";
-    private static final int uniqueID2=0;
-    int hour_x,minute_x;
-    private AlarmManager alarmManager;
+    public String assignresult = "";
+    public int hour_x,minute_x;
+    public EventBiz eventBiz = new EventBiz();
     private Intent INTENT;
-    private Context context;
+    public Context context;
+    private User user;
+    private int sYear;
+    private int sonth;
+    private int sDay;
+    private int sHour;
+    private int sMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_date_selected);
 
         //Initializing the EditTexts
         eventName = (EditText) findViewById(R.id.etEventname);
-        eventLocation = (EditText) findViewById(R.id.etEventlocation);
         eventDiscription = (EditText) findViewById(R.id.etEventDiscription);
         //Attendees = (EditText) findViewById(R.id.editText5);
 
         //Initializing the buttons
         save = (Button) findViewById(R.id.btnSave);
-        //add = (Button) findViewById(R.id.button2);
-        startTime = (Button) findViewById(R.id.btnTimepicker);
-        setTime=(Button) findViewById(R.id.btnSettime);
-
+        time_picker = (Button) findViewById(R.id.btnTimepicker);
+        set_deadline=(Button) findViewById(R.id.btnSettime);
 
         //Initializing the TextViews of the Activity
         textClock = (TextView) findViewById(R.id.tvDispaytime);
@@ -66,13 +71,13 @@ public class DateSelected extends AppCompatActivity {
 
         //getting date from mainactivity
         Intent eventintent = this.getIntent();
-        Event event = (Event)eventintent.getSerializableExtra("event");
+        final Event event = (Event)eventintent.getSerializableExtra("event");
         if (event.getEventStatus().equals("started")) {
             eventName.setText(event.getEventTitle());
-            eventLocation.setText(event.getEventLocation());
-            eventDiscription.setText(event.getEventDescription());
+            eventDiscription.setText(event.getDescription());
         }
-
+        //load user
+        user = new UserBiz(this).readUser();
         //get timestamp and string date
         Timestamp datetimestamp = new Timestamp(event.getCreatedAt());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,28 +85,37 @@ public class DateSelected extends AppCompatActivity {
         String s = sdf.format(datetimestamp);
 
         textDate.setText(s);
-        //alarmManager= (AlarmManager)getSystemService(ALARM_SERVICE);
         this.context=this;
 
         //save button clicked
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                boolean result = db.insertData(date11, eventName.getText().toString(), eventLocation.getText().toString(), eventDiscription.getText().toString());
-                //checking if data was inserted or not.
-                if (result == false)
-                    Toast.makeText(dateSelected.this, "Failed to Insert Data", Toast.LENGTH_LONG).show();
-                else {
-                    Toast.makeText(dateSelected.this, "Data Inserted", Toast.LENGTH_LONG).show();
-                    intent = new Intent(dateSelected.this, MainActivity.class);
-                    startActivity(intent);
+                final Event event_save = new Event();
+                event_save.setAssignedBy(user.getUserId());
+                event_save.setAssignedTo(user.getUserId());
+                event_save.setDeadLine(CalendarDay.from(2017,11,20).getDate().getTime());
+                event_save.setEventTitle(eventName.getText().toString());
+                event_save.setDescription(eventDiscription.getText().toString());
+                event_save.setGroupId(1);
+
+                new Thread(){
+                    @Override
+                    public void run() {
+                        assignresult = eventBiz.assignEventBiz(event_save);
+                    }
+                }.start();
+                Log.e(TAG, "assignresult: " + assignresult);
+                if (assignresult == "success"){
+                    Toast.makeText(DateSelected.this, "Event inserted", Toast.LENGTH_LONG).show();
+                }else if(assignresult == null) {
+                    Toast.makeText(DateSelected.this, "Failed to insert event", Toast.LENGTH_LONG).show();
                 }
-                */
+
             }
         });
 
-        setTime.setOnClickListener(new View.OnClickListener() {
+        set_deadline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -114,54 +128,20 @@ public class DateSelected extends AppCompatActivity {
                 cal.set(Calendar.MINUTE, minute_x);
                 cal.set(Calendar.SECOND, 0);
                 long mills = cal.getTimeInMillis();
-
-                INTENT = new Intent(DateSelected.this,AlarmReceiver.class);
-
-
-                String event=eventName.getText().toString();
-                String Discri=eventDiscription.getText().toString();
-
-                //sendind data to Alarm Manager class
-                INTENT.putExtra("Event name message",event);
-                INTENT.putExtra("Event Discription message",Discri);
-
-                //Pending Intent to tell Alarm Manager to wait till the time in millis
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(DateSelected.this, 0, INTENT, PendingIntent.FLAG_UPDATE_CURRENT);
-                //calling the onReceive in the Alarm Manager.
-                alarmManager.set(AlarmManager.RTC_WAKEUP, mills, pendingIntent);
             }
         });
 
-        //add button clicked
-        /*
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String d= date11+""+incrementer;
-                incrementer++;
-                int changeDateId=Integer.parseInt(d);
-                boolean result = db2.insertAttendees(changeDateId, Attendees.getText().toString());
-                //checking if Attendees were inserted or not.
-                if (result == false)
-                    Toast.makeText(dateSelected.this, "Failed to add Attendee", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(dateSelected.this, "Attendee Inserted", Toast.LENGTH_LONG).show();
-                Attendees.setText("");
-            }
-        });
-        */
         //setting up On click listener to open a dialog box.
-        startTime.setOnClickListener(new View.OnClickListener() {
+        time_picker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                showDialog(uniqueID2);
+                showDialog(0);
             }
         });
     }
 
     protected Dialog onCreateDialog(int id) {
-        if (id == uniqueID2)
+        if (id == 0)
             return new TimePickerDialog(DateSelected.this, kTimePickerListener, hour_x, minute_x, false);
         return null;
     }

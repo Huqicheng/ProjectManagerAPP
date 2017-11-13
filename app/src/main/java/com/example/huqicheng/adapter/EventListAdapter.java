@@ -27,6 +27,10 @@ import java.util.List;
 
 public class EventListAdapter extends BaseAdapter {
 
+    public ArrayList<Event> getEventList() {
+        return eventList;
+    }
+
     ArrayList<Event> eventList;
     private LayoutInflater inflater;
     public int checkCount;
@@ -56,14 +60,14 @@ public class EventListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return getItem(i).getEventId();
+        return getItem(i).getEventID();
     }
 
     public void remove(Long i){
         long id = (long) i;
         ArrayList<Event> tmp = new ArrayList<>(eventList);
         for (Event e : tmp){
-            if (e.getEventId() == id){
+            if (e.getEventID() == id){
                 eventList.remove(e);
             }
         }
@@ -87,7 +91,7 @@ public class EventListAdapter extends BaseAdapter {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     long eid =  (long) buttonView.getTag();
-                    getEventById(eid).setSelected(buttonView.isChecked());
+                    //getEventById(eid).setSelected(buttonView.isChecked());
                     countCheck(isChecked,eid);
                 }
             };
@@ -98,12 +102,12 @@ public class EventListAdapter extends BaseAdapter {
         }else{
             holder = (EventListAdapter.ViewHolder)convertView.getTag();
         }
-        holder.checkBox.setTag(eventList.get(i).getEventId());
+        holder.checkBox.setTag(eventList.get(i).getEventID());
 
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
-        holder.description.setText(event.getEventDescription());
-        holder.checkBox.setChecked(eventList.get(i).isSelected());
+        holder.description.setText(event.getDescription());
+        //holder.checkBox.setChecked(eventList.get(i).isSelected());
 
         return convertView;
     }
@@ -128,7 +132,7 @@ public class EventListAdapter extends BaseAdapter {
     private Event getEventById(long id){
         Event returnE = new Event();
         for (Event e : eventList){
-            if (e.getEventId() == id){
+            if (e.getEventID() == id){
                 returnE = e;
             }
         }
@@ -142,4 +146,5 @@ public class EventListAdapter extends BaseAdapter {
         CheckBox checkBox;
 
     }
+
 }

@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +20,11 @@ import android.widget.Toast;
 
 import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.bll.EventBiz;
+import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.entity.User;
+import com.example.huqicheng.nao.MessageNao;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -25,10 +32,12 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -43,11 +52,14 @@ import java.util.List;
 public class CalendarFragment extends Fragment {
     private EventBiz eventBiz;
     MaterialCalendarView CalendarView;
+    ListView listView;
     private EventListAdapter adapter;
     public ArrayList<Event> eventList;
+    public List<CalendarDay> datesList = new ArrayList<>();
     Intent intent;
-    static int incrementer;
     static final String TAG="TAG";
+    private User user;
+    private Handler handler = null;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -118,10 +130,12 @@ public class CalendarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_calendar, container, false);
-
+        final View v = inflater.inflate(R.layout.fragment_calendar, container, false);
         // Inflate the layout for this fragment
         CalendarView=(MaterialCalendarView)v.findViewById(R.id.calendarView);
+<<<<<<< HEAD
+        listView = (ListView) v.findViewById(R.id.eventlist);
+=======
         /** add decorator **/
         EventBiz eventBiz = new EventBiz();
         List<Long> stampList = new ArrayList<>();
@@ -140,7 +154,7 @@ public class CalendarFragment extends Fragment {
         List<Event>eventList = new ArrayList<>();
         long time_stamp = 1509854400488L;
        try{
-           eventList = eventBiz.loadEventsOfOneDate(2,time_stamp);
+           //eventList = eventBiz.loadEventsOfOneDate(2,time_stamp);
            for (int i = 0; i < eventList.size();i++){
                Log.e(TAG, "eventList=" + eventList.toString());
            }
@@ -176,39 +190,37 @@ public class CalendarFragment extends Fragment {
         }
 
         ListView listView = (ListView) v.findViewById(R.id.eventlist);
+>>>>>>> a6cd8774771660dd3d0c1bd7689719d6bbc38e87
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Log.d("clicked item: ", i + "at pos " + l);
+                Event event = adapter.getEventList().get(i);
+                intent = new Intent(getActivity(), DateSelected.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", event);//serializable
+                intent.putExtras(bundle);//send data
+                startActivity(intent);
             }
         });
-        adapter = new EventListAdapter(getActivity(),null);
-        listView.setAdapter(adapter);
-        adapter.add(eventList);
+
+        //load user
+        user = new UserBiz(getActivity()).readUser();
 
         CalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
-            public void onDateSelected(@NonNull com.prolificinteractive.materialcalendarview.MaterialCalendarView widget, @NonNull com.prolificinteractive.materialcalendarview.CalendarDay date, boolean selected) {
+            public void onDateSelected(@NonNull com.prolificinteractive.materialcalendarview.MaterialCalendarView widget, @NonNull final com.prolificinteractive.materialcalendarview.CalendarDay date, boolean selected) {
 
-                Event event = new Event();
-                event.setEventDescription("discuss ece650 assignment LOL");
-                event.setEventTitle("meeting");
-                event.setEventLocation("E3");
-                intent = new Intent(getActivity(), DateSelected.class);
-                Bundle bundle = new Bundle();
-                event.setEventID(date.hashCode());
-                event.setEventDescription("date message");
-                long stamp = date.getCalendar().getTimeInMillis();
-                event.setCreatedAt(stamp);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String s = sdf.format(new Timestamp(stamp));
-                Log.e(TAG, "string date=" + s);
-                Log.e(TAG, "timestamp=" + stamp);
-
+                new Thread(){
+                    @Override
+                    public void run() {
+                        loadEvents(user.getUserId(), date.getDate().getTime());
+                    }
+                }.start();
+                //Log.e(TAG, "listener string date=" + date.toString());
+/*
                 if (datesList.contains(date)){
-                    //get evetn from database
-                    // get_event_by_date(CalendarDay.from(2015.4.3))
+                    //get event from database
 
                     event.setEventStatus("started");
                     bundle.putSerializable("event", event);//serializable
@@ -217,86 +229,118 @@ public class CalendarFragment extends Fragment {
                     return;
                 }
 
-                //intent to dateselected activity
+                //intent to DateSelected activity
 
                 event.setEventStatus("initiated");
                 bundle.putSerializable("event", event);//serializable
                 intent.putExtras(bundle);//send data
                 startActivity(intent);
+                */
             }
         });
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch(msg.what){
+                    //get dates having events
+                    case 1:
+                        ArrayList<Long> dates = (ArrayList<Long>)msg.obj;
+                        final List<CalendarDay> datesList = new ArrayList<>();
+                        for(int i=0;i<dates.size();i++){
+                            Log.d("dates",""+dates.get(i));
+                            Date date = new Date(dates.get(i));
+                            CalendarDay day = CalendarDay.from(date);
+                            Log.e(TAG, "timestamp=" + date.toString());
+                            datesList.add(day);
+                        }
+                        CalendarView.addDecorators(
+                                new HighlightDecorator(Color.parseColor("#FF4081"),datesList )
+                        );
+                        break;
+                    //get events on specific day
+                    case 2:
+                        final ArrayList<Event> events = (ArrayList<Event>)msg.obj;
+
+                        for (int i = 0; i < events.size();i++){
+                            Log.d("events",""+events.get(i).getDescription());
+                        }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter = new EventListAdapter(getActivity(),null);
+                                listView.setAdapter(adapter);
+                                adapter.add(events);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        break;
+                }
+            }
+        };
+
         return v;
     }
 
-    public void showMessage(String title,String content) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(content);
-        AlertDialog alert= builder.create();
-        alert.show();
-    }
-    /***  show message ***/
-    /*
-    // TODO: Rename method, update argument and hook method into UI event
-    public void showMessage(String title,String Message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        // set three button on the dialog box ( Edit, Delete , Cancel)
-        builder.setMessage(Message).setPositiveButton("Edit Event", new DialogInterface.OnClickListener() {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        /** get data from the database**/
+        new Thread(){
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                intent = new Intent(getActivity(), editClicked.class);
-                Cursor cursor = myDb2.getAllData();
-                while(cursor.moveToNext()) {
-                    String test = cursor.getInt(0) + "";
-                    if (test.contains(date)) {
-                        int changedDateId = Integer.parseInt(test);
-                        myDb2.deleteEvent(changedDateId);
-                    }
-                }
-                intent.putExtra("date message", Date);
-                startActivity(intent);
+            public void run() {
+                loadDates(user.getUserId(),"started");
             }
-        }).setNeutralButton("Delete Event", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int result  =myDb.deleteEvent(Date);
-                Cursor cursor = myDb2.getAllData();
-                while(cursor.moveToNext()) {
-                    String test = cursor.getInt(0) + "";
-                    if (test.contains(date)) {
-                        int changedDateId = Integer.parseInt(test);
-                        myDb2.deleteEvent(changedDateId);
-                    }
-                }
-                // checking if data is deleted or not.
-                if(result == 1 )
-                    Toast.makeText(getActivity(),"Data deleted",Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(getActivity(),"Failed to delete Data",Toast.LENGTH_LONG).show();
-            }
-        }).setNegativeButton("Cancel",null);
-        //builder.show();
-        AlertDialog alert= builder.create();
-        alert.show();
+        }.start();
     }
 
-    */
+    void loadDates(long user_id, String status){
+        /** add decorator **/
+        EventBiz eventBiz = new EventBiz();
+        List<Long> stampList = new ArrayList<>();
+        try {
+            stampList = eventBiz.loadDatesHavingEvents(user_id, status);
+            for (int i = 0; i < stampList.size();i++){
+                //Log.e(TAG, "timestamp=" + new Date(stampList.get(i)).toString());
+            }
+            if(stampList == null){
+                return;
+            }
 
+            Message msg = Message.obtain();
+            msg.what = 1;
+            msg.obj = stampList;
+            handler.handleMessage(msg);
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    void loadEvents(long user_id, long time_stamp){
+        /** add decorator **/
+        EventBiz eventBiz = new EventBiz();
+        List<Event> eventList = new ArrayList<>();
+        try {
+            eventList = eventBiz.loadEventsOfOneDate(user_id, time_stamp);
+            if(eventList == null){
+                return;
+            }
+            for (int i = 0; i < eventList.size();i++){
+                Log.e(TAG, "event=" + eventList.get(i));
+            }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+            Message msg = Message.obtain();
+            msg.what = 2;
+            msg.obj = eventList;
+            handler.handleMessage(msg);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

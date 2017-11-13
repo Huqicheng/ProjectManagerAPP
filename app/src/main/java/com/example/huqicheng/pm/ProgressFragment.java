@@ -96,7 +96,7 @@ public class ProgressFragment extends Fragment {
             long id = Integer.valueOf(String.valueOf(20)+String.valueOf(i));
             e.setEventID(id);
             e.setEventTitle("Debug " + i);
-            e.setEventDescription("woa " + i);
+            e.setDescription("woa " + i);
             eventList.add(e);
         }
         totalEvents = eventList.size();

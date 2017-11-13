@@ -26,7 +26,6 @@ import java.util.List;
 public class EventNao {
     public List<Long> getDatesHavingEvents(long user_id, String status){
         List<Long> res = null;
-        List<Long> tmp = null;
         try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
@@ -46,12 +45,8 @@ public class EventNao {
             // Type:   simple objects: ObjectName.class
             //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
             Type type = new TypeToken<ArrayList<Long>>(){}.getType();
-            tmp = new Gson().fromJson(json,type);
+            res = new Gson().fromJson(json,type);
 
-            // convert Long to Date Object
-            for(Long timestamp:tmp){
-                res.add(timestamp);
-            }
         }catch (Exception e){
             e.printStackTrace();
 
@@ -61,15 +56,15 @@ public class EventNao {
 
     public List<Event> getEventsOfOneDate(long user_id, long time_stamp){
         List<Event> res = null;
-        List<Event> tmp = null;
         try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("user_id",user_id+""));
             params.add(new BasicNameValuePair("timestamp",time_stamp+""));
+            Log.d("dates http",""+ new Date(time_stamp).toString());
 
             //modify url according to interface doc
-            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getEventsOfOneDate.do",params,HttpUtils.GET);
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getEventsByDate.do",params,HttpUtils.GET);
 
             if(entity == null){
                 return null;
@@ -87,19 +82,10 @@ public class EventNao {
             // Type:   simple objects: ObjectName.class
             //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
             Type type = new TypeToken<ArrayList<Event>>(){}.getType();
-            tmp = new Gson().fromJson(json,type);
-
-            // convert Long to Date Object
-            for(Event event:tmp){
-                res.add(event);
-            }
-
-
+            res = new Gson().fromJson(json,type);
         }catch (Exception e){
             e.printStackTrace();
-
         }
-
         return res;
     }
     public String deleteEvent(long event_id) {
@@ -127,12 +113,39 @@ public class EventNao {
             // decoding here
             // Type:   simple objects: ObjectName.class
             //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType()
-            res = new Gson().fromJson(json, String.class);
+            res = json;
 
         } catch (Exception e) {
             e.printStackTrace();
 
         }
         return res;
+    }
+    public String assignEvent(Event event){
+        List<Event> res = null;
+        try{
+            // decoding here
+            // Type:   simple objects: ObjectName.class
+            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
+            Type type = Event.class;
+            String json = new Gson().toJson(event,type);
+            Log.d("debug: ",json);
+
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("jsonEvent",json));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/assignEvent.do",params,HttpUtils.POST);
+
+            if(entity == null){
+                return null;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String str = "success";
+        return str;
     }
 }

@@ -9,20 +9,54 @@ import java.util.Date;
  */
 
 public class Event implements java.io.Serializable{
-	/** users can edit title,description,deadline **/
-    long eventId;
-	int groupId;
-	int assignedTo; //assign to user_ID
-	int assignedBy; //event assigned by user_ID
-	String groupName;
-    String eventTitle;
-    String eventDescription;
-	String eventLocation;
-    String eventStatus;
+	long eventID;
+	String title;
+	String description;
 	long deadLine;
+	long assignedBy;
+	long assignedTo;
+	String eventStatus;
 	long createdAt;
 	long updatedAt;
-	boolean isSelected;
+	long groupId;
+	String groupName;
+
+
+
+
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public long getAssignedTo() {
+		return assignedTo;
+	}
+
+	public void setAssignedTo(long assignedTo) {
+		this.assignedTo = assignedTo;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 
 
 	public long getDeadLine() {
@@ -33,15 +67,11 @@ public class Event implements java.io.Serializable{
 		this.deadLine = deadLine;
 	}
 
-	public int getAssignedTo() {return assignedTo;}
-
-	public void setAssignedTo(int assignedTo) {this.assignedTo = assignedTo;}
-
-	public int getAssignedBy() {
+	public long getAssignedBy() {
 		return assignedBy;
 	}
 
-	public void setAssignedBy(int assignedBy) {
+	public void setAssignedBy(long assignedBy) {
 		this.assignedBy = assignedBy;
 	}
 
@@ -52,6 +82,8 @@ public class Event implements java.io.Serializable{
 	public void setEventStatus(String eventStatus) {
 		this.eventStatus = eventStatus;
 	}
+
+
 
 	public long getCreatedAt() {
 		return createdAt;
@@ -69,52 +101,32 @@ public class Event implements java.io.Serializable{
 		this.updatedAt = updatedAt;
 	}
 
-	public int getGroupId() {
+	public long getGroupId() {
 		return groupId;
 	}
 
-	public void setGroupId(int groupId) {
+	public void setGroupId(long groupId) {
 		this.groupId = groupId;
 	}
 
-	public String getGroupName() {
-		return groupName;
-	}
 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
+
+	public long getEventID() {
+		return eventID;
 	}
 
 	public String getEventTitle() {
-        return eventTitle;
-    }
-
-    public String getEventDescription() {
-        return eventDescription;
-    }
-
-    public long getEventId() {
-        return eventId;
-    }
-
-	public String getEventLocation() {return eventLocation;}
-
-	public void setEventLocation(String eventLocation) {this.eventLocation = eventLocation;}
-
-	public void setEventID(long eventId) {
-        this.eventId = eventId;
-    }
-
-    public void setEventTitle(String eventTitle) {
-        this.eventTitle = eventTitle;
-    }
-
-    public void setEventDescription(String eventDescription) {
-        this.eventDescription = eventDescription;
-    }
-	public boolean isSelected() {
-		return isSelected;
+		return title;
 	}
 
-	public  void setSelected(boolean isSelected){this.isSelected = isSelected;}
+	public void setEventID(long eventID) {
+		this.eventID = eventID;
+	}
+
+
+	public void setEventTitle(String eventTitle) {
+		this.title = eventTitle;
+	}
+
+
 }

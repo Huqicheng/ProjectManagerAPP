@@ -23,5 +23,8 @@ public class EventBiz {
     public String deleteEventBiz(long event_id){
         return eventNao.deleteEvent(event_id);
     }
+    public String assignEventBiz(Event event){
+        return eventNao.assignEvent(event);
+    }
 }
 
