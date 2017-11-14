@@ -72,6 +72,7 @@ public class DateSelected extends AppCompatActivity {
         //getting date from mainactivity
         Intent eventintent = this.getIntent();
         final Event event = (Event)eventintent.getSerializableExtra("event");
+        Log.d("events in DS",""+event.getDescription());
         if (event.getEventStatus().equals("started")) {
             eventName.setText(event.getEventTitle());
             eventDiscription.setText(event.getDescription());

@@ -143,6 +143,7 @@ public class CalendarFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Log.d("clicked item: ", i + "at pos " + l);
                 Event event = adapter.getEventList().get(i);
+                Log.d("events in CF",""+event.getDescription());
                 intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);//serializable
