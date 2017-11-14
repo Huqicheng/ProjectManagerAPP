@@ -30,6 +30,7 @@
         <activity android:name=".DateSelected" />
         <activity android:name=".WeChatActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".GroupCreation" />
         <activity android:name=".RestorePasswordActivity" />
 
         <service
