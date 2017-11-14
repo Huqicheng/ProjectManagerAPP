@@ -10,12 +10,11 @@ Target Server Type    : MYSQL
 Target Server Version : 50627
 File Encoding         : 65001
 
-Date: 2017-11-11 18:45:37
+Date: 2017-11-14 11:50:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
-use pm;
 -- ----------------------------
 -- Table structure for `event`
 -- ----------------------------
@@ -40,7 +39,7 @@ CREATE TABLE `event` (
 -- Records of event
 -- ----------------------------
 INSERT INTO `event` VALUES ('1', '2', 'new task', 'new', '2017-11-11 17:50:54', '2', 'started', '2017-11-04 23:42:05', '2', '2017-11-04 23:42:05');
-INSERT INTO `event` VALUES ('2', '2', 'title2', '232323', '2017-11-04 00:00:00', '2', 'started', '2017-11-04 23:42:29', '2', '2017-11-04 23:42:29');
+INSERT INTO `event` VALUES ('2', '2', 'newtitle', 'newdescription', '2017-11-05 00:00:00', '2', 'started', '2017-11-04 23:42:29', '2', '2017-11-11 18:53:13');
 INSERT INTO `event` VALUES ('3', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:05:58', '2', '2017-11-05 13:05:58');
 INSERT INTO `event` VALUES ('4', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:46:09', '2', '2017-11-05 13:46:09');
 INSERT INTO `event` VALUES ('5', '2', 'title2', '232323', '2017-11-11 18:04:02', '2', 'started', '2017-11-11 18:04:02', '2', '2017-11-11 18:04:02');
@@ -62,13 +61,16 @@ CREATE TABLE `group` (
   PRIMARY KEY (`id`),
   KEY `group_project` (`project_id`),
   CONSTRAINT `group_project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of group
 -- ----------------------------
 INSERT INTO `group` VALUES (null, '1', 'personal', null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `group` VALUES ('images/group/2.gif', '2', 'G8', 'description', '2', '2017-11-04 23:21:45', '2017-11-04 23:21:48');
+INSERT INTO `group` VALUES (null, '3', 'Group For test service', 'desc', '3', '2017-11-14 10:44:45', '2017-11-14 10:44:45');
+INSERT INTO `group` VALUES (null, '4', 'Group For test service', 'desc', '4', '2017-11-14 10:49:16', '2017-11-14 10:49:16');
+INSERT INTO `group` VALUES (null, '5', 'Group For test service', 'desc', '7', '2017-11-14 10:56:34', '2017-11-14 10:56:34');
 
 -- ----------------------------
 -- Table structure for `message`
@@ -82,8 +84,10 @@ CREATE TABLE `message` (
   `sender_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sender_id` (`sender_id`),
-  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
+  KEY `message_ibfk_group` (`group_id`),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `message_ibfk_group` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of message
@@ -136,6 +140,18 @@ INSERT INTO `message` VALUES ('67', '{\"body\":\"333\",\"username\":\"q45hu\"}',
 INSERT INTO `message` VALUES ('68', '{\"body\":\"3333\",\"username\":\"q45hu\"}', '2017-11-11 16:31:32', '2', '2');
 INSERT INTO `message` VALUES ('69', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-11 16:34:18', '2', '2');
 INSERT INTO `message` VALUES ('70', '{\"body\":\"444\",\"username\":\"q45hu\"}', '2017-11-11 16:34:20', '2', '2');
+INSERT INTO `message` VALUES ('71', '{\"body\":\"333\",\"username\":\"q45hu\"}', '2017-11-12 01:41:27', '2', '2');
+INSERT INTO `message` VALUES ('72', '{\"body\":\"444\",\"username\":\"q45hu\"}', '2017-11-12 01:41:31', '2', '2');
+INSERT INTO `message` VALUES ('73', '{\"body\":\"55555\",\"username\":\"q45hu\"}', '2017-11-12 01:41:33', '2', '2');
+INSERT INTO `message` VALUES ('74', '{\"body\":\"666\",\"username\":\"q45hu\"}', '2017-11-12 01:43:47', '2', '2');
+INSERT INTO `message` VALUES ('75', '{\"body\":\"444\",\"username\":\"q45hu\"}', '2017-11-13 00:22:45', '2', '2');
+INSERT INTO `message` VALUES ('76', '{\"body\":\"444\",\"username\":\"q45hu\"}', '2017-11-13 09:23:56', '2', '2');
+INSERT INTO `message` VALUES ('77', '{\"body\":\"555\",\"username\":\"q45hu\"}', '2017-11-13 09:24:00', '2', '2');
+INSERT INTO `message` VALUES ('78', '{\"body\":\"2222222\",\"username\":\"q45hu\"}', '2017-11-13 09:25:36', '2', '2');
+INSERT INTO `message` VALUES ('79', '{\"body\":\"wwwww\",\"username\":\"q45hu\"}', '2017-11-13 09:25:55', '2', '2');
+INSERT INTO `message` VALUES ('80', '{\"body\":\"wwwwwww\",\"username\":\"q45hu\"}', '2017-11-13 09:26:03', '2', '2');
+INSERT INTO `message` VALUES ('81', '{\"body\":\"222\",\"username\":\"q45hu\"}', '2017-11-13 09:59:34', '2', '2');
+INSERT INTO `message` VALUES ('82', '{\"body\":\"123\",\"username\":\"q45hu\"}', '2017-11-14 08:57:12', '2', '2');
 
 -- ----------------------------
 -- Table structure for `project`
@@ -152,13 +168,18 @@ CREATE TABLE `project` (
   PRIMARY KEY (`id`),
   KEY `project_user` (`creator`),
   CONSTRAINT `project_user` FOREIGN KEY (`creator`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of project
 -- ----------------------------
 INSERT INTO `project` VALUES ('1', 'personal', null, null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `project` VALUES ('2', 'pm', 'description', '2017-11-26 23:20:47', '2', '2017-11-04 23:20:55', '2017-11-04 23:21:03');
+INSERT INTO `project` VALUES ('3', 'test service', 'desc', '2017-11-14 10:44:45', '2', '2017-11-14 10:44:45', '2017-11-14 10:44:45');
+INSERT INTO `project` VALUES ('4', 'test service', 'desc', '2017-11-14 10:49:16', '2', '2017-11-14 10:49:16', '2017-11-14 10:49:16');
+INSERT INTO `project` VALUES ('5', 'test service', 'desc', '2017-11-14 10:55:08', '2', '2017-11-14 10:55:08', '2017-11-14 10:55:08');
+INSERT INTO `project` VALUES ('6', 'test service', 'desc', '2017-11-14 10:56:06', '2', '2017-11-14 10:56:06', '2017-11-14 10:56:06');
+INSERT INTO `project` VALUES ('7', 'test service', 'desc', '2017-11-14 10:56:34', '2', '2017-11-14 10:56:34', '2017-11-14 10:56:34');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -202,6 +223,64 @@ CREATE TABLE `user_group` (
 -- Records of user_group
 -- ----------------------------
 INSERT INTO `user_group` VALUES ('2', '2');
+INSERT INTO `user_group` VALUES ('3', '2');
+INSERT INTO `user_group` VALUES ('4', '2');
+INSERT INTO `user_group` VALUES ('5', '2');
+
+-- ----------------------------
+-- Procedure structure for `add_a_project`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `add_a_project`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_a_project`(
+IN projectName varchar(255),
+IN description varchar(255),
+IN deadline datetime,
+IN creatorId int,
+OUT pid int
+)
+BEGIN   
+
+insert into project(projectName,projectDescription,projectDeadline,creator,createdAt,updatedAt)
+values(projectName,description,deadline,creatorId,NOW(),NOW());
+
+select MAX(id) into pid from project;
+
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `add_group`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `add_group`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_group`(
+IN gName VARCHAR(255),
+IN description VARCHAR(255),
+IN projectId INT,
+IN creator INT
+)
+BEGIN   
+declare gid int;
+
+insert into `group`(groupName,groupDescription,project_id,createdAt,updatedAt)
+values(gName,description,projectId,NOW(),NOW());
+
+
+select max(id) into gid from `group`;
+
+insert into user_group(user_id, group_id) values(creator,gid);
+
+select `group`.*, creator
+from `group`,project
+where `group`.project_id = project.id
+and `group`.id =gid;
+
+
+END
+;;
+DELIMITER ;
 
 -- ----------------------------
 -- Procedure structure for `assign_event`
@@ -243,8 +322,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_a_group`(
 IN group_id int
 )
 BEGIN   
+declare projectid int;
+
+select project_id into projectid from `group`
+where `group`.id = group_id;
+
 delete from `group`
 where `group`.id = group_id;
+
+delete from project
+where id = projectid;
 
 END
 ;;
@@ -373,8 +460,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `get_groups_of_user`(
 IN user_id int
 )
 BEGIN   
-	SELECT  g.* FROM pm.user AS u, pm.user_group AS ug, pm.group AS g
-  WHERE ug.user_id = u.id and u.id=user_id and g.id=ug.group_id;
+	SELECT  g.*,creator 
+FROM `user` AS u, user_group AS ug, `group` AS g, project as p
+  WHERE ug.user_id = u.id and u.id=user_id and g.id=ug.group_id and p.id = g.project_id;
 END
 ;;
 DELIMITER ;
