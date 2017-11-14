@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+
+
+    <EditText
+        android:id="@+id/GroupName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textSize="18sp"
+        android:layout_alignBaseline="@+id/groupName"
+        android:layout_alignBottom="@+id/groupName"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:id="@+id/ProjectName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/GroupName"
+        android:layout_marginTop="49dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/GroupDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textSize="18sp"
+        android:layout_alignBaseline="@+id/groupDescription"
+        android:layout_alignBottom="@+id/groupDescription"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:text="@string/save"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/groupName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:text="@string/group_name"
+        android:textSize="18sp"
+        android:layout_below="@+id/btnSave"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/projectName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/ProjectName"
+        android:layout_alignBottom="@+id/ProjectName"
+        android:layout_alignParentStart="true"
+        android:text="@string/project_name"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/groupDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/projectName"
+        android:layout_marginTop="63dp"
+        android:text="@string/group_discription"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>

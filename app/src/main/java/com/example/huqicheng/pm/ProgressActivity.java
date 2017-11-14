@@ -100,7 +100,7 @@ public class ProgressActivity extends AppCompatActivity implements ServiceConnec
         MenuItem menuItem=menu.getItem(2);
         menuItem.setChecked(true);
         intent = new Intent(ProgressActivity.this, MyService.class);
-        startService(intent);
+       // startService(intent);
     }
 
     @Override
@@ -157,5 +157,16 @@ public class ProgressActivity extends AppCompatActivity implements ServiceConnec
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(this, CalendarActivity.class);
+        Bundle bundle = new Bundle();
+
+        backIntent.putExtras(bundle);
+        this.setResult(1, backIntent);
+        this.finish();
+        startActivity(backIntent);
+        //super.onBackPressed();
     }
 }

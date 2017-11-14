@@ -25,6 +25,10 @@
     <string name="event_location1">Event Location</string>
     <string name="event_discription1">Event Discription</string>
     <string name="attendee">Attendee</string>
+    <string name="group_name">Group Name</string>
+    <string name="project_name">Project Name</string>
+
+    <string name="group_discription">Group Discription</string>
     <string name="add1">Add</string>
     <!-- end for calendar-->
     <string-array name="languages">

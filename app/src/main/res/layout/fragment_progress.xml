@@ -70,7 +70,8 @@
         android:paddingTop="15dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/progressBar"
-        android:layout_above="@+id/show_btn">
+        android:layout_above="@+id/show_btn"
+        android:choiceMode="multipleChoice">
 
     </ListView>
 

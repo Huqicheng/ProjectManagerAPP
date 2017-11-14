@@ -101,9 +101,7 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        if (savedInstanceState == null) {
-            selectItem(0);
-        }
+
         this.progressIntent=new Intent(this,ProgressActivity.class);
         this.calendarIntent=new Intent(this,CalendarActivity.class);
         this.settingIntent=new Intent(this,SettingActivity.class);
@@ -120,7 +118,7 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
 
 
         intent = new Intent(ChatActivity.this, MyService.class);
-        startService(intent);
+       // startService(intent);
     }
 
     @Override
@@ -175,11 +173,12 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
         }
     }
     private void selectItem(int position) {
-//        if(position==1)
-//        {
-//            Intent intent=new Intent(this,AndroidMeActivity.class);
-//            startActivity(intent);
-//        }
+        Log.d("ChatActivity","position"+position);
+        if(position==0)
+        {
+            Intent intent=new Intent(this,GroupCreation.class);
+            startActivity(intent);
+        }
 
 
         // update the main content by replacing fragments
@@ -231,5 +230,16 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(this, CalendarActivity.class);
+        Bundle bundle = new Bundle();
+
+        backIntent.putExtras(bundle);
+        this.setResult(1, backIntent);
+        this.finish();
+        startActivity(backIntent);
+        //super.onBackPressed();
     }
 }

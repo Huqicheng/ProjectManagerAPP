@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.huqicheng.service.MyService;
+import com.example.huqicheng.utils.ClientUtils;
 
 public class CalendarActivity extends AppCompatActivity implements ServiceConnection,
         CalendarFragment.OnFragmentInteractionListener ,ChatFragment.OnFragmentInteractionListener,
@@ -83,6 +84,7 @@ public class CalendarActivity extends AppCompatActivity implements ServiceConnec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ClientUtils.setContext(this);
         this.chatIntent=new Intent(this,ChatActivity.class);
         this.progressIntent=new Intent(this,ProgressActivity.class);
         this.settingIntent=new Intent(this,SettingActivity.class);
@@ -104,7 +106,7 @@ public class CalendarActivity extends AppCompatActivity implements ServiceConnec
         MenuItem menuItem=menu.getItem(0);
         menuItem.setChecked(true);
         intent = new Intent(CalendarActivity.this, MyService.class);
-        startService(intent);
+        // startService(intent);
     }
 
     @Override
@@ -161,5 +163,17 @@ public class CalendarActivity extends AppCompatActivity implements ServiceConnec
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(this, CalendarActivity.class);
+        Bundle bundle = new Bundle();
+
+        backIntent.putExtras(bundle);
+        this.setResult(1, backIntent);
+        this.finish();
+        startActivity(backIntent);
+        //super.onBackPressed();
     }
 }

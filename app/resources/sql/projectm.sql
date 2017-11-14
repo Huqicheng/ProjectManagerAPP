@@ -66,7 +66,7 @@ CREATE TABLE `group` (
 -- ----------------------------
 -- Records of group
 -- ----------------------------
-INSERT INTO `group` VALUES (null, '1', 'personal', null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `group` VALUES (null, '1', 'personal', null, '1', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO `group` VALUES ('images/group/2.gif', '2', 'G8', 'description', '2', '2017-11-04 23:21:45', '2017-11-04 23:21:48');
 INSERT INTO `group` VALUES (null, '3', 'Group For test service', 'desc', '3', '2017-11-14 10:44:45', '2017-11-14 10:44:45');
 INSERT INTO `group` VALUES (null, '4', 'Group For test service', 'desc', '4', '2017-11-14 10:49:16', '2017-11-14 10:49:16');
@@ -173,7 +173,7 @@ CREATE TABLE `project` (
 -- ----------------------------
 -- Records of project
 -- ----------------------------
-INSERT INTO `project` VALUES ('1', 'personal', null, null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `project` VALUES ('1', 'personal', null, null, '1', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
 INSERT INTO `project` VALUES ('2', 'pm', 'description', '2017-11-26 23:20:47', '2', '2017-11-04 23:20:55', '2017-11-04 23:21:03');
 INSERT INTO `project` VALUES ('3', 'test service', 'desc', '2017-11-14 10:44:45', '2', '2017-11-14 10:44:45', '2017-11-14 10:44:45');
 INSERT INTO `project` VALUES ('4', 'test service', 'desc', '2017-11-14 10:49:16', '2', '2017-11-14 10:49:16', '2017-11-14 10:49:16');
@@ -203,7 +203,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'sys_admin', null, null, null, null, '0000-00-00 00:00:00', '0000-00-00 00:00:00', null);
+INSERT INTO `user` VALUES ('1', 'sys_admin', null, null, null, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00', null);
 INSERT INTO `user` VALUES ('2', 'q45hu', 'q45hu@uwaterloo.ca', '123', 'normal', 'q45hu', '2017-11-04 23:19:49', '2017-11-04 23:19:54', 'images/user/2.gif');
 
 -- ----------------------------

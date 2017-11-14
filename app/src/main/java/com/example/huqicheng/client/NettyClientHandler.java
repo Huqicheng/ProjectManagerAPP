@@ -65,11 +65,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
     	System.out.println(msg);
         BaseMsg baseMsg = new Gson().fromJson(msg, BaseMsg.class);
-        ClientUtils.onChatMsgRecievedForWeChat(baseMsg);
+
     	MsgType msgType=baseMsg.getType();
         switch (msgType){
             case LOGIN:{
-                //向服务器发起登录
                 Log.d("Debug:", "messageReceived: msg ");
             }break;
             case PING:{
@@ -77,6 +76,20 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
                 
 
+            }break;
+            case ChatMsg:{
+                // TODO call different interfaces for different UI
+                if(ClientUtils.onChatMsgRecievedForWeChat(baseMsg)){
+                    break;
+                }
+
+                //TODO notify the new comming msg if wechat activity is not existed
+                //ClientUtils.notification(baseMsg);
+
+                //TODO notify ChatFragment to update UI
+            }break;
+            case ReplyForChatMsg:{
+                ClientUtils.onChatMsgRecievedForWeChat(baseMsg);
             }break;
 
             default:break;
