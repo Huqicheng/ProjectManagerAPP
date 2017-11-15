@@ -5,11 +5,13 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,7 @@ import java.util.List;
  * Use the {@link CalendarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class CalendarFragment extends Fragment {
     private EventBiz eventBiz;
     MaterialCalendarView CalendarView;
@@ -137,7 +140,7 @@ public class CalendarFragment extends Fragment {
         user = new UserBiz(getActivity()).readUser();
 
 
-
+        //listView listener: show DateSelected activity and edit event
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -147,21 +150,23 @@ public class CalendarFragment extends Fragment {
                 intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);//serializable
+                bundle.putSerializable("flag", DateSelected.EDIT);
                 intent.putExtras(bundle);//send data
                 startActivity(intent);
             }
         });
-
+        //CalendarView listener: show events on a specific date
         CalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull com.prolificinteractive.materialcalendarview.MaterialCalendarView widget, @NonNull final com.prolificinteractive.materialcalendarview.CalendarDay date, boolean selected) {
-
+                //load events to listView
                 new Thread(){
                     @Override
                     public void run() {
                         loadEvents(user.getUserId(), date.getDate().getTime());
                     }
                 }.start();
+                //if there is no event on that day, create new event
             }
         });
 
@@ -172,7 +177,7 @@ public class CalendarFragment extends Fragment {
                     //get dates having events
                     case 1:
                         ArrayList<Long> dates = (ArrayList<Long>)msg.obj;
-                        final List<CalendarDay> datesList = new ArrayList<>();
+                        datesList = new ArrayList<>();
                         for(int i=0;i<dates.size();i++){
                             Log.d("dates",""+dates.get(i));
                             Date date = new Date(dates.get(i));

@@ -43,6 +43,8 @@ public class DateSelected extends AppCompatActivity {
     private int sDay;
     private int sHour;
     private int sMinute;
+    public static final int INIT = 1;
+    public static final int EDIT = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class DateSelected extends AppCompatActivity {
 
         //getting date from mainactivity
         Intent eventintent = this.getIntent();
+
         final Event event = (Event)eventintent.getSerializableExtra("event");
         Log.d("events in DS",""+event.getDescription());
         if (event.getEventStatus().equals("started")) {
