@@ -4,5 +4,5 @@ import com.example.huqicheng.message.BaseMsg;
 
 public interface OnChatMsgRecievedListener {
     void onChatMsgRecieved(BaseMsg msg);
-    long getId(long id);
+    long getId();
 }

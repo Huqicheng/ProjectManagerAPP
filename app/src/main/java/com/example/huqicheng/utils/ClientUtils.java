@@ -22,10 +22,15 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class ClientUtils {
 	private static NettyClientBootstrap client = null;
 	private static OnChatMsgRecievedListener listenerForWeChat;
+	private static OnChatMsgRecievedListener listenerForGroupList;
 	private static Context context;
 
 	public static void setContext(Context ctx){
 		context = ctx;
+	}
+
+	public static void setListenerForGroupList(OnChatMsgRecievedListener listener){
+		listenerForGroupList = listener;
 	}
 
 	public static void setListenerForWeChat(OnChatMsgRecievedListener listener){
@@ -37,10 +42,19 @@ public class ClientUtils {
 		if(listenerForWeChat == null){
 			return false;
 		}
-		if(listenerForWeChat.getId(1)!=Long.parseLong(msg.getGroupId() )){
+		if(listenerForWeChat.getId()!=Long.parseLong(msg.getGroupId() )){
 			return false;
 		}
 		listenerForWeChat.onChatMsgRecieved(msg);
+
+		return true;
+	}
+
+	public static boolean onChatMsgRecievedForGroupList(BaseMsg msg){
+		if(listenerForGroupList == null){
+			return false;
+		}
+		listenerForGroupList.onChatMsgRecieved(msg);
 
 		return true;
 	}
@@ -58,7 +72,7 @@ public class ClientUtils {
 
 
         try {
-			client=new NettyClientBootstrap(8000,"192.168.137.1",client_id);
+			client=new NettyClientBootstrap(8000,"192.168.23.1",client_id);
 			client.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

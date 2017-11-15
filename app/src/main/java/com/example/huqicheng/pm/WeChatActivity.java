@@ -43,13 +43,13 @@ public class WeChatActivity extends Activity implements OnClickListener {
 
 	private Group group;
 
-	private Button mBtnSend;// 发送btn
-	private Button mBtnBack;// 返回btn
+	private Button mBtnSend;
+	private Button mBtnBack;
 	private TextView mTextViewGrpName;
 	private EditText mEditTextContent;
 	private ListView mListView;
-	private ChatMsgViewAdapter mAdapter;// 消息视图的Adapter
-	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();// 消息对象数组
+	private ChatMsgViewAdapter mAdapter;
+	private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();
 	private Handler handler;
 	private Intent intent;
 	private User user;
@@ -168,7 +168,7 @@ public class WeChatActivity extends Activity implements OnClickListener {
 					return;
 				}
 
-				if(!msg.getGroupId().equals(getId(1111)+"")){
+				if(!msg.getGroupId().equals(getId()+"")){
 					Log.d("Msg Recieved", "msg is not for this group ");
 					return;
 				}
@@ -183,7 +183,7 @@ public class WeChatActivity extends Activity implements OnClickListener {
 
 
 			@Override
-			public long getId(long id) {
+			public long getId() {
 				return group.getGroupId();
 			}
 		});
