@@ -65,6 +65,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
     	System.out.println(msg);
         BaseMsg baseMsg = new Gson().fromJson(msg, BaseMsg.class);
+        //ClientUtils.notification(baseMsg);
 
     	MsgType msgType=baseMsg.getType();
         switch (msgType){
@@ -84,12 +85,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                 }
 
                 //TODO notify the new comming msg if wechat activity is not existed
-                //ClientUtils.notification(baseMsg);
+                ClientUtils.notification(baseMsg);
 
                 //TODO notify ChatFragment to update UI
             }break;
             case ReplyForChatMsg:{
                 ClientUtils.onChatMsgRecievedForWeChat(baseMsg);
+                ClientUtils.notification(baseMsg);
             }break;
 
             default:break;

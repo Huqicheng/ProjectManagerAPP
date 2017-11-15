@@ -13,6 +13,7 @@ import com.example.huqicheng.message.*;
 import com.example.huqicheng.client.NettyClientBootstrap;
 import com.example.huqicheng.pm.CalendarActivity;
 import com.example.huqicheng.pm.CalendarFragment;
+import com.example.huqicheng.pm.R;
 import com.example.huqicheng.service.OnChatMsgRecievedListener;
 import com.google.gson.Gson;
 
@@ -71,10 +72,9 @@ public class ClientUtils {
 		NotificationManager notifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-				//设置通知标题
-				.setContentTitle("最简单的Notification")
-				//设置通知内容
-				.setContentText("只有小图标、标题、内容");
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentTitle((String)msg.getParams().get("body"))
+				.setContentText((String)msg.getParams().get("username"));
 
 		notifyManager.notify(1, builder.build());
 	}
