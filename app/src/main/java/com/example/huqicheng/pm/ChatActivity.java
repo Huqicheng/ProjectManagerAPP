@@ -16,7 +16,9 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.huqicheng.service.MyService;
 
@@ -169,16 +172,24 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            selectItem(position,view);
         }
     }
-    private void selectItem(int position) {
+    private void selectItem(int position,View view) {
         Log.d("ChatActivity","position"+position);
         if(position==0)
         {
             Intent intent=new Intent(this,GroupCreation.class);
             startActivity(intent);
         }
+        else
+        {
+            PopupMenu popup = new PopupMenu(ChatActivity.this, view);
+            MenuInflater inflater = popup.getMenuInflater();
+            inflater.inflate(R.menu.popup_menu, popup.getMenu());
+            popup.show();
+        }
+
 
 
         // update the main content by replacing fragments

@@ -26,5 +26,8 @@ public class EventBiz {
     public String assignEventBiz(Event event){
         return eventNao.assignEvent(event);
     }
+    public String updateEvent(long event_id, long assignTo, String newtitle, String newdescription, long newdeadline){
+        return eventNao.updateEvent(event_id, assignTo, newtitle, newdescription, newdeadline);
+    }
 }
 
