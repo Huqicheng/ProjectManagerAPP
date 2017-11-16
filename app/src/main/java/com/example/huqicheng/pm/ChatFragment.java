@@ -233,4 +233,10 @@ public class ChatFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ClientUtils.setListenerForGroupList(null);
+    }
 }

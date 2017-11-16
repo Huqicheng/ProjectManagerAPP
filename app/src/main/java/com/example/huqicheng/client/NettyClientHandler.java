@@ -113,7 +113,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                 if(ClientUtils.onChatMsgRecievedForWeChat(baseMsg)){
                     break;
                 }
-
                 //TODO notify the new comming msg if wechat activity is not existed
                 ClientUtils.notification(baseMsg);
 
@@ -122,6 +121,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                     break;
                 }
 
+                // put it to cache
                 MsgCache.putPair(baseMsg.getGroupId(),baseMsg.getDate());
             }break;
             case ReplyForChatMsg:{
