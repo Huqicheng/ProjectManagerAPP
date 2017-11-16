@@ -1,6 +1,5 @@
 package com.example.huqicheng.pm;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,10 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.huqicheng.adapter.CalendarEventListAdapter;
-import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.bll.EventBiz;
 import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
@@ -86,7 +83,7 @@ public class CalendarFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static CalendarFragment newInstance() {
         CalendarFragment fragment = new CalendarFragment();
-        Bundle args = new Bundle();
+        //Bundle args = new Bundle();
         System.out.println("this is calendar fragment");
         //args.putString(ARG_PARAM1, param1);
         //args.putString(ARG_PARAM2, param2);
@@ -132,10 +129,15 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_calendar, container, false);
         // Inflate the layout for this fragment
-        CalendarView=(MaterialCalendarView)v.findViewById(R.id.calendarView);
-        listView = (ListView) v.findViewById(R.id.eventlist);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CalendarView = (MaterialCalendarView) v.findViewById(R.id.calendarView);
+                listView = (ListView) v.findViewById(R.id.eventlist);
+            }
+        });
 
-        /** add decorator **/
+        //eventBiz
         eventBiz = new EventBiz();
         //load user
         user = new UserBiz(getActivity()).readUser();
@@ -186,9 +188,14 @@ public class CalendarFragment extends Fragment {
                             Log.e(TAG, "timestamp=" + date.toString());
                             datesList.add(day);
                         }
-                        CalendarView.addDecorators(
-                                new HighlightDecorator(Color.parseColor("#FF4081"),datesList )
-                        );
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CalendarView.addDecorators(
+                                        new HighlightDecorator(Color.parseColor("#FF4081"), datesList)
+                                );
+                            }
+                        });
                         break;
                     //get events on specific day
                     case 2:

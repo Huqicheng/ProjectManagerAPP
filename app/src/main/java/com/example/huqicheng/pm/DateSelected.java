@@ -88,11 +88,15 @@ public class DateSelected extends AppCompatActivity {
         flag = (int)eventintent.getSerializableExtra("flag");
         if (flag == EDIT) {
             Date date = new Date(event.getDeadLine());
-            sYear = date.getYear();
-            sMonth = date.getMonth();
-            sDay = date.getDay();
+            Timestamp timestamp = new Timestamp(event.getDeadLine());
+            CalendarDay calendarDay = CalendarDay.from(date);
+            sYear = calendarDay.getYear();
+            sMonth = calendarDay.getMonth()+1;
+            sDay = calendarDay.getDay();
             sHour = date.getHours();
             sMinute = date.getMinutes();
+            Log.d("events in DS",""+sYear+sMonth+sDay+sHour+sMinute);
+            Log.d("events in DS",""+date.toString());
             eventName.setText(event.getEventTitle());
             eventDiscription.setText(event.getDescription());
             save.setText("update");
@@ -169,7 +173,7 @@ public class DateSelected extends AppCompatActivity {
                         displayPickedTime(date.getTime());
                         deadline = date.getTime();
                     }
-                }, 2017, 11,16);
+                }, 2017, 10,16);
                 datePicker.show();
             }
         });
@@ -199,6 +203,6 @@ public class DateSelected extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         // 格式化日期返回 String 类型，format 中传入 Date 类型或者其子类（例如Timestamp 类）
         String s = sdf.format(new Timestamp(time));
-        textClock.setText("DeadLine :  " + s);
+        textClock.setText("Event DeadLine :  " + s);
     }
 }
