@@ -49,16 +49,17 @@ import java.util.List;
  */
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class CalendarFragment extends Fragment {
-    private EventBiz eventBiz;
     MaterialCalendarView CalendarView;
     ListView listView;
-    private CalendarEventListAdapter adapter;
-    public ArrayList<Event> eventList;
-    public List<CalendarDay> datesList = new ArrayList<>();
     Intent intent;
-    static final String TAG="TAG";
+    private EventBiz eventBiz;
+    private CalendarEventListAdapter adapter;
     private User user;
     private Handler handler = null;
+    public List<Event> eventList;
+    public List<Long> stampList;
+    public List<CalendarDay> datesList = new ArrayList<>();
+    static final String TAG="TAG";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -150,8 +151,8 @@ public class CalendarFragment extends Fragment {
                 intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);//serializable
-                bundle.putSerializable("flag", DateSelected.EDIT);
-                intent.putExtras(bundle);//send data
+                bundle.putSerializable("flag", DateSelected.EDIT);//indicating EDIT event or INIT event
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -191,10 +192,10 @@ public class CalendarFragment extends Fragment {
                         break;
                     //get events on specific day
                     case 2:
-                        final ArrayList<Event> events = (ArrayList<Event>)msg.obj;
+                        eventList = (List<Event>)msg.obj;
 
-                        for (int i = 0; i < events.size();i++){
-                            Log.d("events",""+events.get(i).getDescription());
+                        for (int i = 0; i < eventList.size();i++){
+                            Log.d("events",""+eventList.get(i).getDescription());
                         }
 
                         getActivity().runOnUiThread(new Runnable() {
@@ -202,7 +203,7 @@ public class CalendarFragment extends Fragment {
                             public void run() {
                                 adapter = new CalendarEventListAdapter(getActivity(),null);
                                 listView.setAdapter(adapter);
-                                adapter.add(events);
+                                adapter.add(eventList);
                                 adapter.notifyDataSetChanged();
                             }
                         });
@@ -229,8 +230,8 @@ public class CalendarFragment extends Fragment {
 
     void loadDates(long user_id, String status){
         /** add decorator **/
-        EventBiz eventBiz = new EventBiz();
-        List<Long> stampList = new ArrayList<>();
+        eventBiz = new EventBiz();
+        stampList = new ArrayList<>();
         try {
             stampList = eventBiz.loadDatesHavingEvents(user_id, status);
             for (int i = 0; i < stampList.size();i++){
@@ -251,15 +252,15 @@ public class CalendarFragment extends Fragment {
     }
     void loadEvents(long user_id, long time_stamp){
         /** add decorator **/
-        EventBiz eventBiz = new EventBiz();
-        List<Event> eventList = new ArrayList<>();
+        eventBiz = new EventBiz();
+        eventList = new ArrayList<>();
         try {
             eventList = eventBiz.loadEventsOfOneDate(user_id, time_stamp);
             if(eventList == null){
                 return;
             }
             for (int i = 0; i < eventList.size();i++){
-                Log.e(TAG, "event=" + eventList.get(i));
+                //Log.e(TAG, "event=" + eventList.get(i));
             }
 
             Message msg = Message.obtain();
