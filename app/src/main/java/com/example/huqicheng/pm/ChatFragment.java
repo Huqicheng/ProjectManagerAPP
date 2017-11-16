@@ -20,10 +20,12 @@ import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.message.BaseMsg;
+import com.example.huqicheng.message.MsgCache;
 import com.example.huqicheng.message.MsgType;
 import com.example.huqicheng.service.OnChatMsgRecievedListener;
 import com.example.huqicheng.utils.ClientUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -104,7 +106,19 @@ public class ChatFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                List<Group> groups = (List<Group>) msg.obj;
+                                List<Group> tmp = (List<Group>) msg.obj;
+                                List<Group> groups = new ArrayList<Group>();
+                                List<Long> stamps = new ArrayList<Long>();
+                                // to check group chats
+                                for(Group g:tmp){
+                                    long timestamp = MsgCache.getPair(g.getGroupId()+"");
+                                    if(timestamp == 0){
+                                        groups.add(g);
+
+                                    }else{
+                                        groups.add(0,g);
+                                    }
+                                }
                                 Log.d("debug:",groups.size()+"");
                                 adapter.add(groups);
                                 adapter.notifyDataSetChanged();
