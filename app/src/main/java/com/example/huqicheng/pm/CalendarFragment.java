@@ -56,6 +56,7 @@ public class CalendarFragment extends Fragment {
     public List<Event> eventList;
     public List<Long> stampList;
     public List<CalendarDay> datesList = new ArrayList<>();
+    public HighlightDecorator decorator;
     static final String TAG="TAG";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -91,6 +92,7 @@ public class CalendarFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +101,8 @@ public class CalendarFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
+
 
     /**
      * Decorate several days with a dot
@@ -191,9 +195,8 @@ public class CalendarFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                CalendarView.addDecorators(
-                                        new HighlightDecorator(Color.parseColor("#FF4081"), datesList)
-                                );
+                                decorator = new HighlightDecorator(Color.parseColor("#FF4081"), datesList);
+                                CalendarView.addDecorators(decorator);
                             }
                         });
                         break;
@@ -223,17 +226,37 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        /** get data from the database**/
+        new Thread(){
+            @Override
+            public void run() {
+                //CalendarView.addDecorator(decorator);
+                loadDates(user.getUserId(),"started");
+            }
+        }.start();
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        CalendarView.removeDecorator(decorator);
+    }
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         /** get data from the database**/
+        /*
         new Thread(){
             @Override
             public void run() {
                 loadDates(user.getUserId(),"started");
             }
         }.start();
+        */
     }
+
 
     void loadDates(long user_id, String status){
         /** add decorator **/
