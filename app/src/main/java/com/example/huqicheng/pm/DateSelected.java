@@ -4,7 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,11 +39,12 @@ import java.util.Map;
 
 public class DateSelected extends AppCompatActivity {
     Intent intent;
+    private Handler handler = null;
     private GroupBiz groupBiz;
     private UserBiz userBiz;
     private List<Group> groupList;
     private List<User> userList;
-    private final List<String> assignToList = new ArrayList<String>();
+    public  List<String> assignToList;
     private Map<String,Long> userNameIdMap;
     private EditText eventName,eventDiscription;
     private Button save;
@@ -68,8 +70,8 @@ public class DateSelected extends AppCompatActivity {
     public static final int INIT = 1;
     public static final int EDIT = 2;
     public int flag;
-    private static final String[] cities = { "y75fang", "q45hu" };
-
+    //private static final String[] cities = { "y75fang", "q45hu" };
+    private static final String[] cities = { "北京", "上海", "重庆", "广州", "深圳" };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,74 +101,55 @@ public class DateSelected extends AppCompatActivity {
         userBiz = new UserBiz(this);
         user = userBiz.readUser();
 
-/*
-
+        final List<String> cityList = new ArrayList<String>();
         for (int i = 0; i < cities.length; i++) {
             cityList.add(cities[i]);
         }
-        *
+
         /**  test spinner **/
         //Initializing textview textAssignto
         textAssignto = (TextView) findViewById(R.id.tvAssignto);
         //Initializing the Assign-to Spinner
         spinner = (Spinner) findViewById(R.id.spinnerAssignto);
-        //
-        groupBiz = new GroupBiz();
-        groupList = new ArrayList<Group>();
-        userList = new ArrayList<User>();
-        //assignToList = new ArrayList<String>();
-        //httputils needs to run on a new thread
         new Thread(){
             @Override
             public void run() {
-                groupList = groupBiz.loadGroups(user.getUserId());
-                for (int i = 0; i < groupList.size();i++) {
-                    userList = groupBiz.loadUsersofSpecificGroup(groupList.get(i).getGroupId());
-                    for (int j = 0; j < userList.size();j++){
-                        assignToList.add(userList.get(j).getUsername());
-                    }
-                    userList.clear();
-                }
+                //CalendarView.addDecorator(decorator);
+                loadAssignToList();
             }
         }.start();
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg){
+                assignToList = (ArrayList<String>)msg.obj;
+                for (int k = 0; k < assignToList.size(); k++) {
+                    Log.d("spinner list in DS", "" + assignToList.get(k));
+                    //cityList.add(assignToList.get(k));
+                }
+                //getApplicationContext()
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        getApplicationContext(), R.layout.spinner_style,
+                        assignToList);
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                spinner.setAdapter(adapter);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        this.runOnUiThread(new Runnable() {
-               @Override
-               public void run() {
-                   final List<String> cityList = new ArrayList<String>();
-                   for (int i = 0;i < assignToList.size();i++){
-                       Log.d("spinner list in DS",""+assignToList.get(i));
-                       cityList.add(assignToList.get(i));
-                   }
-                   spinner = (Spinner) findViewById(R.id.spinnerAssignto);
-                   //getApplicationContext()
-                   ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                           getApplicationContext(), R.layout.spinner_style,
-                           cityList);
-                   adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
-                   spinner.setAdapter(adapter);
-                   spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                               int arg2, long arg3) {
+                        String str = arg0.getItemAtPosition(arg2).toString();
+                        Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
 
-                       @Override
-                       public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                                  int arg2, long arg3) {
-                           String str = arg0.getItemAtPosition(arg2).toString();
-                           Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                    }
 
-                       }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                        // TODO Auto-generated method stub
 
-                       @Override
-                       public void onNothingSelected(AdapterView<?> arg0) {
-                           // TODO Auto-generated method stub
-
-                       }
-                   });
-
-               }
-           });
-
-
-
+                    }
+                });
+            }
+        };
 
         //getting intent
         Intent eventintent = this.getIntent();
@@ -192,8 +175,6 @@ public class DateSelected extends AppCompatActivity {
         }
         if (flag == INIT) {
             save.setText("save");
-
-
         }
 
         //get timestamp and string date
@@ -291,5 +272,27 @@ public class DateSelected extends AppCompatActivity {
         // 格式化日期返回 String 类型，format 中传入 Date 类型或者其子类（例如Timestamp 类）
         String s = sdf.format(new Timestamp(time));
         textClock.setText("Event DeadLine :  " + s);
+    }
+
+    void loadAssignToList(){
+        groupBiz = new GroupBiz();
+        groupList = new ArrayList<Group>();
+        userList = new ArrayList<User>();
+        assignToList = new ArrayList<String>();
+        Log.d("spinner list in DS", "" + "test spinner");
+        groupList = groupBiz.loadGroups(user.getUserId());
+        for (int i = 0; i < groupList.size(); i++) {
+            Log.d("spinner list in DS", "" + i);
+            userList = groupBiz.loadUsersofSpecificGroup(groupList.get(i).getGroupId());
+            for (int j = 0; j < userList.size(); j++) {
+                Log.d("spinner list in DS", "" + j);
+                assignToList.add(userList.get(j).getUsername());
+            }
+            userList.clear();
+        }
+        Message msg = Message.obtain();
+        msg.what = 1;
+        msg.obj = assignToList;
+        handler.handleMessage(msg);
     }
 }
