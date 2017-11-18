@@ -4,11 +4,15 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,26 +20,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huqicheng.bll.EventBiz;
+import com.example.huqicheng.bll.GroupBiz;
 import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.utils.DateUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class DateSelected extends AppCompatActivity {
     Intent intent;
+    private GroupBiz groupBiz;
+    private UserBiz userBiz;
+    private List<Group> groupList;
+    private List<User> userList;
+    private final List<String> assignToList = new ArrayList<String>();
+    private Map<String,Long> userNameIdMap;
     private EditText eventName,eventDiscription;
     private Button save;
     private Button time_picker, date_picker;
-    private TextView textClock,textDate;
+    private TextView textClock,textDate, textAssignto;
+    private Spinner spinner;
     static final String TAG="TAG";
     public String assignresult = "";
-    public int hour_x,minute_x,month_x;
+    public int month_x;
     public EventBiz eventBiz = new EventBiz();
     public Context context = this;
     private User user;
@@ -52,6 +68,7 @@ public class DateSelected extends AppCompatActivity {
     public static final int INIT = 1;
     public static final int EDIT = 2;
     public int flag;
+    private static final String[] cities = { "y75fang", "q45hu" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +88,7 @@ public class DateSelected extends AppCompatActivity {
         textClock = (TextView) findViewById(R.id.tvDisplaytime);
         textDate = (TextView) findViewById(R.id.tvCurrentdate);
 
+
         //creating the instance of the calander
         final Calendar calendar = Calendar.getInstance();
         month_x = calendar.get(Calendar.MONTH)+1;
@@ -78,7 +96,78 @@ public class DateSelected extends AppCompatActivity {
         textDate.setText(calendar.get(Calendar.YEAR)+" / "+month_x+" / "+calendar.get(Calendar.DATE));
 
         //load user
-        user = new UserBiz(this).readUser();
+        userBiz = new UserBiz(this);
+        user = userBiz.readUser();
+
+/*
+
+        for (int i = 0; i < cities.length; i++) {
+            cityList.add(cities[i]);
+        }
+        *
+        /**  test spinner **/
+        //Initializing textview textAssignto
+        textAssignto = (TextView) findViewById(R.id.tvAssignto);
+        //Initializing the Assign-to Spinner
+        spinner = (Spinner) findViewById(R.id.spinnerAssignto);
+        //
+        groupBiz = new GroupBiz();
+        groupList = new ArrayList<Group>();
+        userList = new ArrayList<User>();
+        //assignToList = new ArrayList<String>();
+        //httputils needs to run on a new thread
+        new Thread(){
+            @Override
+            public void run() {
+                groupList = groupBiz.loadGroups(user.getUserId());
+                for (int i = 0; i < groupList.size();i++) {
+                    userList = groupBiz.loadUsersofSpecificGroup(groupList.get(i).getGroupId());
+                    for (int j = 0; j < userList.size();j++){
+                        assignToList.add(userList.get(j).getUsername());
+                    }
+                    userList.clear();
+                }
+            }
+        }.start();
+
+        this.runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                   final List<String> cityList = new ArrayList<String>();
+                   for (int i = 0;i < assignToList.size();i++){
+                       Log.d("spinner list in DS",""+assignToList.get(i));
+                       cityList.add(assignToList.get(i));
+                   }
+                   spinner = (Spinner) findViewById(R.id.spinnerAssignto);
+                   //getApplicationContext()
+                   ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                           getApplicationContext(), R.layout.spinner_style,
+                           cityList);
+                   adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                   spinner.setAdapter(adapter);
+                   spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                       @Override
+                       public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                                  int arg2, long arg3) {
+                           String str = arg0.getItemAtPosition(arg2).toString();
+                           Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+
+                       }
+
+                       @Override
+                       public void onNothingSelected(AdapterView<?> arg0) {
+                           // TODO Auto-generated method stub
+
+                       }
+                   });
+
+               }
+           });
+
+
+
+
         //getting intent
         Intent eventintent = this.getIntent();
         //getting event
@@ -103,15 +192,13 @@ public class DateSelected extends AppCompatActivity {
         }
         if (flag == INIT) {
             save.setText("save");
+
+
         }
-
-
-
 
         //get timestamp and string date
         deadline = event.getDeadLine();
         displayPickedTime(deadline);
-
 
         //save button clicked
         save.setOnClickListener(new View.OnClickListener() {

@@ -26,16 +26,16 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:textSize="18sp"
+        android:layout_marginTop="34dp"
         android:layout_below="@+id/tvEventDiscription"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="34dp"
         android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="12dp"
         android:text="@string/save"
         android:textSize="18sp"
         android:layout_alignParentTop="true"
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:text="Pick Date"
         android:textSize="18sp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="37dp"
         android:layout_below="@+id/etEventDiscription"
         android:layout_alignParentStart="true" />
 
@@ -68,8 +68,8 @@
         android:text="@string/event_title"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="20sp"
-        android:layout_marginTop="57dp"
-        android:layout_below="@+id/textclockCurrenttime"
+        android:layout_marginTop="48dp"
+        android:layout_below="@+id/tvCurrentdate"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -79,7 +79,7 @@
         android:text="@string/event_discription"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="20sp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="47dp"
         android:layout_below="@+id/etEventname"
         android:layout_alignParentStart="true" />
 
@@ -90,9 +90,9 @@
         android:text="tvAlarmtime"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="18sp"
-        android:layout_below="@+id/btnTimepicker"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="42dp" />
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/btnDatepicker"
+        android:layout_alignParentStart="true" />
 
 
 
@@ -103,19 +103,40 @@
         android:text="TextView"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_alignBaseline="@+id/btnSave"
-        android:layout_alignBottom="@+id/btnSave"
+        android:layout_marginTop="26dp"
+        android:layout_below="@+id/spinnerAssignto"
         android:layout_alignParentStart="true" />
 
     <TextClock
         android:id="@+id/textclockCurrenttime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/btnSave"
-        android:layout_marginTop="19dp"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="17dp"
+        android:layout_alignBaseline="@+id/tvCurrentdate"
+        android:layout_alignBottom="@+id/tvCurrentdate"
+        android:layout_toEndOf="@+id/btnDatepicker" />
+
+    <TextView
+        android:id="@+id/tvAssignto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Assign to :"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_alignBaseline="@+id/textclockCurrenttime"
+        android:layout_alignBottom="@+id/textclockCurrenttime"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="28dp" />
+
+    <Spinner
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:id="@+id/spinnerAssignto"
+        android:layout_alignTop="@+id/btnSave"
+        android:layout_toStartOf="@+id/btnSave" />
 
 </RelativeLayout>
