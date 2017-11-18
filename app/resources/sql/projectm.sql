@@ -10,10 +10,35 @@ Target Server Type    : MYSQL
 Target Server Version : 50627
 File Encoding         : 65001
 
-Date: 2017-11-14 11:50:22
+Date: 2017-11-16 15:05:27
 */
 
+use pm;
+
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `application`
+-- ----------------------------
+DROP TABLE IF EXISTS `application`;
+CREATE TABLE `application` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `groupId` int(11) NOT NULL,
+  `from` int(11) NOT NULL,
+  `timestamp` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `to` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_group_application` (`groupId`),
+  KEY `fk_user_application` (`from`),
+  CONSTRAINT `fk_group_application` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_application` FOREIGN KEY (`from`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of application
+-- ----------------------------
+INSERT INTO `application` VALUES ('4', '4', '2', '2017-11-16 12:23:03', 'finished', '3');
 
 -- ----------------------------
 -- Table structure for `event`
@@ -38,7 +63,7 @@ CREATE TABLE `event` (
 -- ----------------------------
 -- Records of event
 -- ----------------------------
-INSERT INTO `event` VALUES ('1', '2', 'new task', 'new', '2017-11-11 17:50:54', '2', 'started', '2017-11-04 23:42:05', '2', '2017-11-04 23:42:05');
+INSERT INTO `event` VALUES ('1', '2', 'new task', 'new', '2017-12-17 15:15:00', '2', 'started', '2017-11-04 23:42:05', '2', '2017-11-16 14:51:20');
 INSERT INTO `event` VALUES ('2', '2', 'newtitle', 'newdescription', '2017-11-05 00:00:00', '2', 'started', '2017-11-04 23:42:29', '2', '2017-11-11 18:53:13');
 INSERT INTO `event` VALUES ('3', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:05:58', '2', '2017-11-05 13:05:58');
 INSERT INTO `event` VALUES ('4', '2', 'title2', '232323', '2017-11-05 00:00:00', '2', 'started', '2017-11-05 13:46:09', '2', '2017-11-05 13:46:09');
@@ -66,7 +91,7 @@ CREATE TABLE `group` (
 -- ----------------------------
 -- Records of group
 -- ----------------------------
-INSERT INTO `group` VALUES (null, '1', 'personal', null, '1', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO `group` VALUES (null, '1', 'personal', null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `group` VALUES ('images/group/2.gif', '2', 'G8', 'description', '2', '2017-11-04 23:21:45', '2017-11-04 23:21:48');
 INSERT INTO `group` VALUES (null, '3', 'Group For test service', 'desc', '3', '2017-11-14 10:44:45', '2017-11-14 10:44:45');
 INSERT INTO `group` VALUES (null, '4', 'Group For test service', 'desc', '4', '2017-11-14 10:49:16', '2017-11-14 10:49:16');
@@ -87,7 +112,7 @@ CREATE TABLE `message` (
   KEY `message_ibfk_group` (`group_id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `message_ibfk_group` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of message
@@ -152,6 +177,31 @@ INSERT INTO `message` VALUES ('79', '{\"body\":\"wwwww\",\"username\":\"q45hu\"}
 INSERT INTO `message` VALUES ('80', '{\"body\":\"wwwwwww\",\"username\":\"q45hu\"}', '2017-11-13 09:26:03', '2', '2');
 INSERT INTO `message` VALUES ('81', '{\"body\":\"222\",\"username\":\"q45hu\"}', '2017-11-13 09:59:34', '2', '2');
 INSERT INTO `message` VALUES ('82', '{\"body\":\"123\",\"username\":\"q45hu\"}', '2017-11-14 08:57:12', '2', '2');
+INSERT INTO `message` VALUES ('83', '{\"body\":\"2222\",\"username\":\"q45hu\"}', '2017-11-15 10:25:05', '5', '2');
+INSERT INTO `message` VALUES ('84', '{\"body\":\"wwwwww\",\"username\":\"q45hu\"}', '2017-11-15 10:28:59', '2', '2');
+INSERT INTO `message` VALUES ('85', '{\"body\":\"wwwww\",\"username\":\"q45hu\"}', '2017-11-15 10:29:14', '2', '2');
+INSERT INTO `message` VALUES ('86', '{\"body\":\"1212121212\",\"username\":\"q45hu\"}', '2017-11-15 10:29:16', '2', '2');
+INSERT INTO `message` VALUES ('87', '{\"body\":\"232323\",\"username\":\"q45hu\"}', '2017-11-15 10:50:04', '2', '2');
+INSERT INTO `message` VALUES ('88', '{\"body\":\"22222\",\"username\":\"q45hu\"}', '2017-11-15 15:23:49', '2', '2');
+INSERT INTO `message` VALUES ('89', '{\"body\":\"33333\",\"username\":\"q45hu\"}', '2017-11-15 15:24:05', '2', '2');
+INSERT INTO `message` VALUES ('90', '{\"body\":\"12323232323\",\"username\":\"q45hu\"}', '2017-11-15 15:25:08', '2', '2');
+INSERT INTO `message` VALUES ('91', '{\"body\":\"1232323\",\"username\":\"q45hu\"}', '2017-11-15 15:28:07', '2', '2');
+INSERT INTO `message` VALUES ('92', '{\"body\":\"3333\",\"username\":\"q45hu\"}', '2017-11-15 15:33:33', '2', '2');
+INSERT INTO `message` VALUES ('93', '{\"body\":\"233232323\",\"username\":\"q45hu\"}', '2017-11-15 17:27:14', '2', '2');
+INSERT INTO `message` VALUES ('94', '{\"body\":\"121212\",\"username\":\"q45hu\"}', '2017-11-15 17:27:29', '2', '2');
+INSERT INTO `message` VALUES ('95', '{\"body\":\"222222\",\"username\":\"q45hu\"}', '2017-11-15 17:27:41', '2', '2');
+INSERT INTO `message` VALUES ('96', '{\"body\":\"3434343434\",\"username\":\"y300fang\"}', '2017-11-15 17:35:20', '2', '3');
+INSERT INTO `message` VALUES ('97', '{\"body\":\"eeeeeeeeee\",\"username\":\"q45hu\"}', '2017-11-15 17:40:06', '2', '2');
+INSERT INTO `message` VALUES ('98', '{\"body\":\"1232323\",\"username\":\"q45hu\"}', '2017-11-15 17:52:50', '2', '2');
+INSERT INTO `message` VALUES ('99', '{\"body\":\"222222\",\"username\":\"q45hu\"}', '2017-11-15 17:53:13', '2', '2');
+INSERT INTO `message` VALUES ('100', '{\"body\":\"3333\",\"username\":\"q45hu\"}', '2017-11-15 17:54:30', '2', '2');
+INSERT INTO `message` VALUES ('101', '{\"body\":\"3333333\",\"username\":\"y300fang\"}', '2017-11-15 17:55:18', '2', '3');
+INSERT INTO `message` VALUES ('102', '{\"body\":\"3333333333\",\"username\":\"y300fang\"}', '2017-11-15 17:55:58', '2', '3');
+INSERT INTO `message` VALUES ('103', '{\"body\":\"122323232\",\"username\":\"y300fang\"}', '2017-11-15 22:21:49', '3', '3');
+INSERT INTO `message` VALUES ('104', '{\"body\":\"2323232323\",\"username\":\"y300fang\"}', '2017-11-15 22:21:59', '3', '3');
+INSERT INTO `message` VALUES ('105', '{\"body\":\"4545454545\",\"username\":\"q45hu\"}', '2017-11-16 14:52:23', '2', '2');
+INSERT INTO `message` VALUES ('106', '{\"body\":\"3333333\",\"username\":\"q45hu\"}', '2017-11-16 14:52:38', '5', '2');
+INSERT INTO `message` VALUES ('107', '{\"body\":\"3434343434\",\"username\":\"y300fang\"}', '2017-11-16 14:53:24', '4', '3');
 
 -- ----------------------------
 -- Table structure for `project`
@@ -173,7 +223,7 @@ CREATE TABLE `project` (
 -- ----------------------------
 -- Records of project
 -- ----------------------------
-INSERT INTO `project` VALUES ('1', 'personal', null, null, '1', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+INSERT INTO `project` VALUES ('1', 'personal', null, null, '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `project` VALUES ('2', 'pm', 'description', '2017-11-26 23:20:47', '2', '2017-11-04 23:20:55', '2017-11-04 23:21:03');
 INSERT INTO `project` VALUES ('3', 'test service', 'desc', '2017-11-14 10:44:45', '2', '2017-11-14 10:44:45', '2017-11-14 10:44:45');
 INSERT INTO `project` VALUES ('4', 'test service', 'desc', '2017-11-14 10:49:16', '2', '2017-11-14 10:49:16', '2017-11-14 10:49:16');
@@ -198,13 +248,14 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `User_username_unique` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'sys_admin', null, null, null, null, '2000-01-01 00:00:00', '2000-01-01 00:00:00', null);
+INSERT INTO `user` VALUES ('1', 'sys_admin', null, null, null, null, '0000-00-00 00:00:00', '0000-00-00 00:00:00', null);
 INSERT INTO `user` VALUES ('2', 'q45hu', 'q45hu@uwaterloo.ca', '123', 'normal', 'q45hu', '2017-11-04 23:19:49', '2017-11-04 23:19:54', 'images/user/2.gif');
+INSERT INTO `user` VALUES ('3', 'y300fang', 'y300fang@uwaterloo.ca', '123', 'normal', 'facebook', '2017-11-15 17:29:39', '2017-11-15 17:29:39', null);
 
 -- ----------------------------
 -- Table structure for `user_group`
@@ -226,6 +277,32 @@ INSERT INTO `user_group` VALUES ('2', '2');
 INSERT INTO `user_group` VALUES ('3', '2');
 INSERT INTO `user_group` VALUES ('4', '2');
 INSERT INTO `user_group` VALUES ('5', '2');
+INSERT INTO `user_group` VALUES ('2', '3');
+INSERT INTO `user_group` VALUES ('3', '3');
+INSERT INTO `user_group` VALUES ('4', '3');
+
+-- ----------------------------
+-- Procedure structure for `add_application`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `add_application`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_application`(
+IN fromId int,
+IN toId int,
+IN groupId int
+)
+BEGIN   
+DECLARE appid int;	
+insert into application(application.from,application.to,groupId,application.timestamp,application.status) values(fromId,toId,groupId,NOW(),'started');
+select max(id) into appid from application;
+select application.*, `group`.groupName, `group`.groupDescription, `user`.username
+from `group`,`user`,application
+where application.`from` = `user`.id
+and application.id = appid
+and `group`.id = application.groupId;
+END
+;;
+DELIMITER ;
 
 -- ----------------------------
 -- Procedure structure for `add_a_project`
@@ -367,6 +444,53 @@ BEGIN
 delete from user_group
 where user_group.user_id = user_id
 and user_group.group_id = group_id;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `finish_application`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `finish_application`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `finish_application`(
+IN appId int,
+IN accept int
+)
+BEGIN   
+declare groupId int;
+declare toId int;
+if accept = 1 THEN
+select application.groupId,application.`to` into groupId,toId from application
+where id = appId;
+call join_a_group(groupId,toId);
+END IF;
+
+update application
+set application.`status` = 'finished'
+where application.id = appId;
+
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for `get_applications`
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `get_applications`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_applications`(
+IN user_id int
+)
+BEGIN   
+	
+select application.id,`from`,`timestamp`,`to`,groupId, `group`.groupName, `group`.groupDescription, `user`.username
+from `group`,`user`,application
+where application.`from` = `user`.id
+and application.`to` = user_id
+and `group`.id = application.groupId
+and application.`status` = 'started';
+  
 END
 ;;
 DELIMITER ;

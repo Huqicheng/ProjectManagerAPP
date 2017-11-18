@@ -3,8 +3,8 @@ package com.example.huqicheng.nao;
 import android.util.Log;
 
 import com.example.huqicheng.config.Config;
-import com.example.huqicheng.entity.Group;
-import com.example.huqicheng.entity.User;
+import com.example.huqicheng.entity.Application;
+import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,23 +16,28 @@ import org.apache.http.util.EntityUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
- * Created by huqicheng on 2017/11/7.
+ * Created by huqicheng on 2017/11/16.
  */
 
-public class GroupNao {
-    public List<Group> getGroups(long user_id){
-        List<Group> res = null;
+public class ApplicationNao {
+
+    public List<Application> getApplications(long userId){
+        List<Application> res = null;
         try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
-
-            params.add(new BasicNameValuePair("user_id",user_id+""));
+            params.add(new BasicNameValuePair("user_id",userId+""));
 
             //modify url according to interface doc
-            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getGroupOfUser.do",params,HttpUtils.GET);
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getApplications.do",params,HttpUtils.GET);
+
+            if(entity == null){
+                return null;
+            }
 
             //convert stream to json String
             String json = EntityUtils.toString(entity);
@@ -45,70 +50,75 @@ public class GroupNao {
             // decoding here
             // Type:   simple objects: ObjectName.class
             //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
-            Type type = new TypeToken<ArrayList<Group>>(){}.getType();
+            Type type = new TypeToken<ArrayList<Application>>(){}.getType();
             res = new Gson().fromJson(json,type);
-
-
         }catch (Exception e){
             e.printStackTrace();
-
         }
-
         return res;
     }
 
-    public String dropGroups(long user_id,long group_id) {
-        String res = "";
-        try {
+    public Application addAplication(long fromId, long toId, long groupId){
+        Application res = null;
+        try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("user_id", user_id + ""));
-            params.add(new BasicNameValuePair("group_id", group_id + ""));
+            params.add(new BasicNameValuePair("fromId",fromId+""));
+            params.add(new BasicNameValuePair("toId",toId+""));
+            params.add(new BasicNameValuePair("groupId",groupId+""));
 
             //modify url according to interface doc
-            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP + "/deleteEvent.do", params, HttpUtils.GET);
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/addApplication.do",params,HttpUtils.GET);
 
-            if (entity == null) {
+            if(entity == null){
                 return null;
             }
 
             //convert stream to json String
             String json = EntityUtils.toString(entity);
 
-            Log.d("debug: ", json);
+            Log.d("debug: ",json);
 
             // check if failed, you should return null
-            if (json.trim().equalsIgnoreCase("failed")) return null;
+            if(json.trim().equalsIgnoreCase("failed")) return null;
 
             // decoding here
             // Type:   simple objects: ObjectName.class
             //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType()
-            res = json;
-
-        } catch (Exception e) {
+            res = new Gson().fromJson(json,Application.class);
+        }catch (Exception e){
             e.printStackTrace();
-
         }
         return res;
     }
-    public List<User> getUsersOfSpecificGroup(long group_id){
-        List<User> res = null;
+
+    public boolean finishApplication(long appId, int isAccept){
+        boolean res = false;
         try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("group_id",group_id+""));
+            params.add(new BasicNameValuePair("appId",appId+""));
+            params.add(new BasicNameValuePair("isAccept",isAccept+""));
+
+
             //modify url according to interface doc
-            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getUsersOfGroup.do",params,HttpUtils.GET);
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/finishApplication.do",params,HttpUtils.GET);
+
+            if(entity == null){
+                return false;
+            }
+
             //convert stream to json String
             String json = EntityUtils.toString(entity);
+
             Log.d("debug: ",json);
+
             // check if failed, you should return null
-            if(json.trim().equalsIgnoreCase("failed")) return null;
-            Type type = new TypeToken<ArrayList<User>>(){}.getType();
-            res = new Gson().fromJson(json,type);
+            if(json.trim().equalsIgnoreCase("failed")) return false;
+
+            return true;
         }catch (Exception e){
             e.printStackTrace();
-
         }
         return res;
     }

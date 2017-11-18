@@ -1,6 +1,5 @@
 package com.example.huqicheng.pm;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,10 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.huqicheng.adapter.CalendarEventListAdapter;
-import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.bll.EventBiz;
 import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
@@ -49,16 +46,18 @@ import java.util.List;
  */
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class CalendarFragment extends Fragment {
-    private EventBiz eventBiz;
     MaterialCalendarView CalendarView;
     ListView listView;
-    private CalendarEventListAdapter adapter;
-    public ArrayList<Event> eventList;
-    public List<CalendarDay> datesList = new ArrayList<>();
     Intent intent;
-    static final String TAG="TAG";
+    private EventBiz eventBiz;
+    private CalendarEventListAdapter adapter;
     private User user;
     private Handler handler = null;
+    public List<Event> eventList;
+    public List<Long> stampList;
+    public List<CalendarDay> datesList = new ArrayList<>();
+    public HighlightDecorator decorator;
+    static final String TAG="TAG";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,13 +84,14 @@ public class CalendarFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static CalendarFragment newInstance() {
         CalendarFragment fragment = new CalendarFragment();
-        Bundle args = new Bundle();
+        //Bundle args = new Bundle();
         System.out.println("this is calendar fragment");
         //args.putString(ARG_PARAM1, param1);
         //args.putString(ARG_PARAM2, param2);
         //fragment.setArguments(args);
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +101,8 @@ public class CalendarFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
+
 
     /**
      * Decorate several days with a dot
@@ -131,10 +133,15 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_calendar, container, false);
         // Inflate the layout for this fragment
-        CalendarView=(MaterialCalendarView)v.findViewById(R.id.calendarView);
-        listView = (ListView) v.findViewById(R.id.eventlist);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CalendarView = (MaterialCalendarView) v.findViewById(R.id.calendarView);
+                listView = (ListView) v.findViewById(R.id.eventlist);
+            }
+        });
 
-        /** add decorator **/
+        //eventBiz
         eventBiz = new EventBiz();
         //load user
         user = new UserBiz(getActivity()).readUser();
@@ -150,8 +157,8 @@ public class CalendarFragment extends Fragment {
                 intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);//serializable
-                bundle.putSerializable("flag", DateSelected.EDIT);
-                intent.putExtras(bundle);//send data
+                bundle.putSerializable("flag", DateSelected.EDIT);//indicating EDIT event or INIT event
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -185,16 +192,20 @@ public class CalendarFragment extends Fragment {
                             Log.e(TAG, "timestamp=" + date.toString());
                             datesList.add(day);
                         }
-                        CalendarView.addDecorators(
-                                new HighlightDecorator(Color.parseColor("#FF4081"),datesList )
-                        );
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                decorator = new HighlightDecorator(Color.parseColor("#FF4081"), datesList);
+                                CalendarView.addDecorators(decorator);
+                            }
+                        });
                         break;
                     //get events on specific day
                     case 2:
-                        final ArrayList<Event> events = (ArrayList<Event>)msg.obj;
+                        eventList = (List<Event>)msg.obj;
 
-                        for (int i = 0; i < events.size();i++){
-                            Log.d("events",""+events.get(i).getDescription());
+                        for (int i = 0; i < eventList.size();i++){
+                            Log.d("events",""+eventList.get(i).getDescription());
                         }
 
                         getActivity().runOnUiThread(new Runnable() {
@@ -202,7 +213,7 @@ public class CalendarFragment extends Fragment {
                             public void run() {
                                 adapter = new CalendarEventListAdapter(getActivity(),null);
                                 listView.setAdapter(adapter);
-                                adapter.add(events);
+                                adapter.add(eventList);
                                 adapter.notifyDataSetChanged();
                             }
                         });
@@ -215,22 +226,42 @@ public class CalendarFragment extends Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        /** get data from the database**/
+        new Thread(){
+            @Override
+            public void run() {
+                //CalendarView.addDecorator(decorator);
+                loadDates(user.getUserId(),"started");
+            }
+        }.start();
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        CalendarView.removeDecorator(decorator);
+    }
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         /** get data from the database**/
+        /*
         new Thread(){
             @Override
             public void run() {
                 loadDates(user.getUserId(),"started");
             }
         }.start();
+        */
     }
+
 
     void loadDates(long user_id, String status){
         /** add decorator **/
-        EventBiz eventBiz = new EventBiz();
-        List<Long> stampList = new ArrayList<>();
+        eventBiz = new EventBiz();
+        stampList = new ArrayList<>();
         try {
             stampList = eventBiz.loadDatesHavingEvents(user_id, status);
             for (int i = 0; i < stampList.size();i++){
@@ -251,15 +282,15 @@ public class CalendarFragment extends Fragment {
     }
     void loadEvents(long user_id, long time_stamp){
         /** add decorator **/
-        EventBiz eventBiz = new EventBiz();
-        List<Event> eventList = new ArrayList<>();
+        eventBiz = new EventBiz();
+        eventList = new ArrayList<>();
         try {
             eventList = eventBiz.loadEventsOfOneDate(user_id, time_stamp);
             if(eventList == null){
                 return;
             }
             for (int i = 0; i < eventList.size();i++){
-                Log.e(TAG, "event=" + eventList.get(i));
+                //Log.e(TAG, "event=" + eventList.get(i));
             }
 
             Message msg = Message.obtain();
