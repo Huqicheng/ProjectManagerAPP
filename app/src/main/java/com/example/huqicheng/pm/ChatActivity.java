@@ -32,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.huqicheng.bll.GroupBiz;
 import com.example.huqicheng.service.MyService;
 
 import java.util.Locale;
@@ -44,7 +45,8 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-
+    public String assignresult = "";
+    public String TAG = "IN_CHAT";
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mPlanetTitles;
@@ -188,6 +190,18 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
             MenuInflater inflater = popup.getMenuInflater();
             inflater.inflate(R.menu.popup_menu, popup.getMenu());
             popup.show();
+            new Thread(){
+                @Override
+                public void run() {
+                    assignresult = GroupBiz.dropGroup(2,2);
+                }
+            }.start();
+            Log.e(TAG, "assignresult: " + assignresult);
+            if (assignresult == "success"){
+                Log.e(TAG, "assignresult: " + assignresult);
+            }else if(assignresult == null) {
+                Log.e(TAG, "assignresult: " + assignresult);
+            }
         }
 
 

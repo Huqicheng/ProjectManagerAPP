@@ -12,11 +12,14 @@ import java.util.List;
 
 public class GroupBiz {
 
-    private GroupNao groupNao = null;
+    private static GroupNao groupNao = null;
     public GroupBiz(){
         groupNao = new GroupNao();
     }
     public List<Group> loadGroups(long user_id){
         return groupNao.getGroups(user_id);
+    }
+    public static String dropGroup(long user_id, long group_id){
+        return groupNao.dropGroups(user_id,group_id);
     }
 }

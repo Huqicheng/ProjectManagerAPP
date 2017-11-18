@@ -129,7 +129,7 @@ public class EventNao {
             //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
             Type type = Event.class;
             String json = new Gson().toJson(event,type);
-            Log.d("debug: ",json);
+            Log.d("In EventNao: ",json);
 
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();

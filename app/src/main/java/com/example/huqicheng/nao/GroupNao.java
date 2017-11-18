@@ -56,4 +56,38 @@ public class GroupNao {
 
         return res;
     }
+    public String dropGroups(long user_id,long group_id) {
+        String res = "";
+        try {
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("user_id",user_id + ""));
+            params.add(new BasicNameValuePair("group_id",group_id + ""));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP + "/deleteEvent.do", params, HttpUtils.GET);
+
+            if (entity == null) {
+                return null;
+            }
+
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+
+            Log.d("debug: ", json);
+
+            // check if failed, you should return null
+            if (json.trim().equalsIgnoreCase("failed")) return null;
+
+            // decoding here
+            // Type:   simple objects: ObjectName.class
+            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType()
+            res = json;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return res;
+    }
 }
