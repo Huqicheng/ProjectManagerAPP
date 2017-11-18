@@ -91,7 +91,7 @@ public class EventListAdapter extends BaseAdapter {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     long eid =  (long) buttonView.getTag();
-                    //getEventById(eid).setSelected(buttonView.isChecked());
+                    getEventById(eid).setSelected(buttonView.isChecked());
                     countCheck(isChecked,eid);
                 }
             };
@@ -107,7 +107,7 @@ public class EventListAdapter extends BaseAdapter {
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
         holder.description.setText(event.getDescription());
-        //holder.checkBox.setChecked(eventList.get(i).isSelected());
+        holder.checkBox.setChecked(eventList.get(i).isSelected());
 
         return convertView;
     }

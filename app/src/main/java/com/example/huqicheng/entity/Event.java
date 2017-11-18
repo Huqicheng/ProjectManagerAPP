@@ -20,6 +20,7 @@ public class Event implements java.io.Serializable{
 	long updatedAt;
 	long groupId;
 	String groupName;
+	boolean isSelected;
 
 
 
@@ -127,6 +128,12 @@ public class Event implements java.io.Serializable{
 	public void setEventTitle(String eventTitle) {
 		this.title = eventTitle;
 	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public  void setSelected(boolean isSelected){this.isSelected = isSelected;}
 
 
 }
