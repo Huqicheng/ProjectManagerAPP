@@ -48,6 +48,14 @@
         android:background="@drawable/delete"
         android:layout_below="@+id/eventlist"
         android:layout_alignParentStart="true" />
+    <ImageButton
+        android:id="@+id/add_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:clickable="true"
+        android:background="@drawable/add"
+        android:layout_below="@+id/eventlist"
+        android:layout_toEndOf="@+id/delete_btn" />
 
     <Button
         android:id="@+id/show_btn"

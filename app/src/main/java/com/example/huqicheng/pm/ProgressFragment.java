@@ -131,7 +131,13 @@ public class ProgressFragment extends Fragment {
         //delete selected events
         ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
         eventDelete(del_btn);
+
+        //add new event
+        ImageButton add_btn = (ImageButton) view.findViewById(R.id.add_btn);
+        eventAdd(add_btn);
     }
+
+
 
     public void eventComplete(ImageButton complete_btn) {
         complete_btn.setOnClickListener(new View.OnClickListener(){
@@ -175,6 +181,10 @@ public class ProgressFragment extends Fragment {
         });
     }
 
+    private void eventAdd(ImageButton add_btn) {
+        //TODO: jump to event add activity
+    }
+
     public void MsgDisplay(String s) {
         //display opertaion messages
 
@@ -193,11 +203,11 @@ public class ProgressFragment extends Fragment {
     }
     private void toEditActivity(Event e){
         Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("event",e);
-        intent.putExtras(bundle);
+        //TODO jump to event edit activity
+
+
         //intent.setClass(getActivity(),DateSelected.class);
-        startActivityForResult(intent,1);
+        //startActivityForResult(intent,1);
 
     }
 
