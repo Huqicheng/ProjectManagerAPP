@@ -6,7 +6,7 @@
     <string name="title_setting">Setting</string>
     <string-array name="planets_array">
         <item>Create a group</item>
-        <item>Join a group</item>
+        <item>Add a member</item>
         <item>Leave a group</item>
         <item>Retrieve group lists</item>
 

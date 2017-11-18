@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -33,10 +34,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huqicheng.bll.GroupBiz;
+import com.example.huqicheng.bll.UserBiz;
+import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.entity.User;
 import com.example.huqicheng.service.MyService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-
+import com.example.huqicheng.bll.GroupBiz;
 public class ChatActivity extends AppCompatActivity implements ServiceConnection,
         CalendarFragment.OnFragmentInteractionListener ,ChatFragment.OnFragmentInteractionListener,
         ProgressFragment.OnFragmentInteractionListener,
@@ -46,17 +52,18 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     public String assignresult = "";
-    public String TAG = "IN_CHAT";
+    private UserBiz userBiz;
+    public String TAG = "ChatActivity";
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mPlanetTitles;
-
+    private List<Group> groupList;
     private TextView mTextMessage;
     private Intent intent;
     private FragmentTransaction ft;
-
+    private GroupBiz groupBiz;
     //declare static fragments for CalendarActivity
-
+    private User user;
     private static ChatFragment chatFragment = null;
 
 
@@ -84,7 +91,8 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
 
-
+        userBiz = new UserBiz(this);
+        user = userBiz.readUser();
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -184,24 +192,40 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
             Intent intent=new Intent(this,GroupCreation.class);
             startActivity(intent);
         }
-        else
+        else if(position==1)
         {
+            Intent intent=new Intent(this,Group_drop_list.class);
+            startActivity(intent);
             PopupMenu popup = new PopupMenu(ChatActivity.this, view);
-            MenuInflater inflater = popup.getMenuInflater();
-            inflater.inflate(R.menu.popup_menu, popup.getMenu());
+            groupBiz = new GroupBiz();
+            groupList = new ArrayList<Group>();
+            groupList = groupBiz.loadGroups(user.getUserId());
+            String[] limits=new String[]{"G8"};
+            for (String s : limits) {
+                popup.getMenu().add(s);
+            }
             popup.show();
             new Thread(){
                 @Override
                 public void run() {
-                    assignresult = GroupBiz.dropGroup(2,2);
+                    assignresult = groupBiz.dropGroup(2,2);
                 }
             }.start();
             Log.e(TAG, "assignresult: " + assignresult);
             if (assignresult == "success"){
-                Log.e(TAG, "assignresult: " + assignresult);
+                finish();
+                Intent i = new Intent(ChatActivity.this, ChatActivity.class);
+                startActivity(i);
             }else if(assignresult == null) {
                 Log.e(TAG, "assignresult: " + assignresult);
             }
+        }
+        else if(position==2){
+            Intent intent=new Intent(this,Group_drop_list.class);
+            startActivity(intent);
+        }
+        else{
+
         }
 
 

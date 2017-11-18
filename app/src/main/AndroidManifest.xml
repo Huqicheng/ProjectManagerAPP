@@ -24,6 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CalendarActivity" />
+        <activity android:name=".Group_drop_list" />
+        <activity android:name=".Group_join_list" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".ProgressActivity" />

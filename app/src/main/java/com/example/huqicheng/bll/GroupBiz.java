@@ -21,7 +21,7 @@ public class GroupBiz {
         return groupNao.getGroups(user_id);
     }
 
-    public static String dropGroup(long user_id, long group_id) {
+    public String dropGroup(long user_id, long group_id) {
         return groupNao.dropGroups(user_id, group_id);
     }
     public List<User> loadUsersofSpecificGroup(long group_id){

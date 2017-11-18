@@ -23,6 +23,7 @@ import java.util.List;
  */
 
 public class GroupNao {
+    static final String TAG="GroupNao";
     public List<Group> getGroups(long user_id){
         List<Group> res = null;
         try{
@@ -37,7 +38,7 @@ public class GroupNao {
             //convert stream to json String
             String json = EntityUtils.toString(entity);
 
-            Log.d("debug: ",json);
+            Log.e(TAG,json);
 
             // check if failed, you should return null
             if(json.trim().equalsIgnoreCase("failed")) return null;
@@ -66,7 +67,7 @@ public class GroupNao {
             params.add(new BasicNameValuePair("group_id", group_id + ""));
 
             //modify url according to interface doc
-            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP + "/deleteEvent.do", params, HttpUtils.GET);
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP + "/dropFromGroup.do", params, HttpUtils.POST);
 
             if (entity == null) {
                 return null;

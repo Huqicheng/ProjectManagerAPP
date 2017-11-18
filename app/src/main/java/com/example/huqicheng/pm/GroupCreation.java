@@ -48,7 +48,7 @@ public class GroupCreation extends AppCompatActivity {
         setContentView(R.layout.activity_group_creation);
 
         //Initializing the EditTexts
-        groupName = (EditText) findViewById(R.id.GroupName);
+        groupName = (EditText) findViewById(R.id.ProjectDeadline);
         groupDescription = (EditText) findViewById(R.id.GroupDescription);
         projectName = (EditText) findViewById(R.id.ProjectName);
 

@@ -6,7 +6,7 @@
 
 
     <EditText
-        android:id="@+id/GroupName"
+        android:id="@+id/ProjectDeadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/GroupName"
+        android:layout_below="@+id/ProjectDeadline"
         android:layout_marginTop="49dp"
         android:ems="10"
         android:inputType="textPersonName"
