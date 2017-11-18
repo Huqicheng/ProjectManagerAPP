@@ -13,6 +13,7 @@ import com.example.huqicheng.message.*;
 import com.example.huqicheng.client.NettyClientBootstrap;
 import com.example.huqicheng.pm.CalendarActivity;
 import com.example.huqicheng.pm.CalendarFragment;
+import com.example.huqicheng.pm.R;
 import com.example.huqicheng.service.OnChatMsgRecievedListener;
 import com.google.gson.Gson;
 
@@ -21,10 +22,15 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class ClientUtils {
 	private static NettyClientBootstrap client = null;
 	private static OnChatMsgRecievedListener listenerForWeChat;
+	private static OnChatMsgRecievedListener listenerForGroupList;
 	private static Context context;
 
 	public static void setContext(Context ctx){
 		context = ctx;
+	}
+
+	public static void setListenerForGroupList(OnChatMsgRecievedListener listener){
+		listenerForGroupList = listener;
 	}
 
 	public static void setListenerForWeChat(OnChatMsgRecievedListener listener){
@@ -36,10 +42,19 @@ public class ClientUtils {
 		if(listenerForWeChat == null){
 			return false;
 		}
-		if(listenerForWeChat.getId(1)!=Long.parseLong(msg.getGroupId() )){
+		if(listenerForWeChat.getId()!=Long.parseLong(msg.getGroupId() )){
 			return false;
 		}
 		listenerForWeChat.onChatMsgRecieved(msg);
+
+		return true;
+	}
+
+	public static boolean onChatMsgRecievedForGroupList(BaseMsg msg){
+		if(listenerForGroupList == null){
+			return false;
+		}
+		listenerForGroupList.onChatMsgRecieved(msg);
 
 		return true;
 	}
@@ -57,7 +72,7 @@ public class ClientUtils {
 
 
         try {
-			client=new NettyClientBootstrap(8000,"192.168.137.1",client_id);
+			client=new NettyClientBootstrap(8000,"192.168.23.1",client_id);
 			client.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -71,10 +86,9 @@ public class ClientUtils {
 		NotificationManager notifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-				//设置通知标题
-				.setContentTitle("最简单的Notification")
-				//设置通知内容
-				.setContentText("只有小图标、标题、内容");
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentTitle((String)msg.getParams().get("body"))
+				.setContentText((String)msg.getParams().get("username"));
 
 		notifyManager.notify(1, builder.build());
 	}

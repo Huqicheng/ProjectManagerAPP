@@ -2,15 +2,21 @@ package com.example.huqicheng.client;
 
 import android.util.Log;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
 import com.example.huqicheng.dao.UserDao;
+import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.message.BaseMsg;
+import com.example.huqicheng.message.MsgCache;
 import com.example.huqicheng.message.MsgType;
 import com.example.huqicheng.utils.ClientUtils;
 import com.google.gson.Gson;
-
+import com.google.gson.reflect.TypeToken;
 
 
 import io.netty.channel.ChannelHandlerContext;
@@ -35,6 +41,18 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             	NettyClientBootstrap client = ClientUtils.getInstance(client_id);
             	try {
 					client.start();
+
+                    if(client == null || client.socketChannel == null){
+                        return;
+                    }
+
+                    BaseMsg loginMsg=new BaseMsg();
+                    loginMsg.setType(MsgType.LOGIN);
+                    loginMsg.putParams("user", "huqicheng");
+                    loginMsg.putParams("pwd", "huqicheng");
+                    if(client.socketChannel != null){
+                        client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
+                    }
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -65,11 +83,24 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, String msg) throws Exception {
     	System.out.println(msg);
         BaseMsg baseMsg = new Gson().fromJson(msg, BaseMsg.class);
+        //ClientUtils.notification(baseMsg);
 
     	MsgType msgType=baseMsg.getType();
         switch (msgType){
             case LOGIN:{
-                Log.d("Debug:", "messageReceived: msg ");
+
+            }break;
+            case ReplyForLogin:{
+                //get list
+                if(!baseMsg.getParams().containsKey("msgList")){
+                    return;
+                }
+                Type type = new TypeToken<HashMap<String,Object>>(){}.getType();
+                Log.d("reply for login",(String)baseMsg.getParams().get("msgList"));
+                Map<String,Object> msgList = new Gson().fromJson((String)baseMsg.getParams().get("msgList"),type);
+                for(Map.Entry<String,Object> entry:msgList.entrySet()){
+                    MsgCache.putPair(entry.getKey(),Long.parseLong((String)entry.getValue()));
+                }
             }break;
             case PING:{
                 System.out.println("receive ping from server----------");
@@ -82,14 +113,20 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                 if(ClientUtils.onChatMsgRecievedForWeChat(baseMsg)){
                     break;
                 }
-
                 //TODO notify the new comming msg if wechat activity is not existed
-                //ClientUtils.notification(baseMsg);
+                ClientUtils.notification(baseMsg);
 
                 //TODO notify ChatFragment to update UI
+                if(ClientUtils.onChatMsgRecievedForGroupList(baseMsg)){
+                    break;
+                }
+
+                // put it to cache
+                MsgCache.putPair(baseMsg.getGroupId(),baseMsg.getDate());
             }break;
             case ReplyForChatMsg:{
                 ClientUtils.onChatMsgRecievedForWeChat(baseMsg);
+                //ClientUtils.notification(baseMsg);
             }break;
 
             default:break;

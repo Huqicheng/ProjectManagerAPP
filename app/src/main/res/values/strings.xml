@@ -15,21 +15,13 @@
     <string name="drawer_close">Close navigation drawer</string>
     <!-- begin for calendar-->
     <string name="save">Save</string>
-    <string name="add">Add</string>
-    <string name="event_name">Event Name</string>
-    <string name="event_location">Event Location</string>
-    <string name="attendees">Attendees</string>
+    <string name="event_title">Event Title</string>
     <string name="event_discription">Event Discription</string>
     <string name="event_name1">Event Name</string>
     <string name="update">Update</string>
-    <string name="event_location1">Event Location</string>
-    <string name="event_discription1">Event Discription</string>
-    <string name="attendee">Attendee</string>
     <string name="group_name">Group Name</string>
     <string name="project_name">Project Name</string>
-
     <string name="group_discription">Group Discription</string>
-    <string name="add1">Add</string>
     <!-- end for calendar-->
     <string-array name="languages">
         <item>group 1</item>

@@ -56,4 +56,24 @@ public class GroupNao {
 
         return res;
     }
+    public List<User> getUsersOfSpecificGroup(long group_id){
+        List<User> res = null;
+        try{
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("group_id",group_id+""));
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getUsersOfGroup.do",params,HttpUtils.GET);
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+            Log.d("debug: ",json);
+            // check if failed, you should return null
+            if(json.trim().equalsIgnoreCase("failed")) return null;
+            Type type = new TypeToken<ArrayList<User>>(){}.getType();
+            res = new Gson().fromJson(json,type);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
 }

@@ -72,6 +72,8 @@ public class MyService extends Service {
 
         super.onCreate();
 
+        ClientUtils.setContext(this);
+
 
         String client_id = new UserDao(getApplicationContext()).readUser().getUserId()+"";
         Log.d("debug:","service");

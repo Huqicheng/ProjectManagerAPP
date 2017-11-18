@@ -19,7 +19,13 @@ import com.example.huqicheng.bll.GroupBiz;
 import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
+import com.example.huqicheng.message.BaseMsg;
+import com.example.huqicheng.message.MsgCache;
+import com.example.huqicheng.message.MsgType;
+import com.example.huqicheng.service.OnChatMsgRecievedListener;
+import com.example.huqicheng.utils.ClientUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -83,10 +89,6 @@ public class ChatFragment extends Fragment {
             }
         });
 
-
-
-
-
         this.adapter = new GroupAdapter(this.getActivity(),null,lvGroups);
         groupBiz = new GroupBiz();
 
@@ -101,17 +103,35 @@ public class ChatFragment extends Fragment {
                         //Toast.makeText(getApplicationContext(), "login failed" ,Toast.LENGTH_LONG).show();
                         break;
                     case 1:
-
-
-
-
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                List<Group> groups = (List<Group>) msg.obj;
+                                List<Group> tmp = (List<Group>) msg.obj;
+                                List<Group> groups = new ArrayList<Group>();
+                                List<Long> stamps = new ArrayList<Long>();
+                                // to check group chats
+                                for(Group g:tmp){
+                                    long timestamp = MsgCache.getPair(g.getGroupId()+"");
+                                    if(timestamp == 0){
+                                        groups.add(g);
+
+                                    }else{
+                                        groups.add(0,g);
+                                    }
+                                }
                                 Log.d("debug:",groups.size()+"");
                                 adapter.add(groups);
                                 adapter.notifyDataSetChanged();
+                            }
+                        });
+                        break;
+                    case 2:
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Long gid = (Long)msg.obj;
+
+                                updateListWhenMsgComes(gid);
                             }
                         });
                         break;
@@ -119,7 +139,45 @@ public class ChatFragment extends Fragment {
                 }
             }
         };
+
+        ClientUtils.setListenerForGroupList(new OnChatMsgRecievedListener() {
+            @Override
+            public void onChatMsgRecieved(BaseMsg msg) {
+                if(msg == null || msg.getType() == null){
+                    return;
+                }
+                if(!msg.getType().equals(MsgType.ReplyForChatMsg)||!msg.getType().equals(MsgType.ChatMsg)){
+                    return;
+                }
+
+                String groupId = msg.getGroupId();
+
+                try{
+                    Long gId = Long.parseLong(groupId);
+
+                    Message message = Message.obtain();
+                    message.what = 2;
+                    message.obj = gId;
+
+                    handler.handleMessage(message);
+
+                }catch(Exception e){
+                    Log.d("msg recieved", "parse error");
+                }
+
+            }
+
+            @Override
+            public long getId() {
+                return user.getUserId();
+            }
+        });
         return v;
+    }
+
+    // TODO a new msg come to group identified by  gid
+    public void updateListWhenMsgComes(long gid){
+
     }
 
     @Override
@@ -188,5 +246,11 @@ public class ChatFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ClientUtils.setListenerForGroupList(null);
     }
 }

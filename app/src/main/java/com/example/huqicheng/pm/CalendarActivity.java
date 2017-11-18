@@ -84,7 +84,7 @@ public class CalendarActivity extends AppCompatActivity implements ServiceConnec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ClientUtils.setContext(this);
+
         this.chatIntent=new Intent(this,ChatActivity.class);
         this.progressIntent=new Intent(this,ProgressActivity.class);
         this.settingIntent=new Intent(this,SettingActivity.class);
@@ -106,7 +106,7 @@ public class CalendarActivity extends AppCompatActivity implements ServiceConnec
         MenuItem menuItem=menu.getItem(0);
         menuItem.setChecked(true);
         intent = new Intent(CalendarActivity.this, MyService.class);
-        // startService(intent);
+        startService(intent);
     }
 
     @Override
