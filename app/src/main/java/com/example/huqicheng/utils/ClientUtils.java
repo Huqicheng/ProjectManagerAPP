@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.huqicheng.config.Config;
 import com.example.huqicheng.message.*;
 
 import com.example.huqicheng.client.NettyClientBootstrap;
@@ -24,7 +25,11 @@ public class ClientUtils {
 	private static OnChatMsgRecievedListener listenerForWeChat;
 	private static OnChatMsgRecievedListener listenerForGroupList;
 	private static Context context;
+	private static boolean isConnected = false;
 
+	public static void setIsConnected(boolean isConnect){
+		isConnected = isConnect;
+	}
 	public static void setContext(Context ctx){
 		context = ctx;
 	}
@@ -67,13 +72,25 @@ public class ClientUtils {
 		return client;
 	}
 
-	private static void startClient(String client_id) {
+	private static void startClient(final String client_id) {
 		Constants.setClientId(client_id);
 
 
         try {
-			client=new NettyClientBootstrap(8000,"192.168.56.1",client_id);
-			client.start();
+			// start connection asynchronously
+			new Thread(){
+				@Override
+				public void run() {
+					client=new NettyClientBootstrap(Config.SOCKET_SERVER_PORT,Config.SOCKET_SERVER_IP,client_id);
+					try {
+						client.start();
+						setIsConnected(true);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,10 +110,12 @@ public class ClientUtils {
 		notifyManager.notify(1, builder.build());
 	}
 
-	public static void send(BaseMsg msg){
-		if(client == null || client.socketChannel == null){
-			return;
+	public static boolean send(BaseMsg msg){
+		if(client == null || client.socketChannel == null || isConnected == false){
+			Log.d("ClientUtils" , "You are offline!");
+			return false;
 		}
 		client.socketChannel.writeAndFlush(new Gson().toJson(msg));
+		return true;
 	}
 }
