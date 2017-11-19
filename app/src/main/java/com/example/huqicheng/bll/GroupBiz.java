@@ -13,14 +13,28 @@ import java.util.List;
 
 public class GroupBiz {
 
-    private GroupNao groupNao = null;
+    private static GroupNao groupNao = null;
     public GroupBiz(){
         groupNao = new GroupNao();
     }
     public List<Group> loadGroups(long user_id){
         return groupNao.getGroups(user_id);
     }
+
+    public String dropGroup(long user_id, long group_id) {
+        return groupNao.dropGroups(user_id, group_id);
+    }
+    public List<User> getAllUser(String username) {
+        return groupNao.getAllUser(username);
+    }
+    public String joinGroup(long user_id, long group_id) {
+        return groupNao.joinGroup(user_id, group_id);
+    }
     public List<User> loadUsersofSpecificGroup(long group_id){
         return groupNao.getUsersOfSpecificGroup(group_id);
+
+    }
+    public String createGroup(String name,String description,long deadline,long user_id){
+        return groupNao.createGroup(name,description,deadline,user_id);
     }
 }
