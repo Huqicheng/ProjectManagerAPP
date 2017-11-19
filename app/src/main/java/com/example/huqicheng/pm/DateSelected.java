@@ -44,7 +44,7 @@ public class DateSelected extends AppCompatActivity {
     private UserBiz userBiz;
     private List<Group> groupList;
     private List<User> userList;
-    public  List<String> assignToList;
+    public  List<User> assignToList;
     private Map<String,Long> userNameIdMap;
     private EditText eventName,eventDiscription;
     private Button save;
@@ -118,40 +118,59 @@ public class DateSelected extends AppCompatActivity {
                 loadAssignToList();
             }
         }.start();
+        final List<String> assignToStringList = new ArrayList<>();
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg){
-                assignToList = (ArrayList<String>)msg.obj;
+                assignToList = (ArrayList<User>)msg.obj;
                 for (int k = 0; k < assignToList.size(); k++) {
                     Log.d("spinner list in DS", "" + assignToList.get(k));
                     //cityList.add(assignToList.get(k));
                 }
+
+
+                for (int m = 0; m < assignToList.size(); m++){
+                    assignToStringList.add(assignToList.get(m).getUsername());
+                }
                 //getApplicationContext()
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                        getApplicationContext(), R.layout.spinner_style,
-                        assignToList);
-                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
-                spinner.setAdapter(adapter);
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+
+                DateSelected.this.runOnUiThread(new Runnable() {
                     @Override
-                    public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                               int arg2, long arg3) {
-                        String str = arg0.getItemAtPosition(arg2).toString();
-                        Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                    public void run() {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                getApplicationContext(), R.layout.spinner_style,
+                                assignToStringList);
+                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                        spinner.setAdapter(adapter);
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                    }
+                            @Override
+                            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                                       int arg2, long arg3) {
+                                String str = arg0.getItemAtPosition(arg2).toString();
+                                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                        // TODO Auto-generated method stub
+                            }
 
+                            @Override
+                            public void onNothingSelected(AdapterView<?> arg0) {
+                                // TODO Auto-generated method stub
+
+                            }
+                        });
                     }
                 });
+
+
+
             }
         };
 
-        //getting intent
+
+
+
+            //getting intent
         Intent eventintent = this.getIntent();
         //getting event
         event = (Event)eventintent.getSerializableExtra("event");
@@ -278,7 +297,7 @@ public class DateSelected extends AppCompatActivity {
         groupBiz = new GroupBiz();
         groupList = new ArrayList<Group>();
         userList = new ArrayList<User>();
-        assignToList = new ArrayList<String>();
+        assignToList = new ArrayList<User>();
         Log.d("spinner list in DS", "" + "test spinner");
         groupList = groupBiz.loadGroups(user.getUserId());
         for (int i = 0; i < groupList.size(); i++) {
@@ -286,7 +305,7 @@ public class DateSelected extends AppCompatActivity {
             userList = groupBiz.loadUsersofSpecificGroup(groupList.get(i).getGroupId());
             for (int j = 0; j < userList.size(); j++) {
                 Log.d("spinner list in DS", "" + j);
-                assignToList.add(userList.get(j).getUsername());
+                assignToList.add(userList.get(j));
             }
             userList.clear();
         }
