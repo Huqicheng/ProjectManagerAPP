@@ -189,36 +189,13 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
         Log.d("ChatActivity","position"+position);
         if(position==0)
         {
-            Intent intent=new Intent(this,GroupCreation.class);
+            Intent intent=new Intent(this,Group_Creation.class);
             startActivity(intent);
         }
         else if(position==1)
         {
-            Intent intent=new Intent(this,Group_drop_list.class);
+            Intent intent=new Intent(this,Member_addition.class);
             startActivity(intent);
-            PopupMenu popup = new PopupMenu(ChatActivity.this, view);
-            groupBiz = new GroupBiz();
-            groupList = new ArrayList<Group>();
-            groupList = groupBiz.loadGroups(user.getUserId());
-            String[] limits=new String[]{"G8"};
-            for (String s : limits) {
-                popup.getMenu().add(s);
-            }
-            popup.show();
-            new Thread(){
-                @Override
-                public void run() {
-                    assignresult = groupBiz.dropGroup(2,2);
-                }
-            }.start();
-            Log.e(TAG, "assignresult: " + assignresult);
-            if (assignresult == "success"){
-                finish();
-                Intent i = new Intent(ChatActivity.this, ChatActivity.class);
-                startActivity(i);
-            }else if(assignresult == null) {
-                Log.e(TAG, "assignresult: " + assignresult);
-            }
         }
         else if(position==2){
             Intent intent=new Intent(this,Group_drop_list.class);

@@ -6,77 +6,117 @@
 
 
     <EditText
-        android:id="@+id/ProjectDeadline"
+        android:id="@+id/etProjectName"
+        style="@style/Widget.AppCompat.EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:textSize="18sp"
-        android:layout_alignBaseline="@+id/groupName"
-        android:layout_alignBottom="@+id/groupName"
+        android:layout_alignBaseline="@+id/tvProjectName"
+        android:layout_alignBottom="@+id/tvProjectName"
         android:layout_alignParentEnd="true" />
 
-    <EditText
-        android:id="@+id/ProjectName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/ProjectDeadline"
-        android:layout_marginTop="49dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/GroupDescription"
+        android:id="@+id/etProjectDiscription"
+        style="@style/Widget.AppCompat.EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:textSize="18sp"
-        android:layout_alignBaseline="@+id/groupDescription"
-        android:layout_alignBottom="@+id/groupDescription"
+        android:layout_marginTop="34dp"
+        android:layout_below="@+id/tvProjectDiscription"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
     <Button
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="12dp"
         android:text="@string/save"
         android:textSize="18sp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:id="@+id/groupName"
+    <Button
+        android:id="@+id/btnDatepicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:text="@string/group_name"
+        android:text="Pick Date"
         android:textSize="18sp"
-        android:layout_below="@+id/btnSave"
+        android:layout_marginTop="37dp"
+        android:layout_below="@+id/etProjectDiscription"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/btnTimepicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick Time"
+        android:textSize="18sp"
+        android:layout_alignBaseline="@+id/btnDatepicker"
+        android:layout_alignBottom="@+id/btnDatepicker"
+        android:layout_toEndOf="@+id/btnDatepicker" />
+
+    <TextView
+        android:id="@+id/tvProjectName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/project_name"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="20sp"
+        android:layout_marginTop="48dp"
+        android:layout_below="@+id/tvCurrentdate"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/projectName"
+        android:id="@+id/tvProjectDiscription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/ProjectName"
-        android:layout_alignBottom="@+id/ProjectName"
-        android:layout_alignParentStart="true"
-        android:text="@string/project_name"
-        android:textSize="18sp" />
+        android:text="@string/project_description"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="20sp"
+        android:layout_marginTop="47dp"
+        android:layout_below="@+id/etProjectName"
+        android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/groupDescription"
+        android:id="@+id/tvDisplaytime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/projectName"
-        android:layout_marginTop="63dp"
-        android:text="@string/group_discription"
-        android:textSize="18sp" />
+        android:text="tvAlarmtime"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp"
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/btnDatepicker"
+        android:layout_alignParentStart="true" />
+
+
+
+    <TextView
+        android:id="@+id/tvCurrentdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="26dp"
+        android:layout_below="@+id/spinnerAssignto"
+        android:layout_alignParentStart="true" />
+
+    <TextClock
+        android:id="@+id/textclockCurrenttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_above="@+id/tvEventname"
+        android:layout_alignStart="@+id/etEventname" />
+
 
 
 </RelativeLayout>

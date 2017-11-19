@@ -25,14 +25,14 @@
         </activity>
         <activity android:name=".CalendarActivity" />
         <activity android:name=".Group_drop_list" />
-        <activity android:name=".Group_join_list" />
+        <activity android:name=".Group_Creation" />
+        <activity android:name=".Member_addition" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".ProgressActivity" />
         <activity android:name=".DateSelected" />
         <activity android:name=".WeChatActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".GroupCreation" />
         <activity android:name=".RestorePasswordActivity" />
 
         <service

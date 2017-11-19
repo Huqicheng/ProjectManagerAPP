@@ -14,7 +14,7 @@ public class Group implements java.io.Serializable{
     long updatedAt;
     int projectId;
     String cover;
-
+    long deadLine;
     public String getCover() {
         return cover;
     }
@@ -43,9 +43,13 @@ public class Group implements java.io.Serializable{
         return groupDescription;
     }
 
+    public void setDeadLine(long deadLine) {
+        this.deadLine = deadLine;
+    }
 
-
-   
+    public long getDeadLine() {
+        return deadLine;
+    }
 
     public void setGroupId(long groupId) {
         this.groupId = groupId;

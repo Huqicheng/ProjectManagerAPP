@@ -8,7 +8,7 @@
         <item>Create a group</item>
         <item>Add a member</item>
         <item>Leave a group</item>
-        <item>Retrieve group lists</item>
+
 
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
@@ -21,6 +21,7 @@
     <string name="update">Update</string>
     <string name="group_name">Group Name</string>
     <string name="project_name">Project Name</string>
+    <string name="project_description">Project Description</string>
     <string name="group_discription">Group Discription</string>
     <!-- end for calendar-->
     <string-array name="languages">
@@ -60,6 +61,9 @@
     <string name="error_pass">Enter a password</string>
     <string name="restore_email_sent">Please check your email for an account restoration link.</string>
     <string name="restore_email_fail">Restore email was not sent</string>
+    <string name="group">Group</string>
+    <string name="user">User</string>
+    <string name="submit">Submit</string>
 
 
     <!--end for login-->

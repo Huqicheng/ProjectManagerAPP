@@ -1,158 +1,271 @@
 package com.example.huqicheng.pm;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.example.huqicheng.bll.EventBiz;
 import com.example.huqicheng.bll.GroupBiz;
 import com.example.huqicheng.bll.UserBiz;
+import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
+import com.example.huqicheng.utils.DateUtils;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class Member_addition extends AppCompatActivity {
     Intent intent;
-    private EditText groupName,groupDescription,projectName;
-    private Button save;
-
-    static final String TAG="Group_drop_list";
-    public String assignresult = "";
-    List<Group> groupList;
-
-    private Intent INTENT;
-    public Context context;
-    private User user;
-    private UserBiz userBiz;
-    private ListView lvGroups;
-    private ArrayAdapter<String> adapter;
+    private Handler handler = null;
+    private Handler handler1 = null;
     private GroupBiz groupBiz;
-    private ArrayList<String> arraylist;
+    private GroupBiz groupBiz1;
+    private UserBiz userBiz;
+    private List<Group> groupList;
+    private List<User> userList;
+    public  List<String> assignToList;
+    public  List<String> assignToList1;
+    private Map<String,Long> userNameIdMap;
+
+    private Button save;
+    private Button time_picker, date_picker;
+    private TextView tvU,tvG;
+    private Spinner spinnerU,spinnerG;
+    static final String TAG="TAG";
+    public String assignresult = "";
+    public int month_x;
+    public EventBiz eventBiz = new EventBiz();
+    public Context context = this;
+    private User user;
+    public Event event;
+    public Event event_save;
+    private Long deadline;
+    private String str_date;
+    private long user_id;
+    private long group_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_chat);
+        setContentView(R.layout.activity_member_add);
+
+        //Initializing the EditTexts
+
+        //Initializing the buttons
+        save = (Button) findViewById(R.id.btnSave);
+
+
+
+        //creating the instance of the calander
+        final Calendar calendar = Calendar.getInstance();
+        month_x = calendar.get(Calendar.MONTH)+1;
+
+        //load user
         userBiz = new UserBiz(this);
         user = userBiz.readUser();
-        Log.d(TAG,"user_id"+user.getUserId());
-        //Initializing the EditTexts
-        groupBiz = new GroupBiz();
-        groupList = new ArrayList<Group>();
-        lvGroups = (ListView)findViewById(R.id.lvGroups);
+
+
+
+        /**  test spinner **/
+        //Initializing textview textAssignto
+        tvG = (TextView) findViewById(R.id.tvGroup);
+        //Initializing the Assign-to Spinner
+        spinnerG = (Spinner) findViewById(R.id.spinnerGroup);
+        tvU = (TextView) findViewById(R.id.tvUser);
+        //Initializing the Assign-to Spinner
+        spinnerU = (Spinner) findViewById(R.id.spinnerUser);
         new Thread(){
             @Override
             public void run() {
-                groupList = groupBiz.loadGroups(user.getUserId());
-                if(groupList.size()>0)
-                {
-                    Log.d(TAG,"group list size"+groupList.size());
+                //CalendarView.addDecorator(decorator);
+                loadAssignToListForGroup();
+                loadAssignToListForUser();
+            }
+        }.start();
 
-                    arraylist=new ArrayList<String>();
-                    for(int i=0;i<groupList.size();i++){
-                        arraylist.add(groupList.get(i).getGroupName());
+
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg){
+                assignToList = (ArrayList<String>)msg.obj;
+                for (int k = 0; k < assignToList.size(); k++) {
+                    Log.d("spinner list in DS", "" + assignToList.get(k));
+                    //cityList.add(assignToList.get(k));
+                }
+                //getApplicationContext()
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        getApplicationContext(), R.layout.spinner_style,
+                        assignToList);
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                spinnerU.setAdapter(adapter);
+                spinnerU.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                               int arg2, long arg3) {
+                        String str = arg0.getItemAtPosition(arg2).toString();
+                        //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                        for(int i=0;i<userList.size();i++)
+                        {
+                            if(userList.get(i).getUsername().equals(str))
+                                user_id=userList.get(i).getUserId();
+                        }
+
                     }
 
-                    adapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,arraylist);
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                        // TODO Auto-generated method stub
 
-                    lvGroups.setAdapter(adapter);
-                    lvGroups.setOnItemClickListener(new ListItemClicker());
-                }
+                    }
+                });
+
+
             }
-        }.start();
-
-
-
-
-
-
-
-
-        //getting date from mainactivity
-
-        //load user
-
-
-
-
-
-    }
-
-    private class ListItemClicker implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position,view);
-        }
-    }
-    private void selectItem(final int position,View view) {
-
-
-         new Thread() {
+        };
+        handler1 = new Handler() {
             @Override
-            public void run() {
-                long group_id=groupList.get(position).getGroupId();
-                long user_id=user.getUserId();
-                Log.e(TAG, "user_id: " + user_id);
-                Log.e(TAG, "group_id: " + group_id);
-                assignresult = groupBiz.dropGroup(user_id, group_id);
-                finish();
-                Intent i = new Intent(Member_addition.this, ChatActivity.class);
-                startActivity(i);
-            }
-        }.start();
-
-        /**
-        Log.d("ChatActivity","position"+position);
-        if(position==0)
-        {
-            Intent intent=new Intent(this,GroupCreation.class);
-            startActivity(intent);
-        }
-        else if(position==1)
-        {
-            Intent intent=new Intent(this,Group_drop_list.class);
-            startActivity(intent);
-            PopupMenu popup = new PopupMenu(ChatActivity.this, view);
-            groupBiz = new GroupBiz();
-            groupList = new ArrayList<Group>();
-            groupList = groupBiz.loadGroups(user.getUserId());
-            String[] limits=new String[]{"G8"};
-            for (String s : limits) {
-                popup.getMenu().add(s);
-            }
-            popup.show();
-            new Thread(){
-                @Override
-                public void run() {
-                    assignresult = groupBiz.dropGroup(2,2);
+            public void handleMessage(Message msg){
+                assignToList1 = (ArrayList<String>)msg.obj;
+                for (int k = 0; k < assignToList1.size(); k++) {
+                    Log.d("spinner list in DS", "" + assignToList1.get(k));
+                    //cityList.add(assignToList.get(k));
                 }
-            }.start();
-            Log.e(TAG, "assignresult: " + assignresult);
-            if (assignresult == "success"){
-                finish();
-                Intent i = new Intent(ChatActivity.this, ChatActivity.class);
-                startActivity(i);
-            }else if(assignresult == null) {
-                Log.e(TAG, "assignresult: " + assignresult);
-            }
-        }
-        else if(position==2){
-            Intent intent=new Intent(this,Group_drop_list.class);
-            startActivity(intent);
-        }
-        else{
+                //getApplicationContext()
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        getApplicationContext(), R.layout.spinner_style,
+                        assignToList1);
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                spinnerG.setAdapter(adapter);
+                spinnerG.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        }
-         **/
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                               int arg2, long arg3) {
+                        String str = arg0.getItemAtPosition(arg2).toString();
+                        //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                        for(int i=0;i<groupList.size();i++)
+                        {
+                            if(groupList.get(i).getGroupName().equals(str))
+                                group_id=groupList.get(i).getGroupId();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+
+
+            }
+        };
+        //get flag that decide whether it is an edit event of init event
+
+
+
+
+
+
+
+        //get timestamp and string date
+
+
+        //save button clicked
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            groupBiz = new GroupBiz();
+                            assignresult = groupBiz.joinGroup(user_id,group_id);
+                            Log.e(TAG, "assignresult: " + assignresult);
+                            if (assignresult == "success") {
+                                //Toast.makeText(Member_addition.this, "member saved", Toast.LENGTH_LONG).show();
+                                finish();
+                                Intent intent=new Intent(Member_addition.this,ChatActivity.class);
+                                startActivity(intent);
+                            } else  {
+                               // Toast.makeText(Member_addition.this, "Failed to save member", Toast.LENGTH_LONG).show();
+                                finish();
+                                Intent intent=new Intent(Member_addition.this,ChatActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    }.start();
+
+                }
+
+
+        });
+
+
+
     }
 
 
+    void loadAssignToListForUser(){
+        groupBiz = new GroupBiz();
+
+        userList = new ArrayList<User>();
+        assignToList = new ArrayList<String>();
+        Log.d("spinner list in DS", "" + "test spinner");
+
+        userList = groupBiz.getAllUser("");
+        for (int j = 0; j < userList.size(); j++) {
+            Log.d("spinner list in DS", "" + j);
+            assignToList.add(userList.get(j).getUsername());
+        }
+
+        Message msg = Message.obtain();
+        msg.what = 1;
+        msg.obj = assignToList;
+        handler.handleMessage(msg);
+    }
+    void loadAssignToListForGroup(){
+        groupBiz1 = new GroupBiz();
+        groupList = new ArrayList<Group>();
+
+        assignToList1 = new ArrayList<String>();
+        Log.d("spinner list in DS", "" + "test spinner1");
+        groupList = groupBiz1.loadGroups(user.getUserId());
+        for (int i = 0; i < groupList.size(); i++) {
+
+                assignToList1.add(groupList.get(i).getGroupName());
+
+
+        }
+        Message msg1 = Message.obtain();
+        msg1.what = 1;
+        msg1.obj = assignToList1;
+        handler1.handleMessage(msg1);
+    }
 }
