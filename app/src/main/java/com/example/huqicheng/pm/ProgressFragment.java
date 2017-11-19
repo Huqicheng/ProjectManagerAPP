@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -47,11 +50,13 @@ public class ProgressFragment extends Fragment {
     private ListView events;
     public ArrayList<Event> eventList;
     private EventListAdapter adapter;
+    private  Handler handler = null;
     TextView progress_text;
     ProgressBar bar;
     int progress_Max = 100;
     int totalEvents = 0;
     int complete_count = 0;
+    Intent intent;
     //dbHandler2 myDb2;
     int Date;
 
@@ -104,9 +109,13 @@ public class ProgressFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //Log.d("clicked item: ", i + "at pos " + l);
-                //CheckBox cb = (CheckBox)view.getTag(R.id.chk_box);
-                //Log.d("is ",ifChecked(cb));
+                Event event = adapter.getEventList().get(i);
+                intent = new Intent(getActivity(), DateSelected.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("event", event);//serializable
+                bundle.putSerializable("flag", DateSelected.EDIT);//indicating EDIT event or INIT event
+                intent.putExtras(bundle);
+                startActivity(intent);
 
             }
         });
@@ -153,7 +162,7 @@ public class ProgressFragment extends Fragment {
                     adapter.notifyDataSetChanged();
                 }
                 MsgDisplay("complete.");
-                Log.d("esize", ""+eventList.size());
+                //Log.d("esize", ""+eventList.size());
                 adapter.selectedEvents.clear();
 
             }
@@ -181,9 +190,109 @@ public class ProgressFragment extends Fragment {
         });
     }
 
-    private void eventAdd(ImageButton add_btn) {
+
+    private void eventAdd(final ImageButton add_btn) {
+        //attempt 1
+        add_btn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v)
+            {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("test", "success");
+                        Event event =  new Event();
+                        intent = new Intent(getActivity(), DateSelected.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("event", event);//serializable
+                        bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+                    }
+                });
+
+
+
+            }
+
+        });
+
+
         //TODO: jump to event add activity
+        //attempt 2
+/*        final Handler handler=new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                add_btn.setOnClickListener(new View.OnClickListener(){
+
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Log.d("test", "success");
+                        Event event =  new Event();
+                        intent = new Intent(getActivity(), DateSelected.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("event", event);//serializable
+                        bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+                    }
+
+                });
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        add_btn.invalidate();
+                    }
+                });
+            }
+        }).start();*/
+
+
+// attempt 3
+
+ /*       handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Event event =  new Event();
+                        intent = new Intent(getActivity(), DateSelected.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("event", event);//serializable
+                        bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+
+
+                    }
+                });
+            }
+
+        };
+
+        add_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {  Message msg = Message.obtain();
+               handler.handleMessage(msg);
+
+            }
+
+        });
+*/
+
+
+
+
     }
+
+
 
     public void MsgDisplay(String s) {
         //display opertaion messages

@@ -21,6 +21,8 @@ import android.widget.ListView;
 import com.example.huqicheng.adapter.CalendarEventListAdapter;
 import com.example.huqicheng.bll.EventBiz;
 import com.example.huqicheng.bll.UserBiz;
+import com.example.huqicheng.decorator.HighlightCurrentdayDecorator;
+import com.example.huqicheng.decorator.HighlightDeadlineDecorator;
 import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.entity.User;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -56,7 +58,8 @@ public class CalendarFragment extends Fragment {
     public List<Event> eventList;
     public List<Long> stampList;
     public List<CalendarDay> datesList = new ArrayList<>();
-    public HighlightDecorator decorator;
+    public HighlightDeadlineDecorator deadlineDecorator;
+    public HighlightCurrentdayDecorator currentdayDecorator;
     static final String TAG="TAG";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -104,29 +107,7 @@ public class CalendarFragment extends Fragment {
 
 
 
-    /**
-     * Decorate several days with a dot
-     */
-    public class HighlightDecorator implements DayViewDecorator {
 
-        private int color;
-        private HashSet<CalendarDay> dates;
-
-        public HighlightDecorator(int color, Collection<CalendarDay> dates) {
-            this.color = color;
-            this.dates = new HashSet<>(dates);
-        }
-
-        @Override
-        public boolean shouldDecorate(CalendarDay day) {
-            return dates.contains(day);
-        }
-
-        @Override
-        public void decorate(DayViewFacade view) {
-            view.addSpan(new DotSpan(6, color));
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -138,6 +119,8 @@ public class CalendarFragment extends Fragment {
             public void run() {
                 CalendarView = (MaterialCalendarView) v.findViewById(R.id.calendarView);
                 listView = (ListView) v.findViewById(R.id.eventlist);
+                HighlightCurrentdayDecorator currentdayDecorator = new HighlightCurrentdayDecorator();
+                CalendarView.addDecorator(currentdayDecorator);
             }
         });
 
@@ -145,8 +128,6 @@ public class CalendarFragment extends Fragment {
         eventBiz = new EventBiz();
         //load user
         user = new UserBiz(getActivity()).readUser();
-
-
         //listView listener: show DateSelected activity and edit event
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -195,8 +176,8 @@ public class CalendarFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                decorator = new HighlightDecorator(Color.parseColor("#FF4081"), datesList);
-                                CalendarView.addDecorators(decorator);
+                                deadlineDecorator = new HighlightDeadlineDecorator(Color.parseColor("#FF4081"), datesList);
+                                CalendarView.addDecorators(deadlineDecorator);
                             }
                         });
                         break;
@@ -238,9 +219,9 @@ public class CalendarFragment extends Fragment {
         }.start();
     }
     @Override
-    public void onPause(){
-        super.onPause();
-        CalendarView.removeDecorator(decorator);
+    public void onResume(){
+        super.onResume();
+        CalendarView.removeDecorator(deadlineDecorator);
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
