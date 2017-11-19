@@ -137,7 +137,7 @@ public class CalendarFragment extends Fragment {
                 Log.d("events in CF",""+event.getDescription());
                 intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("event", new Event());//serializable
+                bundle.putSerializable("event", event);//serializable
                 bundle.putSerializable("flag", DateSelected.EDIT);//indicating EDIT event or INIT event
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -219,8 +219,8 @@ public class CalendarFragment extends Fragment {
         }.start();
     }
     @Override
-    public void onPause(){
-        super.onPause();
+    public void onResume(){
+        super.onResume();
         CalendarView.removeDecorator(deadlineDecorator);
     }
     @Override

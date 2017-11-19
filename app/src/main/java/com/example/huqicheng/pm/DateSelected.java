@@ -45,7 +45,7 @@ public class DateSelected extends AppCompatActivity {
     private List<Group> groupList;
     private List<User> userList;
     public  List<User> assignToList;
-    private Map<String,Long> userNameIdMap;
+    public final List<String> assignToStringList = new ArrayList<>();
     private EditText eventName,eventDiscription;
     private Button save;
     private Button time_picker, date_picker;
@@ -70,8 +70,7 @@ public class DateSelected extends AppCompatActivity {
     public static final int INIT = 1;
     public static final int EDIT = 2;
     public int flag;
-    //private static final String[] cities = { "y75fang", "q45hu" };
-    private static final String[] cities = { "北京", "上海", "重庆", "广州", "深圳" };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,24 +100,28 @@ public class DateSelected extends AppCompatActivity {
         userBiz = new UserBiz(this);
         user = userBiz.readUser();
 
-        final List<String> cityList = new ArrayList<String>();
-        for (int i = 0; i < cities.length; i++) {
-            cityList.add(cities[i]);
+        //getting intent
+        Intent eventintent = this.getIntent();
+        //getting event
+        event = (Event)eventintent.getSerializableExtra("event");
+        Log.d("events in DS",""+event.getDescription());
+        //get flag that decide whether it is an edit event of init event
+        flag = (int)eventintent.getSerializableExtra("flag");
+
+        if (flag == EDIT){
+            //Initializing textview textAssignto
+            textAssignto = (TextView) findViewById(R.id.tvAssignto);
+            //Initializing the Assign-to Spinner
+            spinner = (Spinner) findViewById(R.id.spinnerAssignto);
+            new Thread(){
+                @Override
+                public void run() {
+                    //CalendarView.addDecorator(decorator);
+                    loadAssignToList();
+                }
+            }.start();
         }
 
-        /**  test spinner **/
-        //Initializing textview textAssignto
-        textAssignto = (TextView) findViewById(R.id.tvAssignto);
-        //Initializing the Assign-to Spinner
-        spinner = (Spinner) findViewById(R.id.spinnerAssignto);
-        new Thread(){
-            @Override
-            public void run() {
-                //CalendarView.addDecorator(decorator);
-                loadAssignToList();
-            }
-        }.start();
-        final List<String> assignToStringList = new ArrayList<>();
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg){
@@ -127,7 +130,6 @@ public class DateSelected extends AppCompatActivity {
                     Log.d("spinner list in DS", "" + assignToList.get(k));
                     //cityList.add(assignToList.get(k));
                 }
-
 
                 for (int m = 0; m < assignToList.size(); m++){
                     assignToStringList.add(assignToList.get(m).getUsername());
@@ -168,15 +170,6 @@ public class DateSelected extends AppCompatActivity {
         };
 
 
-
-
-            //getting intent
-        Intent eventintent = this.getIntent();
-        //getting event
-        event = (Event)eventintent.getSerializableExtra("event");
-        Log.d("events in DS",""+event.getDescription());
-        //get flag that decide whether it is an edit event of init event
-        flag = (int)eventintent.getSerializableExtra("flag");
         if (flag == EDIT) {
             Date date = new Date(event.getDeadLine());
             Timestamp timestamp = new Timestamp(event.getDeadLine());
