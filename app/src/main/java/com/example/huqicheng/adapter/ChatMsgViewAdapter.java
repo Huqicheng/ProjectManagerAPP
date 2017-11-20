@@ -28,11 +28,11 @@ import java.util.List;
 public class ChatMsgViewAdapter extends BaseAdapter {
 
 	public static interface IMsgViewType {
-		int IMVT_COM_MSG = 0;// 收到对方的消息
-		int IMVT_TO_MSG = 1;// 自己发送出去的消息
+		int IMVT_COM_MSG = 0;
+		int IMVT_TO_MSG = 1;// 自己发送出去的消
 	}
 
-	private static final int ITEMCOUNT = 2;// 消息类型的总数
+	private static final int ITEMCOUNT = 3;// 消息类型的总数
 	private List<ChatMsgEntity> coll;// 消息对象数组
 	private LayoutInflater mInflater;
 	private AsyncImageLoader loader;
@@ -111,6 +111,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			} else {
 				convertView = mInflater.inflate(
 						R.layout.chatting_item_msg_text_right, null);
+
 			}
 
 			viewHolder = new ViewHolder();

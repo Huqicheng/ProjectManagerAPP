@@ -30,4 +30,10 @@ public class UserBiz {
     public User readUser(){
         return userDao.readUser();
     }
+    public User registerUser(String user_email, String username, String pwd, String type){
+        return userNao.registerUser(user_email,username, pwd, type);
+    }
+    public String updateUserInformation(User user) {
+        return userNao.updateUserInformation(user);
+    }
 }

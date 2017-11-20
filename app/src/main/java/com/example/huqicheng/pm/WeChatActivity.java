@@ -147,6 +147,17 @@ public class WeChatActivity extends Activity implements OnClickListener {
 
 						break;
 
+					case 4:
+						final String content = (String)msg.obj;
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Toast.makeText(WeChatActivity.this,"You are offline, failed to send Msg \"" + content +"\"",Toast.LENGTH_SHORT).show();
+							}
+						});
+
+						break;
+
 				}
 			}
 		};
@@ -283,7 +294,7 @@ public class WeChatActivity extends Activity implements OnClickListener {
 	private void send() {
 		String contString = mEditTextContent.getText().toString();
 		if (contString.length() > 0) {
-			ChatMsgEntity entity = new ChatMsgEntity();
+			final ChatMsgEntity entity = new ChatMsgEntity();
 			entity.setName(user.getUsername());
 			entity.setDate(getDate());
 			entity.setMessage(contString);
@@ -294,7 +305,13 @@ public class WeChatActivity extends Activity implements OnClickListener {
 			new Thread(){
 				@Override
 				public void run() {
-					ClientUtils.send(new MsgAdapter().ChatMsgEntity2BaseMsg(temp,group.getGroupId(),user.getAvatar()));
+					boolean res = ClientUtils.send(new MsgAdapter().ChatMsgEntity2BaseMsg(temp,group.getGroupId(),user.getAvatar()));
+					if(!res){
+						Message msg = Message.obtain();
+						msg.what = 4;
+						msg.obj = entity.getMessage();
+						handler.handleMessage(msg);
+					}
 				}
 			}.start();
 

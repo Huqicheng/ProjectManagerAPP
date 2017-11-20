@@ -34,6 +34,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		super.channelInactive(ctx);
 
+        ClientUtils.setIsConnected(false);
         //reconnect to server
         ctx.channel().eventLoop().schedule(new Runnable() {
             @Override
@@ -45,6 +46,8 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                     if(client == null || client.socketChannel == null){
                         return;
                     }
+
+                    ClientUtils.setIsConnected(true);
 
                     BaseMsg loginMsg=new BaseMsg();
                     loginMsg.setType(MsgType.LOGIN);

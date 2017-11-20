@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar">
+        <ProgressBar
+            android:id="@+id/bar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:max="100"
+            android:progress="20"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+        <TextView
+            android:id="@+id/progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="1 of 5 completed"
+            android:padding="5dp"
+            android:layout_below="@+id/bar" />
+    </RelativeLayout>
+
+
+    <ImageButton
+        android:id="@+id/complete_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/eventlist"
+        android:background="@drawable/complete"
+        android:clickable="true"
+        android:elevation="0dp" />
+
+    <ImageButton
+        android:id="@+id/delete_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:clickable="true"
+        android:background="@drawable/delete"
+        android:layout_below="@+id/eventlist"
+        android:layout_alignParentStart="true" />
+    <ImageButton
+        android:id="@+id/add_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:clickable="true"
+        android:background="@drawable/add"
+        android:layout_below="@+id/eventlist"
+        android:layout_toEndOf="@+id/delete_btn" />
+
+    <Button
+        android:id="@+id/show_btn"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Completed"
+        android:visibility="invisible"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+
+    <ListView
+        android:id="@+id/eventlist"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingBottom="8dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="15dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/progressBar"
+        android:layout_above="@+id/show_btn"
+        android:choiceMode="multipleChoice">
+
+    </ListView>
+
+
+
+</RelativeLayout>
