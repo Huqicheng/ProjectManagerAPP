@@ -186,7 +186,7 @@ public class CalendarFragment extends Fragment {
                         eventList = (List<Event>)msg.obj;
 
                         for (int i = 0; i < eventList.size();i++){
-                            Log.d("events",""+eventList.get(i).getDescription());
+                            //Log.d("events",""+eventList.get(i).getDescription());
                         }
 
                         getActivity().runOnUiThread(new Runnable() {
