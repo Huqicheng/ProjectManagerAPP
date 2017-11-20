@@ -58,6 +58,7 @@
     <string name="register_success">Registration done!</string>
     <string name="register_fail">Registration failed</string>
     <string name="error_email">Enter a valid email</string>
+    <string name="error_name">Enter a valid name</string>
     <string name="error_pass">Enter a password</string>
     <string name="restore_email_sent">Please check your email for an account restoration link.</string>
     <string name="restore_email_fail">Restore email was not sent</string>
