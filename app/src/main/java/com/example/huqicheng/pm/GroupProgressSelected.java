@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,10 +29,10 @@ import java.util.ArrayList;
  * Activities that contain this fragment must implement the
  * {@link GroupProgressSelected.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link GroupProgressSelected#newInstance} factory method to
+ * Use the {@link GroupProgressSelected#} factory method to
  * create an instance of this fragment.
  */
-public class GroupProgressSelected extends Fragment {
+public class GroupProgressSelected extends AppCompatActivity {
 
     //dbHandler myDb;
     private ListView events;
@@ -49,9 +50,9 @@ public class GroupProgressSelected extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public GroupProgressSelected() {
+ /*   public GroupProgressSelected() {
         // Required empty public constructor
-    }
+    }*/
 
     /**
      * Use this factory method to create a new instance of
@@ -61,26 +62,28 @@ public class GroupProgressSelected extends Fragment {
      * @return A new instance of fragment ProgressFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GroupProgressSelected newInstance() {
+/*    public static GroupProgressSelected newInstance() {
         GroupProgressSelected fragment = new GroupProgressSelected();
         Bundle args = new Bundle();
 //        args.putString(ARG_PARAM1, param1);
 //        args.putString(ARG_PARAM2, param2);
         //fragment.setArguments(args);
         return fragment;
-    }
+    }*/
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
         //init event listview
-        View view = inflater.inflate(R.layout.fragment_progress, container, false);
+        setContentView(R.layout.single_group_events);
+        bar = (ProgressBar) findViewById(R.id.bar);
+        bar.setProgress(0);
+        progress_text = (TextView) findViewById(R.id.progress_text);
+
+
+
         eventList = new ArrayList<>();
         for(int i = 0;i<10;i++){
 
@@ -92,12 +95,12 @@ public class GroupProgressSelected extends Fragment {
             eventList.add(e);
         }
         totalEvents = eventList.size();
-        ListView listView = (ListView) view.findViewById(R.id.eventlist);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //ListView listView = (ListView) view.findViewById(R.id.eventlist);
+       /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Event event = adapter.getEventList().get(i);
-                intent = new Intent(getActivity(), DateSelected.class);
+                //intent = new Intent(getActivity(), DateSelected.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event", event);//serializable
                 bundle.putSerializable("flag", DateSelected.EDIT);//indicating EDIT event or INIT event
@@ -105,17 +108,17 @@ public class GroupProgressSelected extends Fragment {
                 startActivity(intent);
 
             }
-        });
-        adapter = new EventListAdapter(getActivity(),null);
-        listView.setAdapter(adapter);
+        });*/
+        //adapter = new EventListAdapter(getActivity(),null);
+        //listView.setAdapter(adapter);
         adapter.add(eventList);
-        progress_text = (TextView) view.findViewById(R.id.progress_text);
-        bar = (ProgressBar) view.findViewById(R.id.bar);
-        bar.setProgress(0);
-        progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
-        ProgressButtonClick(view);
+        //progress_text = (TextView) view.findViewById(R.id.progress_text);
+        //bar = (ProgressBar) view.findViewById(R.id.bar);
 
-        return view;
+        progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
+        //ProgressButtonClick(view);
+
+        //return view;
 
     }
 
@@ -185,12 +188,12 @@ public class GroupProgressSelected extends Fragment {
             @Override
             public void onClick(View v)
             {
-                getActivity().runOnUiThread(new Runnable() {
+                /*getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "success");
                         Event event =  new Event();
-                        intent = new Intent(getActivity(), DateSelected.class);
+                        //intent = new Intent(getActivity(), DateSelected.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("event", event);//serializable
                         bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
@@ -198,7 +201,7 @@ public class GroupProgressSelected extends Fragment {
                         startActivity(intent);
 
                     }
-                });
+                });*/
 
 
 
@@ -285,15 +288,15 @@ public class GroupProgressSelected extends Fragment {
         //display opertaion messages
 
         if(adapter.selectedEvents.size() == 1){
-            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" event " +s, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), adapter.selectedEvents.size()+" event " +s, Toast.LENGTH_SHORT).show();
 
         }
         else if (adapter.selectedEvents.size() >1){
-            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" events "+s, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), adapter.selectedEvents.size()+" events "+s, Toast.LENGTH_SHORT).show();
 
         }
         else{
-            Toast.makeText(getActivity(), "Please make a selection.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Please make a selection.", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -315,9 +318,9 @@ public class GroupProgressSelected extends Fragment {
         }
     }
 
-    @Override
+   /* @Override
     public void onAttach(Context context) {
-        super.onAttach(context);
+        //super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -328,9 +331,9 @@ public class GroupProgressSelected extends Fragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
+        //super.onDetach();
         mListener = null;
-    }
+    }*/
 
     /**
      * This interface must be implemented by activities that contain this

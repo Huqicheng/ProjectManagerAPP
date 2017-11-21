@@ -34,6 +34,7 @@
         <activity android:name=".WeChatActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".RestorePasswordActivity" />
+        <activity android:name=".GroupProgressSelected"/>
 
         <service
             android:name="com.example.huqicheng.service.MyService"
