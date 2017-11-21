@@ -26,16 +26,11 @@ import com.example.huqicheng.decorator.HighlightDeadlineDecorator;
 import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.entity.User;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -104,9 +99,6 @@ public class CalendarFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
-
-
 
 
     @Override
@@ -186,7 +178,7 @@ public class CalendarFragment extends Fragment {
                         eventList = (List<Event>)msg.obj;
 
                         for (int i = 0; i < eventList.size();i++){
-                            Log.d("events",""+eventList.get(i).getDescription());
+                            //Log.d("events",""+eventList.get(i).getDescription());
                         }
 
                         getActivity().runOnUiThread(new Runnable() {
@@ -227,15 +219,6 @@ public class CalendarFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        /** get data from the database**/
-        /*
-        new Thread(){
-            @Override
-            public void run() {
-                loadDates(user.getUserId(),"started");
-            }
-        }.start();
-        */
     }
 
 

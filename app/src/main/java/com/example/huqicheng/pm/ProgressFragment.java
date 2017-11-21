@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -27,10 +28,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huqicheng.adapter.EventListAdapter;
+import com.example.huqicheng.adapter.GroupProgressAdapter;
+import com.example.huqicheng.bll.GroupBiz;
+import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.dao.dbHandler;
 import com.example.huqicheng.dao.dbHandler2;
 import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.entity.User;
+import com.example.huqicheng.message.MsgCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,24 +52,26 @@ import java.util.List;
  */
 public class ProgressFragment extends Fragment {
 
-    //dbHandler myDb;
-    private ListView events;
-    public ArrayList<Event> eventList;
-    private EventListAdapter adapter;
+    private ListView groups;
+    public List<Group> groupList;
+    private GroupProgressAdapter adapter;
+    private GroupBiz groupBiz;
     private  Handler handler = null;
+    private User user = null;
+
     TextView progress_text;
     ProgressBar bar;
     int progress_Max = 100;
     int totalEvents = 0;
     int complete_count = 0;
     Intent intent;
-    //dbHandler2 myDb2;
     int Date;
 
     private OnFragmentInteractionListener mListener;
 
     public ProgressFragment() {
         // Required empty public constructor
+
     }
 
     /**
@@ -79,7 +87,7 @@ public class ProgressFragment extends Fragment {
         Bundle args = new Bundle();
 //        args.putString(ARG_PARAM1, param1);
 //        args.putString(ARG_PARAM2, param2);
-        //fragment.setArguments(args);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -93,223 +101,70 @@ public class ProgressFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
         //init event listview
-        View view = inflater.inflate(R.layout.fragment_progress, container, false);
-        eventList = new ArrayList<>();
-        for(int i = 0;i<10;i++){
+        final View view = inflater.inflate(R.layout.group_progress, container, false);
 
-            Event e = new Event();
-            long id = Integer.valueOf(String.valueOf(20)+String.valueOf(i));
-            e.setEventID(id);
-            e.setEventTitle("Debug " + i);
-            e.setDescription("woa " + i);
-            eventList.add(e);
-        }
-        totalEvents = eventList.size();
-        ListView listView = (ListView) view.findViewById(R.id.eventlist);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Event event = adapter.getEventList().get(i);
-                intent = new Intent(getActivity(), DateSelected.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", event);//serializable
-                bundle.putSerializable("flag", DateSelected.EDIT);//indicating EDIT event or INIT event
-                intent.putExtras(bundle);
-                startActivity(intent);
+            public void run() {
+                groups = view.findViewById(R.id.group_progress_list);
+                progress_text = (TextView) view.findViewById(R.id.group_progress_text);
+                bar = (ProgressBar) view.findViewById(R.id.group_bar);
 
             }
         });
-        adapter = new EventListAdapter(getActivity(),null);
-        listView.setAdapter(adapter);
-        adapter.add(eventList);
-        progress_text = (TextView) view.findViewById(R.id.progress_text);
-        bar = (ProgressBar) view.findViewById(R.id.bar);
-        bar.setProgress(0);
-        progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
-        ProgressButtonClick(view);
+
+        this.groups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ToSelectedGroupProgress(i);
+            }
+        });
+
+        groupBiz = new GroupBiz();
+
+        user = new UserBiz(this.getActivity().getApplicationContext()).readUser();
+        handler = new Handler(){
+            @Override
+            public void handleMessage(final Message msg) {
+                switch (msg.what){
+                    case 0:
+                        //Toast.makeText(getApplicationContext(), "login failed" ,Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        groupList = (List<Group>) msg.obj;
+                        for (int i = 0;i <groupList.size();i++){
+                            Log.d("groups",""+groupList.get(i).getGroupName());
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter = new GroupProgressAdapter(getActivity(),null);
+                                groups.setAdapter(adapter);
+                                adapter.add(groupList);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                        break;
+
+                }
+            }
+        };
 
         return view;
 
     }
 
-    public void ProgressButtonClick(View view) {
-        //mark selected events as complete
-        ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
-        eventComplete(complete_btn);
-
-        //delete selected events
-        ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
-        eventDelete(del_btn);
-
-        //add new event
-        ImageButton add_btn = (ImageButton) view.findViewById(R.id.add_btn);
-        eventAdd(add_btn);
+    private void ToSelectedGroupProgress(int i) {
+        Group group = adapter.getItem(i);
+        Log.d("group id is ","" + group.getGroupId());
+//        intent = new Intent(getActivity(), GroupProgressSelected.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("group", group);//serializable
+//        intent.putExtras(bundle);
+//        startActivity(intent);
     }
 
 
-
-    public void eventComplete(ImageButton complete_btn) {
-        complete_btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v)
-            {
-                complete_count += adapter.selectedEvents.size();
-                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
-                bar.setProgress(complete_count*progress_Max/totalEvents);
-
-                for (Long i : adapter.selectedEvents){
-                    adapter.remove(i);
-                    adapter.notifyDataSetChanged();
-                }
-                MsgDisplay("complete.");
-                //Log.d("esize", ""+eventList.size());
-                adapter.selectedEvents.clear();
-
-            }
-
-        });
-    }
-
-    public void eventDelete(ImageButton del_btn) {
-        del_btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v)
-            {
-                totalEvents -= adapter.selectedEvents.size();
-                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
-                bar.setProgress(complete_count*progress_Max/totalEvents);
-                for (Long i : adapter.selectedEvents){
-                    adapter.remove(i);
-                    eventList.remove(i);
-                    adapter.notifyDataSetChanged();
-                }
-                MsgDisplay("deleted.");
-                adapter.selectedEvents.clear();
-            }
-
-        });
-    }
-
-
-    private void eventAdd(final ImageButton add_btn) {
-        //attempt 1
-        add_btn.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v)
-            {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("test", "success");
-                        Event event =  new Event();
-                        intent = new Intent(getActivity(), DateSelected.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("event", event);//serializable
-                        bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-
-                    }
-                });
-
-
-
-            }
-
-        });
-
-
-        //TODO: jump to event add activity
-        //attempt 2
-/*        final Handler handler=new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                add_btn.setOnClickListener(new View.OnClickListener(){
-
-                    @Override
-                    public void onClick(View v)
-                    {
-                        Log.d("test", "success");
-                        Event event =  new Event();
-                        intent = new Intent(getActivity(), DateSelected.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("event", event);//serializable
-                        bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-
-                    }
-
-                });
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        add_btn.invalidate();
-                    }
-                });
-            }
-        }).start();*/
-
-
-// attempt 3
-
- /*       handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Event event =  new Event();
-                        intent = new Intent(getActivity(), DateSelected.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("event", event);//serializable
-                        bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-
-
-                    }
-                });
-            }
-
-        };
-
-        add_btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v)
-            {  Message msg = Message.obtain();
-               handler.handleMessage(msg);
-
-            }
-
-        });
-*/
-
-
-
-
-    }
-
-
-
-    public void MsgDisplay(String s) {
-        //display opertaion messages
-
-        if(adapter.selectedEvents.size() == 1){
-            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" event " +s, Toast.LENGTH_SHORT).show();
-
-        }
-        else if (adapter.selectedEvents.size() >1){
-            Toast.makeText(getActivity(), adapter.selectedEvents.size()+" events "+s, Toast.LENGTH_SHORT).show();
-
-        }
-        else{
-            Toast.makeText(getActivity(), "Please make a selection.", Toast.LENGTH_SHORT).show();
-
-        }
-    }
     private void toEditActivity(Event e){
         Intent intent = new Intent();
         //TODO jump to event edit activity
@@ -318,6 +173,53 @@ public class ProgressFragment extends Fragment {
         //intent.setClass(getActivity(),DateSelected.class);
         //startActivityForResult(intent,1);
 
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+
+        //this.loadGroups(user.getUserId());
+
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        /** get data from the database**/
+        new Thread(){
+            @Override
+            public void run() {
+                //CalendarView.addDecorator(decorator);
+                loadGroups(user.getUserId());
+            }
+        }.start();
+    }
+
+    public void loadGroups(final long user_id){
+
+        new Thread(){
+            @Override
+            public void run() {
+                List<Group> groupList = new GroupBiz().loadGroups(user_id);
+
+                if(groupList == null){
+                    Message msg = Message.obtain();
+                    msg.what = 0;
+                    handler.handleMessage(msg);
+
+                }
+                else{
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+
+                    msg.obj = groupList;
+                    handler.handleMessage(msg);
+                }
+
+
+            }
+        }.start();
     }
 
 

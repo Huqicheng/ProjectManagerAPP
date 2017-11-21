@@ -60,6 +60,7 @@ public class DateSelected extends AppCompatActivity {
     public Event event;
     public Event event_save;
     private Long deadline;
+    private Long assignToId;
     private String str_date;
     private int sYear = 0;
     private int sMonth = 0;
@@ -99,16 +100,17 @@ public class DateSelected extends AppCompatActivity {
         //load user
         userBiz = new UserBiz(this);
         user = userBiz.readUser();
+        assignToId = user.getUserId();
 
         //getting intent
         Intent eventintent = this.getIntent();
         //getting event
         event = (Event)eventintent.getSerializableExtra("event");
-        Log.d("events in DS",""+event.getDescription());
+        Log.d("event description DS",""+event.getDescription());
         //get flag that decide whether it is an edit event of init event
         flag = (int)eventintent.getSerializableExtra("flag");
 
-        if (flag == EDIT){
+        if (flag == INIT){
             //Initializing textview textAssignto
             textAssignto = (TextView) findViewById(R.id.tvAssignto);
             //Initializing the Assign-to Spinner
@@ -127,12 +129,13 @@ public class DateSelected extends AppCompatActivity {
             public void handleMessage(Message msg){
                 assignToList = (ArrayList<User>)msg.obj;
                 for (int k = 0; k < assignToList.size(); k++) {
-                    Log.d("spinner list in DS", "" + assignToList.get(k));
+                    //Log.d("spinner list in DS", "" + assignToList.get(k));
                     //cityList.add(assignToList.get(k));
                 }
 
                 for (int m = 0; m < assignToList.size(); m++){
                     assignToStringList.add(assignToList.get(m).getUsername());
+                    Log.d("spinner list in DS", "" + assignToList.get(m).getUsername());
                 }
                 //getApplicationContext()
 
@@ -140,7 +143,7 @@ public class DateSelected extends AppCompatActivity {
                 DateSelected.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                                 getApplicationContext(), R.layout.spinner_style,
                                 assignToStringList);
                         adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
@@ -150,9 +153,14 @@ public class DateSelected extends AppCompatActivity {
                             @Override
                             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                                        int arg2, long arg3) {
-                                String str = arg0.getItemAtPosition(arg2).toString();
-                                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                                //User tempuser = (User)arg0.getItemAtPosition(arg2);
 
+                                String str = arg0.getItemAtPosition(arg2).toString();
+                                Log.d("spinner list in DS", "" + str);
+                                //String str = arg0.getItemAtPosition(arg2).toString();
+                                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                                assignToId = assignToList.get(arg2).getUserId();
+                                Log.d("assignToId in DS", "" + assignToId);
                             }
 
                             @Override
@@ -163,12 +171,8 @@ public class DateSelected extends AppCompatActivity {
                         });
                     }
                 });
-
-
-
             }
         };
-
 
         if (flag == EDIT) {
             Date date = new Date(event.getDeadLine());
@@ -179,8 +183,8 @@ public class DateSelected extends AppCompatActivity {
             sDay = calendarDay.getDay();
             sHour = date.getHours();
             sMinute = date.getMinutes();
-            Log.d("events in DS",""+sYear+sMonth+sDay+sHour+sMinute);
-            Log.d("events in DS",""+date.toString());
+            Log.d("Time in DS",""+sYear+sMonth+sDay+sHour+sMinute);
+            Log.d("Date in DS",""+date.toString());
             eventName.setText(event.getEventTitle());
             eventDiscription.setText(event.getDescription());
             save.setText("update");
@@ -200,7 +204,7 @@ public class DateSelected extends AppCompatActivity {
                 if (flag == INIT) {
                     event_save = new Event();
                     event_save.setAssignedBy(user.getUserId());
-                    event_save.setAssignedTo(user.getUserId());
+                    event_save.setAssignedTo(assignToId);
                     event_save.setDeadLine(CalendarDay.from(2017, 11, 20).getDate().getTime());
                     event_save.setEventTitle(eventName.getText().toString());
                     event_save.setDescription(eventDiscription.getText().toString());
@@ -291,13 +295,13 @@ public class DateSelected extends AppCompatActivity {
         groupList = new ArrayList<Group>();
         userList = new ArrayList<User>();
         assignToList = new ArrayList<User>();
-        Log.d("spinner list in DS", "" + "test spinner");
+        //Log.d("spinner list in DS", "" + "test spinner");
         groupList = groupBiz.loadGroups(user.getUserId());
         for (int i = 0; i < groupList.size(); i++) {
-            Log.d("spinner list in DS", "" + i);
+            //Log.d("spinner list in DS", "" + i);
             userList = groupBiz.loadUsersofSpecificGroup(groupList.get(i).getGroupId());
             for (int j = 0; j < userList.size(); j++) {
-                Log.d("spinner list in DS", "" + j);
+                //Log.d("spinner list in DS", "" + j);
                 assignToList.add(userList.get(j));
             }
             userList.clear();

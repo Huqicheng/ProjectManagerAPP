@@ -1,7 +1,6 @@
 package com.example.huqicheng.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +8,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.huqicheng.entity.Event;
-import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.pm.R;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -79,7 +74,7 @@ public class EventListAdapter extends BaseAdapter {
         //Log.d("Debug:", "get view at "+i);
         EventListAdapter.ViewHolder holder = null;
         if(convertView == null){
-            convertView = inflater.inflate(R.layout.event_list_row,null);
+            convertView = inflater.inflate(R.layout.single_group_event_list_row,null);
 
             holder = new ViewHolder();
             holder.title = (TextView)convertView.findViewById(R.id.title);
