@@ -70,7 +70,7 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
 
-        super.onCreate();
+/*        super.onCreate();
 
         ClientUtils.setContext(this);
 
@@ -87,6 +87,6 @@ public class MyService extends Service {
         loginMsg.putParams("pwd", "huqicheng");
         if(client.socketChannel != null){
             client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
-        }
+        }*/
     }
 }
