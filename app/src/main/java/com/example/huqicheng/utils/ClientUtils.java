@@ -111,7 +111,7 @@ public class ClientUtils {
 	}
 
 	public static boolean send(BaseMsg msg){
-		if(client == null || client.socketChannel == null || isConnected == false){
+		if(client == null || client.socketChannel == null || isConnected == false || client.socketChannel.read() == null){
 			Log.d("ClientUtils" , "You are offline!");
 			return false;
 		}
