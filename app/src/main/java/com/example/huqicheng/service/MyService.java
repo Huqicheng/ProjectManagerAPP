@@ -76,17 +76,11 @@ public class MyService extends Service {
 
 
         String client_id = new UserDao(getApplicationContext()).readUser().getUserId()+"";
-        Log.d("debug:","service");
+
         client = ClientUtils.getInstance(client_id);
 
-        Log.d("debug:","start");
 
-        BaseMsg loginMsg=new BaseMsg();
-        loginMsg.setType(MsgType.LOGIN);
-        loginMsg.putParams("user", "huqicheng");
-        loginMsg.putParams("pwd", "huqicheng");
-        if(client.socketChannel != null){
-            client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
-        }
+
+
     }
 }

@@ -85,6 +85,12 @@ public class ClientUtils {
 					try {
 						client.start();
 						setIsConnected(true);
+						BaseMsg loginMsg=new BaseMsg();
+						loginMsg.setType(MsgType.LOGIN);
+						loginMsg.putParams("user", "huqicheng");
+						loginMsg.putParams("pwd", "huqicheng");
+						ClientUtils.send(loginMsg);
+
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -111,7 +117,7 @@ public class ClientUtils {
 	}
 
 	public static boolean send(BaseMsg msg){
-		if(client == null || client.socketChannel == null || isConnected == false){
+		if(client == null || client.socketChannel == null ){
 			Log.d("ClientUtils" , "You are offline!");
 			return false;
 		}
