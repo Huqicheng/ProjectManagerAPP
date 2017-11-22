@@ -54,6 +54,7 @@ public class ProgressFragment extends Fragment {
 
     private ListView groups;
     public List<Group> groupList;
+
     private GroupProgressAdapter adapter;
     private GroupBiz groupBiz;
     private  Handler handler = null;
@@ -61,6 +62,8 @@ public class ProgressFragment extends Fragment {
 
     TextView progress_text;
     ProgressBar bar;
+    public long groupSelected;
+
     int progress_Max = 100;
     int totalEvents = 0;
     int complete_count = 0;
@@ -133,7 +136,7 @@ public class ProgressFragment extends Fragment {
                     case 1:
                         groupList = (List<Group>) msg.obj;
                         for (int i = 0;i <groupList.size();i++){
-                            Log.d("groups",""+groupList.get(i).getGroupName());
+                            //Log.d("groups",""+groupList.get(i).getGroupName());
                         }
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -156,10 +159,12 @@ public class ProgressFragment extends Fragment {
 
     private void ToSelectedGroupProgress(int i) {
         Group group = adapter.getItem(i);
-        Log.d("group id is ","" + group.getGroupId());
+       // Log.d("selected group id is ","" + group.getGroupId());
+
         intent = new Intent(getActivity(), GroupProgressSelected.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("group", group);//serializable
+
         intent.putExtras(bundle);
         startActivity(intent);
     }
