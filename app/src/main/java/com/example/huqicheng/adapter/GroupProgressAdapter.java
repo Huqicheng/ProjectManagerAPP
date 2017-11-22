@@ -71,7 +71,7 @@ public class GroupProgressAdapter  extends BaseAdapter {
 
         Group group = getItem(i);
         holder.groupName.setText(group.getGroupName());
-        holder.groupProgressText.setText(group.getCover());
+        holder.groupProgressText.setText(""+group.getDeadLine());
         holder.groupProgressBar.setTag(getItemId(i));
 
         return convertView;
