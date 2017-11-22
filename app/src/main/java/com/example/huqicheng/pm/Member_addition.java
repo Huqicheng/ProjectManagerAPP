@@ -109,39 +109,45 @@ public class Member_addition extends AppCompatActivity {
 
         handler = new Handler() {
             @Override
-            public void handleMessage(Message msg){
-                assignToList = (ArrayList<String>)msg.obj;
-                for (int k = 0; k < assignToList.size(); k++) {
-                    Log.d("spinner list in DS", "" + assignToList.get(k));
-                    //cityList.add(assignToList.get(k));
-                }
-                //getApplicationContext()
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                        getApplicationContext(), R.layout.spinner_style,
-                        assignToList);
-                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
-                spinnerU.setAdapter(adapter);
-                spinnerU.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+            public void handleMessage(final Message msg){
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                               int arg2, long arg3) {
-                        String str = arg0.getItemAtPosition(arg2).toString();
-                        //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
-                        for(int i=0;i<userList.size();i++)
-                        {
-                            if(userList.get(i).getUsername().equals(str))
-                                user_id=userList.get(i).getUserId();
+                    public void run() {
+                        assignToList = (ArrayList<String>)msg.obj;
+                        for (int k = 0; k < assignToList.size(); k++) {
+                            Log.d("spinner list in DS", "" + assignToList.get(k));
+                            //cityList.add(assignToList.get(k));
                         }
+                        //getApplicationContext()
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                getApplicationContext(), R.layout.spinner_style,
+                                assignToList);
+                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                        spinnerU.setAdapter(adapter);
+                        spinnerU.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                    }
+                            @Override
+                            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                                       int arg2, long arg3) {
+                                String str = arg0.getItemAtPosition(arg2).toString();
+                                //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                                for(int i=0;i<userList.size();i++)
+                                {
+                                    if(userList.get(i).getUsername().equals(str))
+                                        user_id=userList.get(i).getUserId();
+                                }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                        // TODO Auto-generated method stub
+                            }
 
+                            @Override
+                            public void onNothingSelected(AdapterView<?> arg0) {
+                                // TODO Auto-generated method stub
+
+                            }
+                        });
                     }
                 });
+
 
 
             }
