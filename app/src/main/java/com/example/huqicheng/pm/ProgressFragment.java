@@ -157,11 +157,11 @@ public class ProgressFragment extends Fragment {
     private void ToSelectedGroupProgress(int i) {
         Group group = adapter.getItem(i);
         Log.d("group id is ","" + group.getGroupId());
-//        intent = new Intent(getActivity(), GroupProgressSelected.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("group", group);//serializable
-//        intent.putExtras(bundle);
-//        startActivity(intent);
+        intent = new Intent(getActivity(), GroupProgressSelected.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("group", group);//serializable
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
 

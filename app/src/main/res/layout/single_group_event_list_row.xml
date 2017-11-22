@@ -23,9 +23,9 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:padding="3dp"
-            android:text="Debug"/>
+            android:text="Debug"
+            android:textColor="@color/colorBlack" />
 
         <TextView
             android:id="@+id/description"
@@ -33,10 +33,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:padding="3dp"
-            android:textSize="12sp"
-            android:textStyle="italic"
             android:singleLine="true"
-            android:text="created by haha"/>
+            android:text="created by haha"
+            android:textSize="12sp"
+            android:textStyle="italic" />
 
 
     </RelativeLayout>

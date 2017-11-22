@@ -180,4 +180,36 @@ public class EventNao {
         String str = "success";
         return str;
     }
+
+    public List<Event> getEventsByGroup(long group_id, long user_id, String status){
+        List<Event> res = null;
+        try{
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("group_id",group_id+""));
+            params.add(new BasicNameValuePair("user_id",user_id+""));
+            params.add(new BasicNameValuePair("status",status));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getEventsByGroup.do",params,HttpUtils.GET);
+            if(entity == null){
+                return null;
+            }
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+            Log.d("getEventsByGroup: ",json);
+            // check if failed, you should return null
+            if(json.trim().equalsIgnoreCase("failed")) return null;
+            // decoding here
+            Type type = new TypeToken<ArrayList<Long>>(){}.getType();
+            res = new Gson().fromJson(json,type);
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
+        return res;
+    }
+
 }

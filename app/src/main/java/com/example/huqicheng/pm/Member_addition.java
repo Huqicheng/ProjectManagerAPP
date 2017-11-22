@@ -109,16 +109,18 @@ public class Member_addition extends AppCompatActivity {
 
         handler = new Handler() {
             @Override
-            public void handleMessage(Message msg){
-                assignToList = (ArrayList<String>)msg.obj;
-                for (int k = 0; k < assignToList.size(); k++) {
-                    Log.d("spinner list in DS", "" + assignToList.get(k));
-                    //cityList.add(assignToList.get(k));
-                }
-                //getApplicationContext()
-                Member_addition.this.runOnUiThread(new Runnable() {
+
+            public void handleMessage(final Message msg){
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        assignToList = (ArrayList<String>)msg.obj;
+                        for (int k = 0; k < assignToList.size(); k++) {
+                            Log.d("spinner list in DS", "" + assignToList.get(k));
+                            //cityList.add(assignToList.get(k));
+                        }
+                        //getApplicationContext()
+
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                                 getApplicationContext(), R.layout.spinner_style,
                                 assignToList);
@@ -131,9 +133,12 @@ public class Member_addition extends AppCompatActivity {
                                                        int arg2, long arg3) {
                                 String str = arg0.getItemAtPosition(arg2).toString();
                                 //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
-                                for (int i = 0; i < userList.size(); i++) {
-                                    if (userList.get(i).getUsername().equals(str))
-                                        user_id = userList.get(i).getUserId();
+
+                                for(int i=0;i<userList.size();i++)
+                                {
+                                    if(userList.get(i).getUsername().equals(str))
+                                        user_id=userList.get(i).getUserId();
+
                                 }
 
                             }
@@ -146,6 +151,9 @@ public class Member_addition extends AppCompatActivity {
                         });
                     }
                 });
+
+
+
 
             }
         };
