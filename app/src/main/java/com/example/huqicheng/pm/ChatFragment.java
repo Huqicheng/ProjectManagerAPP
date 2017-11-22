@@ -43,7 +43,7 @@ public class ChatFragment extends Fragment {
     private ListView lvGroups;
     private GroupAdapter adapter;
     private GroupBiz groupBiz;
-
+    private static String TAG="ChatFragment";
     User user = null;
     Handler handler = null;
     private OnFragmentInteractionListener mListener;
@@ -186,7 +186,10 @@ public class ChatFragment extends Fragment {
 
 
         //this.loadGroups(user.getUserId());
-        this.onRecievedMessage(5,user.getUserId());
+        long message=2;
+        message=getActivity().getIntent().getLongExtra("message",message);
+        Log.d(TAG,message+"this is long");
+        this.onRecievedMessage(message,user.getUserId());
 
     }
 
@@ -216,7 +219,7 @@ public class ChatFragment extends Fragment {
             }
         }.start();
     }
-    private void onRecievedMessage(final int group_id,final long user_id){
+    private void onRecievedMessage(final long group_id,final long user_id){
         new Thread(){
             @Override
             public void run() {
