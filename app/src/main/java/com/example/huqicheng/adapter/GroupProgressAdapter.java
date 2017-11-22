@@ -63,6 +63,7 @@ public class GroupProgressAdapter  extends BaseAdapter {
             holder.groupName = (TextView) convertView.findViewById(R.id.groupName);
             holder.groupProgressText = (TextView)convertView.findViewById(R.id.group_progress_text);
             holder.groupProgressBar = (ProgressBar) convertView.findViewById(R.id.group_bar) ;
+            holder.getGroupDeadline = (TextView) convertView.findViewById(R.id.group_deadline) ;
             convertView.setTag(holder);
             convertView.setTag(R.id.group_bar,holder.groupProgressBar);
         }else{
@@ -72,6 +73,7 @@ public class GroupProgressAdapter  extends BaseAdapter {
         Group group = getItem(i);
         holder.groupName.setText(group.getGroupName());
         holder.groupProgressText.setText(""+group.getDeadLine());
+        //holder.getGroupDeadline.setText(""+group.getDeadLine());
         holder.groupProgressBar.setTag(getItemId(i));
 
         return convertView;
@@ -89,6 +91,7 @@ public class GroupProgressAdapter  extends BaseAdapter {
     class ViewHolder{
         TextView groupName;
         TextView groupProgressText;
+        TextView getGroupDeadline;
         ProgressBar groupProgressBar;
 
     }

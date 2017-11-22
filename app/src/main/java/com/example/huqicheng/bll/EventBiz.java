@@ -29,5 +29,8 @@ public class EventBiz {
     public String updateEvent(long event_id, long assignTo, String newtitle, String newdescription, long newdeadline){
         return eventNao.updateEvent(event_id, assignTo, newtitle, newdescription, newdeadline);
     }
+    public List<Event> loadEventsByGroup(long group_id, long user_id,String status){
+        return eventNao.getEventsByGroup(group_id, user_id, status);
+    }
 }
 

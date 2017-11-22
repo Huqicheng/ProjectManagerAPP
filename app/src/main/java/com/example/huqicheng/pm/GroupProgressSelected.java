@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.huqicheng.adapter.EventListAdapter;
+import com.example.huqicheng.bll.EventBiz;
+import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.entity.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,7 +41,13 @@ import java.util.ArrayList;
 public class GroupProgressSelected extends AppCompatActivity {
 
     //dbHandler myDb;
-    private ListView events;
+    private ListView event_list;
+    private UserBiz userBiz;
+    private User user;
+    private ArrayList<Event> events;
+    private ImageButton complete_btn;
+    private ImageButton add_btn;
+    private Group selected_group;
     public ArrayList<Event> eventList;
     private EventListAdapter adapter;
     private  Handler handler = null;
@@ -75,15 +87,73 @@ public class GroupProgressSelected extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent groupintent = this.getIntent();
+        //get event selected
+        selected_group = (Group) groupintent.getSerializableExtra("group");
+        Log.d("selected eid",""+selected_group.getGroupId());
+
+        //get current user_id
+        userBiz = new UserBiz(this);
+        user = userBiz.readUser();
+        new Thread(){
+            @Override
+            public void run() {
+                loadEvents(selected_group.getGroupId(),user.getUserId(),"started");
+            }
+        }.start();
+
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                events = (ArrayList<Event>) msg.obj;
+
+                GroupProgressSelected.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setContentView(R.layout.single_group_events);
+                        bar = (ProgressBar) findViewById(R.id.bar);
+                        bar.setProgress(0);
+                        progress_text = (TextView) findViewById(R.id.progress_text);
+                        complete_btn = (ImageButton) findViewById(R.id.complete_btn);
+                        //eventComplete(complete_btn);
+                        add_btn = (ImageButton) findViewById(R.id.add_btn);
+                        eventAdd(add_btn);
+                        event_list = (ListView) findViewById(R.id.eventlist);
+
+                        adapter = new EventListAdapter(GroupProgressSelected.this,null);
+                        event_list.setAdapter(adapter);
+                        adapter.add(events);
+                        event_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                Event event = adapter.getEventList().get(i);
+                                intent = new Intent(GroupProgressSelected.this, DateSelected.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("event", event);
+                                bundle.putSerializable("flag", DateSelected.EDIT);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+
+                            }
+                        });
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+
+            }
+        };
+
+
+
+
 
         //init event listview
-        setContentView(R.layout.single_group_events);
-        bar = (ProgressBar) findViewById(R.id.bar);
-        bar.setProgress(0);
-        progress_text = (TextView) findViewById(R.id.progress_text);
+
+        //Log.d("groupselected",""+ProgressFragment.newInstance().groupSelected);
 
 
-
+/*
         eventList = new ArrayList<>();
         for(int i = 0;i<10;i++){
 
@@ -94,31 +164,27 @@ public class GroupProgressSelected extends AppCompatActivity {
             e.setDescription("woa " + i);
             eventList.add(e);
         }
-        totalEvents = eventList.size();
-        //ListView listView = (ListView) view.findViewById(R.id.eventlist);
-       /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Event event = adapter.getEventList().get(i);
-                //intent = new Intent(getActivity(), DateSelected.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event", event);//serializable
-                bundle.putSerializable("flag", DateSelected.EDIT);//indicating EDIT event or INIT event
-                intent.putExtras(bundle);
-                startActivity(intent);
+        totalEvents = eventList.size();*/
 
-            }
-        });*/
         //adapter = new EventListAdapter(getActivity(),null);
         //listView.setAdapter(adapter);
         //adapter.add(eventList);
         //progress_text = (TextView) view.findViewById(R.id.progress_text);
         //bar = (ProgressBar) view.findViewById(R.id.bar);
 
-        progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
+        //progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
         //ProgressButtonClick(view);
 
         //return view;
+
+    }
+
+    private void loadEvents(final long group_id, final long user_id, String status) {
+        List<Event> eventList =  new EventBiz().loadEventsByGroup(group_id,user_id,status);
+        Message msg = Message.obtain();
+        msg.what = 1;
+        msg.obj = eventList;
+        handler.handleMessage(msg);
 
     }
 
@@ -188,12 +254,12 @@ public class GroupProgressSelected extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                /*getActivity().runOnUiThread(new Runnable() {
+                GroupProgressSelected.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("test", "success");
                         Event event =  new Event();
-                        //intent = new Intent(getActivity(), DateSelected.class);
+                        intent = new Intent(GroupProgressSelected.this, DateSelected.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("event", event);//serializable
                         bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
@@ -201,7 +267,7 @@ public class GroupProgressSelected extends AppCompatActivity {
                         startActivity(intent);
 
                     }
-                });*/
+                });
 
 
 

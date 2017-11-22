@@ -201,7 +201,7 @@ public class EventNao {
             // check if failed, you should return null
             if(json.trim().equalsIgnoreCase("failed")) return null;
             // decoding here
-            Type type = new TypeToken<ArrayList<Long>>(){}.getType();
+            Type type = new TypeToken<ArrayList<Event>>(){}.getType();
             res = new Gson().fromJson(json,type);
 
         }catch (Exception e){
