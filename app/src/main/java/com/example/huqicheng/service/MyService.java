@@ -71,13 +71,13 @@ public class MyService extends Service {
     public void onCreate() {
 
         super.onCreate();
-
+/*
         ClientUtils.setContext(this);
 
 
         String client_id = new UserDao(getApplicationContext()).readUser().getUserId()+"";
 
-        client = ClientUtils.getInstance(client_id);
+        client = ClientUtils.getInstance(client_id);*/
 
 
 

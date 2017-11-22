@@ -111,7 +111,7 @@ public class GroupProgressSelected extends AppCompatActivity {
         });*/
         //adapter = new EventListAdapter(getActivity(),null);
         //listView.setAdapter(adapter);
-        adapter.add(eventList);
+        //adapter.add(eventList);
         //progress_text = (TextView) view.findViewById(R.id.progress_text);
         //bar = (ProgressBar) view.findViewById(R.id.bar);
 
