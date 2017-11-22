@@ -34,6 +34,17 @@
                 android:singleLine="true"
                 android:text="GroupName" />
 
+            <TextView
+                android:id="@+id/tvNew"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:layout_marginTop="20dp"
+                android:text=""
+                android:textColor="@color/colorAccent"
+                android:gravity="right"
+                android:textAlignment="gravity"/>
+
 
         </LinearLayout>
 

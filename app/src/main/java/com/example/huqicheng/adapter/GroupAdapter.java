@@ -70,11 +70,13 @@ public class GroupAdapter extends BaseAdapter{
     public View getView(int i, View convertView, ViewGroup parent) {
         Log.d("Debug:", "get view at "+i);
         ViewHolder holder = null;
+
         if(convertView == null){
             convertView = inflater.inflate(R.layout.item_groups,null);
             holder = new ViewHolder();
             holder.ivGroup = (ImageView)convertView.findViewById(R.id.ivGroup);
             holder.tvGroupName = (TextView)convertView.findViewById(R.id.tvGroupName);
+            holder.newValue=(TextView)convertView.findViewById(R.id.tvNew);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder)convertView.getTag();
@@ -82,7 +84,7 @@ public class GroupAdapter extends BaseAdapter{
 
         Group group = getItem(i);
         holder.tvGroupName.setText(group.getGroupName());
-
+        holder.newValue.setText(group.getGroupNew());
         // start async task
         holder.ivGroup.setTag(group.getCover());
         Bitmap bm = loader.loadImage(group.getCover());
@@ -106,7 +108,7 @@ public class GroupAdapter extends BaseAdapter{
     class ViewHolder{
         ImageView ivGroup;
         TextView tvGroupName;
-
+        public TextView newValue;
     }
 
 
