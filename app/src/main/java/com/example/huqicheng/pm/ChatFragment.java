@@ -26,6 +26,7 @@ import com.example.huqicheng.service.OnChatMsgRecievedListener;
 import com.example.huqicheng.utils.ClientUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -42,7 +43,7 @@ public class ChatFragment extends Fragment {
     private ListView lvGroups;
     private GroupAdapter adapter;
     private GroupBiz groupBiz;
-
+    private static String TAG="ChatFragment";
     User user = null;
     Handler handler = null;
     private OnFragmentInteractionListener mListener;
@@ -184,7 +185,11 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
 
-        this.loadGroups(user.getUserId());
+        //this.loadGroups(user.getUserId());
+        long message=2;
+        message=getActivity().getIntent().getLongExtra("message",message);
+        Log.d(TAG,message+"this is long");
+        this.onRecievedMessage(message,user.getUserId());
 
     }
 
@@ -202,6 +207,7 @@ public class ChatFragment extends Fragment {
 
                 }
                 else{
+
                     Message msg = Message.obtain();
                     msg.what = 1;
 
@@ -213,7 +219,37 @@ public class ChatFragment extends Fragment {
             }
         }.start();
     }
+    private void onRecievedMessage(final long group_id,final long user_id){
+        new Thread(){
+            @Override
+            public void run() {
+                List<Group> groupList = new GroupBiz().loadGroups(user_id);
+                for(int i=0;i<groupList.size();i++)
+                {
+                    if(groupList.get(i).getGroupId()==group_id)
+                    {
+                        groupList.get(i).setGroupNew("new");
+                        Collections.swap(groupList, 0, i);}
+                }
+                if(groupList == null){
+                    Message msg = Message.obtain();
+                    msg.what = 0;
+                    handler.handleMessage(msg);
 
+                }
+                else{
+
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+
+                    msg.obj = groupList;
+                    handler.handleMessage(msg);
+                }
+
+
+            }
+        }.start();
+    }
 
     private void toChatActivity(Group group){
         Intent intent = new Intent();

@@ -71,11 +71,19 @@ public class ChatActivity extends AppCompatActivity implements ServiceConnection
     private Intent settingIntent=null;
     private Intent calendarIntent=null;
 
-
+    private static long top_group_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        long message=0;
+        message = intent.getLongExtra("message",message);
+
+            top_group_id=message;
+            Log.d(TAG,top_group_id+"this is long");
+
+
         setContentView(R.layout.chat_activity);
         mTitle = mDrawerTitle = getTitle();
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);

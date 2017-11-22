@@ -2,15 +2,30 @@ package com.example.huqicheng.pm;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.widget.Toast;
+
+import com.example.huqicheng.bll.GroupBiz;
+import com.example.huqicheng.bll.UserBiz;
+import com.example.huqicheng.entity.Group;
+import com.example.huqicheng.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -24,11 +39,12 @@ public class SettingFragment extends PreferenceFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private GroupBiz groupBiz;
+    private User user;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private List<Group> groupList;
     private OnFragmentInteractionListener mListener;
 
     public SettingFragment() {
@@ -59,8 +75,54 @@ public class SettingFragment extends PreferenceFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        groupList = new ArrayList<Group>();
+        groupBiz = new GroupBiz();
+        user = new UserBiz(getActivity()).readUser();
         addPreferencesFromResource(R.xml.pref_visualizer);
+        new Thread() {
+            @Override
+            public void run() {
+                groupList = groupBiz.loadGroups(user.getUserId());
+                final List<String> string_group = new ArrayList<>();
+                for (int i = 0; i < groupList.size(); i++) {
+                    string_group.add(groupList.get(i).getGroupName());
+                }
+                CharSequence[] entries = string_group.toArray(new CharSequence[string_group.size()]);
+
+                ListPreference lp = (ListPreference) findPreference("list_preference");
+                lp.setEntries(entries);
+                lp.setEntryValues(entries);
+                final ListPreference list = (ListPreference) lp;
+                list.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    public boolean onPreferenceChange(Preference preference, final Object newValue) {
+
+                        int index = list.findIndexOfValue(newValue.toString());
+
+                        Log.d("","I am in "+index);
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                long group_id=0;
+                                Log.d("settingFragment",newValue.toString()+"this is ");
+                                //group_id=groupList.get(Integer.valueOf(newValue.toString())).getGroupId();
+                                for(int i=0;i<groupList.size();i++){
+                                    if(groupList.get(i).getGroupName().equals(newValue.toString()))
+                                        group_id=groupList.get(i).getGroupId();
+                                }
+                                Intent intent = new Intent(getActivity().getBaseContext(),
+                                        ChatActivity.class);
+                                Log.d("settingFragment",group_id+"this is ");
+                                intent.putExtra("message", group_id);
+                                getActivity().startActivity(intent);
+                               // Toast.makeText(getApplicationContext(), username + " registered successfully", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        return true;
+                    }
+                });
+            }
+        }.start();
     }
 
 

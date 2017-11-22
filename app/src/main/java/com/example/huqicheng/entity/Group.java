@@ -10,6 +10,7 @@ public class Group implements java.io.Serializable{
     long groupId;
     String groupName;
     String groupDescription;
+    String groupNew="";
     long createdAt;
     long updatedAt;
     int projectId;
@@ -18,9 +19,15 @@ public class Group implements java.io.Serializable{
     public String getCover() {
         return cover;
     }
+    public String getGroupNew() {
+        return groupNew;
+    }
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+    public void setGroupNew(String gn) {
+        this.groupNew = gn;
     }
 
     public int getProjectId() {

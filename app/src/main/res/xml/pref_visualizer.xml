@@ -11,6 +11,7 @@
         android:title="enter your name" />
 
     <ListPreference
+
         android:dialogTitle="please select one"
         android:entries="@array/languages"
         android:entryValues="@array/languages"

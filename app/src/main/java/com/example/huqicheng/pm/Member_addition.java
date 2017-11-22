@@ -109,6 +109,7 @@ public class Member_addition extends AppCompatActivity {
 
         handler = new Handler() {
             @Override
+
             public void handleMessage(final Message msg){
                 runOnUiThread(new Runnable() {
                     @Override
@@ -119,6 +120,7 @@ public class Member_addition extends AppCompatActivity {
                             //cityList.add(assignToList.get(k));
                         }
                         //getApplicationContext()
+
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                                 getApplicationContext(), R.layout.spinner_style,
                                 assignToList);
@@ -131,10 +133,12 @@ public class Member_addition extends AppCompatActivity {
                                                        int arg2, long arg3) {
                                 String str = arg0.getItemAtPosition(arg2).toString();
                                 //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+
                                 for(int i=0;i<userList.size();i++)
                                 {
                                     if(userList.get(i).getUsername().equals(str))
                                         user_id=userList.get(i).getUserId();
+
                                 }
 
                             }
@@ -150,6 +154,7 @@ public class Member_addition extends AppCompatActivity {
 
 
 
+
             }
         };
         handler1 = new Handler() {
@@ -160,34 +165,36 @@ public class Member_addition extends AppCompatActivity {
                     Log.d("spinner list in DS", "" + assignToList1.get(k));
                     //cityList.add(assignToList.get(k));
                 }
-                //getApplicationContext()
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                        getApplicationContext(), R.layout.spinner_style,
-                        assignToList1);
-                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
-                spinnerG.setAdapter(adapter);
-                spinnerG.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+                Member_addition.this.runOnUiThread(new Runnable() {
                     @Override
-                    public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                               int arg2, long arg3) {
-                        String str = arg0.getItemAtPosition(arg2).toString();
-                        //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
-                        for(int i=0;i<groupList.size();i++)
-                        {
-                            if(groupList.get(i).getGroupName().equals(str))
-                                group_id=groupList.get(i).getGroupId();
-                        }
-                    }
+                    public void run() {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                getApplicationContext(), R.layout.spinner_style,
+                                assignToList1);
+                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                        spinnerG.setAdapter(adapter);
+                        spinnerG.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                        // TODO Auto-generated method stub
+                            @Override
+                            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                                       int arg2, long arg3) {
+                                String str = arg0.getItemAtPosition(arg2).toString();
+                                //Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                                for (int i = 0; i < groupList.size(); i++) {
+                                    if (groupList.get(i).getGroupName().equals(str))
+                                        group_id = groupList.get(i).getGroupId();
+                                }
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> arg0) {
+                                // TODO Auto-generated method stub
+
+                            }
+                        });
 
                     }
                 });
-
-
             }
         };
         //get flag that decide whether it is an edit event of init event
@@ -216,6 +223,7 @@ public class Member_addition extends AppCompatActivity {
                             Log.e(TAG, "assignresult: " + assignresult);
                             if (assignresult == "success") {
                                 //Toast.makeText(Member_addition.this, "member saved", Toast.LENGTH_LONG).show();
+
                                 finish();
                                 Intent intent=new Intent(Member_addition.this,ChatActivity.class);
                                 startActivity(intent);
