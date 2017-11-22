@@ -106,7 +106,7 @@ public class DateSelected extends AppCompatActivity {
         Intent eventintent = this.getIntent();
         //getting event
         event = (Event)eventintent.getSerializableExtra("event");
-        Log.d("event description DS",""+event.getDescription());
+        //Log.d("event description DS",""+event.getDescription());
         //get flag that decide whether it is an edit event of init event
         flag = (int)eventintent.getSerializableExtra("flag");
 
@@ -135,7 +135,7 @@ public class DateSelected extends AppCompatActivity {
 
                 for (int m = 0; m < assignToList.size(); m++){
                     assignToStringList.add(assignToList.get(m).getUsername());
-                    Log.d("spinner list in DS", "" + assignToList.get(m).getUsername());
+                    //Log.d("spinner list in DS", "" + assignToList.get(m).getUsername());
                 }
                 //getApplicationContext()
 
@@ -160,7 +160,7 @@ public class DateSelected extends AppCompatActivity {
                                 //String str = arg0.getItemAtPosition(arg2).toString();
                                 Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
                                 assignToId = assignToList.get(arg2).getUserId();
-                                Log.d("assignToId in DS", "" + assignToId);
+                                //Log.d("assignToId in DS", "" + assignToId);
                             }
 
                             @Override
@@ -183,7 +183,7 @@ public class DateSelected extends AppCompatActivity {
             sDay = calendarDay.getDay();
             sHour = date.getHours();
             sMinute = date.getMinutes();
-            Log.d("Time in DS",""+sYear+sMonth+sDay+sHour+sMinute);
+            //Log.d("Time in DS",""+sYear+sMonth+sDay+sHour+sMinute);
             Log.d("Date in DS",""+date.toString());
             eventName.setText(event.getEventTitle());
             eventDiscription.setText(event.getDescription());
@@ -216,7 +216,7 @@ public class DateSelected extends AppCompatActivity {
                             assignresult = eventBiz.assignEventBiz(event_save);
                         }
                     }.start();
-                    Log.e(TAG, "assignresult: " + assignresult);
+                    //Log.d(TAG, "assignresult: " + assignresult);
                     if (assignresult == "success") {
                         Toast.makeText(DateSelected.this, "Event saved", Toast.LENGTH_LONG).show();
                     } else if (assignresult == null) {
@@ -230,7 +230,7 @@ public class DateSelected extends AppCompatActivity {
                             assignresult = eventBiz.updateEvent(event.getEventID(), user.getUserId(),eventName.getText().toString(),eventDiscription.getText().toString(),deadline);
                         }
                     }.start();
-                    Log.e(TAG, "assignresult: " + assignresult);
+                    //Log.d(TAG, "assignresult: " + assignresult);
                     if (assignresult == "success") {
                         Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_LONG).show();
                     } else if (assignresult == null) {
@@ -287,7 +287,12 @@ public class DateSelected extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         // 格式化日期返回 String 类型，format 中传入 Date 类型或者其子类（例如Timestamp 类）
         String s = sdf.format(new Timestamp(time));
-        textClock.setText("Event DeadLine :  " + s);
+        if (sMinute < 10){
+            textClock.setText("Event DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+ "0"+sMinute+":"+"00");
+        } else {
+            textClock.setText("Event DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+sMinute+":"+"00");
+        }
+
     }
 
     void loadAssignToList(){

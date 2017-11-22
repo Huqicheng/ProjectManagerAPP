@@ -16,6 +16,7 @@ import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.config.Config;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.nao.UserNao;
+import com.example.huqicheng.service.CalendarNotificationService;
 import com.example.huqicheng.utils.PersistentCookieStore;
 
 import java.net.HttpCookie;
@@ -57,6 +58,13 @@ public class LoginActivity extends AppCompatActivity {
                         //TODO show a dialog to notify that login is rejected by the server
                         break;
                     case 1:
+                        /** start notification service after user login**/
+                        /*
+                        intent = new Intent(getApplication(), CalendarNotificationService.class);
+                        startService(intent);
+                        */
+
+
                         intent = new Intent(LoginActivity.this, CalendarActivity.class);
 
                         startActivity(intent);
@@ -138,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                     msg.what = 0;
                     handler.handleMessage(msg);
                 }
+
             }
         }.start();
 
