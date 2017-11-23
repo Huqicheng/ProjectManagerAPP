@@ -45,7 +45,7 @@ public class DateSelected extends AppCompatActivity {
     private List<Group> groupList;
     private List<User> userList;
     public  List<User> assignToList;
-    public final List<String> assignToStringList = new ArrayList<>();
+    public List<String> assignToStringList;
     private EditText eventName,eventDiscription;
     private Button save;
     private Button time_picker, date_picker;
@@ -132,7 +132,7 @@ public class DateSelected extends AppCompatActivity {
                     //Log.d("spinner list in DS", "" + assignToList.get(k));
                     //cityList.add(assignToList.get(k));
                 }
-
+                assignToStringList.clear();
                 for (int m = 0; m < assignToList.size(); m++){
                     assignToStringList.add(assignToList.get(m).getUsername());
                     //Log.d("spinner list in DS", "" + assignToList.get(m).getUsername());
@@ -205,7 +205,7 @@ public class DateSelected extends AppCompatActivity {
                     event_save = new Event();
                     event_save.setAssignedBy(user.getUserId());
                     event_save.setAssignedTo(assignToId);
-                    event_save.setDeadLine(CalendarDay.from(2017, 11, 20).getDate().getTime());
+                    event_save.setDeadLine(deadline);
                     event_save.setEventTitle(eventName.getText().toString());
                     event_save.setDescription(eventDiscription.getText().toString());
                     event_save.setGroupId(1);
@@ -217,11 +217,17 @@ public class DateSelected extends AppCompatActivity {
                         }
                     }.start();
                     //Log.d(TAG, "assignresult: " + assignresult);
-                    if (assignresult == "success") {
-                        Toast.makeText(DateSelected.this, "Event saved", Toast.LENGTH_LONG).show();
-                    } else if (assignresult == null) {
-                        Toast.makeText(DateSelected.this, "Failed to save event", Toast.LENGTH_LONG).show();
-                    }
+                    DateSelected.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (assignresult == "success") {
+                                Toast.makeText(DateSelected.this, "Event saved", Toast.LENGTH_LONG).show();
+                            } else if (assignresult == null) {
+                                Toast.makeText(DateSelected.this, "Failed to save event", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
                 }
                 if (flag == EDIT) {
                     new Thread() {
@@ -231,11 +237,16 @@ public class DateSelected extends AppCompatActivity {
                         }
                     }.start();
                     //Log.d(TAG, "assignresult: " + assignresult);
-                    if (assignresult == "success") {
-                        Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_LONG).show();
-                    } else if (assignresult == null) {
-                        Toast.makeText(DateSelected.this, "Failed to update event", Toast.LENGTH_LONG).show();
-                    }
+                    DateSelected.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (assignresult == "success") {
+                                Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_LONG).show();
+                            } else if (assignresult == null) {
+                                Toast.makeText(DateSelected.this, "Failed to update event", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -300,6 +311,7 @@ public class DateSelected extends AppCompatActivity {
         groupList = new ArrayList<Group>();
         userList = new ArrayList<User>();
         assignToList = new ArrayList<User>();
+        assignToStringList = new ArrayList<String>();
         //Log.d("spinner list in DS", "" + "test spinner");
         groupList = groupBiz.loadGroups(user.getUserId());
         for (int i = 0; i < groupList.size(); i++) {
@@ -307,7 +319,10 @@ public class DateSelected extends AppCompatActivity {
             userList = groupBiz.loadUsersofSpecificGroup(groupList.get(i).getGroupId());
             for (int j = 0; j < userList.size(); j++) {
                 //Log.d("spinner list in DS", "" + j);
-                assignToList.add(userList.get(j));
+                if (!assignToStringList.contains(userList.get(j).getUsername())){
+                    assignToStringList.add(userList.get(j).getUsername());
+                    assignToList.add(userList.get(j));
+                }
             }
             userList.clear();
         }

@@ -40,6 +40,7 @@
     <string name="btn_restore">Restore Password</string>
     <string name="btn_register">Register</string>
     <string name="hint_et_email">Email</string>
+    <string name="hint_et_username">Username</string>
     <string name="hint_et_pass">Password</string>
     <string name="checkbox_remember">Remember me</string>
     <string name="btn_login">Sign In</string>
