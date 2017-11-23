@@ -61,6 +61,7 @@ public class ProgressFragment extends Fragment {
     private User user = null;
 
     TextView progress_text;
+    TextView group_deadline;
     ProgressBar bar;
     public long groupSelected;
 
@@ -112,6 +113,7 @@ public class ProgressFragment extends Fragment {
                 groups = view.findViewById(R.id.group_progress_list);
                 progress_text = (TextView) view.findViewById(R.id.group_progress_text);
                 bar = (ProgressBar) view.findViewById(R.id.group_bar);
+                group_deadline = (TextView) view.findViewById(R.id.group_deadline);
 
             }
         });
@@ -135,16 +137,16 @@ public class ProgressFragment extends Fragment {
                         break;
                     case 1:
                         groupList = (List<Group>) msg.obj;
-                        for (int i = 0;i <groupList.size();i++){
-                            //Log.d("groups",""+groupList.get(i).getGroupName());
-                        }
+
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 adapter = new GroupProgressAdapter(getActivity(),null);
                                 groups.setAdapter(adapter);
                                 adapter.add(groupList);
+
                                 adapter.notifyDataSetChanged();
+
                             }
                         });
                         break;
@@ -206,7 +208,7 @@ public class ProgressFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                List<Group> groupList = new GroupBiz().loadGroups(user_id);
+                List<Group> groupList = new GroupBiz().loadGroupinProgress(user_id);
 
                 if(groupList == null){
                     Message msg = Message.obtain();

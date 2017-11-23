@@ -18,6 +18,7 @@ import com.example.huqicheng.pm.R;
 import com.example.huqicheng.utils.AsyncImageLoader;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -71,9 +72,15 @@ public class GroupProgressAdapter  extends BaseAdapter {
         }
 
         Group group = getItem(i);
+        if (group.getGroupId() == 1){
+            holder.getGroupDeadline.setText("");
+        }
+        else {
+            holder.getGroupDeadline.setText(""+new Date(group.getDeadline()));
+
+        }
         holder.groupName.setText(group.getGroupName());
-        holder.groupProgressText.setText(""+group.getDeadLine());
-        //holder.getGroupDeadline.setText(""+group.getDeadLine());
+        //holder.groupProgressText.setText(""+group.getDeadline());
         holder.groupProgressBar.setTag(getItemId(i));
 
         return convertView;

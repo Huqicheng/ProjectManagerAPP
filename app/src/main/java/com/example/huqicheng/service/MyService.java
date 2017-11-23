@@ -77,11 +77,15 @@ public class MyService extends Service {
 
         String client_id = new UserDao(getApplicationContext()).readUser().getUserId()+"";
 
+
         try {
             client = ClientUtils.getInstance(client_id);
         }catch (Exception e){
             e.printStackTrace();
         }
+
+
+        client = ClientUtils.getInstance(client_id);
 
 
 

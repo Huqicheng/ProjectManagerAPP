@@ -120,7 +120,7 @@ public class Group_Creation extends AppCompatActivity {
 
                     group_save= new Group();
 
-                    group_save.setDeadLine(CalendarDay.from(2017, 11, 20).getDate().getTime());
+                    group_save.setDeadline(CalendarDay.from(2017, 11, 20).getDate().getTime());
                     group_save.setGroupName(projectName.getText().toString());
                     group_save.setGroupDescription(projectDescription.getText().toString());
                     group_save.setGroupId(1);
@@ -128,7 +128,7 @@ public class Group_Creation extends AppCompatActivity {
                     new Thread() {
                         @Override
                         public void run() {
-                            assignresult = groupBiz.createGroup(group_save.getGroupName(),group_save.getGroupDescription(),group_save.getDeadLine(),user.getUserId());
+                            assignresult = groupBiz.createGroup(group_save.getGroupName(),group_save.getGroupDescription(),group_save.getDeadline(),user.getUserId());
                             Log.e(TAG, "assignresult: " + assignresult);
                             if (assignresult == "success") {
                                // Toast.makeText(Group_Creation.this, "Event saved", Toast.LENGTH_LONG).show();
