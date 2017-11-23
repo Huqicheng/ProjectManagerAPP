@@ -37,4 +37,9 @@ public class GroupBiz {
     public String createGroup(String name,String description,long deadline,long user_id){
         return groupNao.createGroup(name,description,deadline,user_id);
     }
+
+    public List<Group> loadGroupinProgress(long user_id){
+        return groupNao.getGroupsInProgress(user_id);
+    }
+
 }
