@@ -91,7 +91,7 @@ public class ClientUtils {
 						loginMsg.putParams("pwd", "huqicheng");
 						ClientUtils.send(loginMsg);
 
-					} catch (InterruptedException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}

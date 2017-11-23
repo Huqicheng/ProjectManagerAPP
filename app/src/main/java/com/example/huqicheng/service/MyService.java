@@ -70,14 +70,23 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
 
-        /*super.onCreate();
+        super.onCreate();
 
         ClientUtils.setContext(this);
 
 
         String client_id = new UserDao(getApplicationContext()).readUser().getUserId()+"";
 
-        client = ClientUtils.getInstance(client_id);*/
+
+        try {
+            client = ClientUtils.getInstance(client_id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        client = ClientUtils.getInstance(client_id);
+
 
 
 
