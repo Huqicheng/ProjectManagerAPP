@@ -1,6 +1,9 @@
 package com.example.huqicheng.pm;
 
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -11,6 +14,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +29,7 @@ import com.example.huqicheng.decorator.HighlightCurrentdayDecorator;
 import com.example.huqicheng.decorator.HighlightDeadlineDecorator;
 import com.example.huqicheng.entity.Event;
 import com.example.huqicheng.entity.User;
+import com.example.huqicheng.service.CalendarNotificationService;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
@@ -32,6 +37,8 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +50,7 @@ import java.util.List;
  */
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class CalendarFragment extends Fragment {
+    //NotificationManager mNotificationManager;
     MaterialCalendarView CalendarView;
     ListView listView;
     Intent intent;
@@ -113,6 +121,8 @@ public class CalendarFragment extends Fragment {
                 listView = (ListView) v.findViewById(R.id.eventlist);
                 HighlightCurrentdayDecorator currentdayDecorator = new HighlightCurrentdayDecorator();
                 CalendarView.addDecorator(currentdayDecorator);
+                //send notification of today's event
+                //sendNotification();
             }
         });
 
@@ -159,10 +169,10 @@ public class CalendarFragment extends Fragment {
                         ArrayList<Long> dates = (ArrayList<Long>)msg.obj;
                         datesList = new ArrayList<>();
                         for(int i=0;i<dates.size();i++){
-                            Log.d("dates",""+dates.get(i));
+                            //Log.d("dates",""+dates.get(i));
                             Date date = new Date(dates.get(i));
                             CalendarDay day = CalendarDay.from(date);
-                            Log.e(TAG, "timestamp=" + date.toString());
+                            Log.d(TAG, "timestamp in CF=" + date.toString());
                             datesList.add(day);
                         }
                         getActivity().runOnUiThread(new Runnable() {
@@ -170,6 +180,11 @@ public class CalendarFragment extends Fragment {
                             public void run() {
                                 deadlineDecorator = new HighlightDeadlineDecorator(Color.parseColor("#FF4081"), datesList);
                                 CalendarView.addDecorators(deadlineDecorator);
+                                //send notification
+                                if ( datesList.contains(CalendarDay.from(new Date() ) ) ){
+                                    intent = new Intent(getActivity(), CalendarNotificationService.class);
+                                    getActivity().startService(intent);
+                                }
                             }
                         });
                         break;
@@ -194,7 +209,6 @@ public class CalendarFragment extends Fragment {
                 }
             }
         };
-
         return v;
     }
 
@@ -216,6 +230,12 @@ public class CalendarFragment extends Fragment {
         CalendarView.removeDecorator(deadlineDecorator);
     }
     @Override
+    public void onStop(){
+        super.onStop();
+        //mNotificationManager.cancel(3);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -223,7 +243,6 @@ public class CalendarFragment extends Fragment {
 
 
     void loadDates(long user_id, String status){
-        /** add decorator **/
         eventBiz = new EventBiz();
         stampList = new ArrayList<>();
         try {
@@ -266,6 +285,7 @@ public class CalendarFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

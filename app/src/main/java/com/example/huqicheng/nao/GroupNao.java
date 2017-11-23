@@ -204,4 +204,38 @@ public class GroupNao {
         }
         return res;
     }
+
+    public List<Group> getGroupsInProgress(long user_id){
+        List<Group> res = null;
+        try{
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+
+            params.add(new BasicNameValuePair("user_id",user_id+""));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getGroupsIncludingPersonal.do",params,HttpUtils.GET);
+
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+
+            Log.e(TAG,json);
+
+            // check if failed, you should return null
+            if(json.trim().equalsIgnoreCase("failed")) return null;
+
+            // decoding here
+            // Type:   simple objects: ObjectName.class
+            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
+            Type type = new TypeToken<ArrayList<Group>>(){}.getType();
+            res = new Gson().fromJson(json,type);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
+        return res;
+    }
 }

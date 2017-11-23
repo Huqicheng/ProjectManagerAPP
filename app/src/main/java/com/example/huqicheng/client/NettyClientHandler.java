@@ -41,7 +41,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             public void run() {
             	NettyClientBootstrap client = ClientUtils.getInstance(client_id);
             	try {
-					client.start();
+                    try{
+                        client.start();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        return;
+                    }
+
 
                     if(client == null || client.socketChannel == null){
                         return;
@@ -56,7 +62,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
                     if(client.socketChannel != null){
                         client.socketChannel.writeAndFlush(new Gson().toJson(loginMsg));
                     }
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

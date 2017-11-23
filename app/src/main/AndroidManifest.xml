@@ -44,6 +44,13 @@
             android:name="com.example.huqicheng.service.MsgService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name="com.example.huqicheng.service.CalendarNotificationService" >
+        </service>
+        <receiver
+            android:name=".AlarmReceiver" >
+        </receiver>
+
     </application>
 
 </manifest>

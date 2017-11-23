@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.huqicheng.adapter.GroupAdapter;
 import com.example.huqicheng.bll.GroupBiz;
@@ -86,6 +87,8 @@ public class ChatFragment extends Fragment {
         this.lvGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                adapter.getItem(i).setGroupNew("");
+                adapter.notifyDataSetChanged();
                 toChatActivity(adapter.getItem(i));
             }
         });
@@ -101,7 +104,7 @@ public class ChatFragment extends Fragment {
             public void handleMessage(final Message msg) {
                 switch (msg.what){
                     case 0:
-                        //Toast.makeText(getApplicationContext(), "login failed" ,Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "get group failed" ,Toast.LENGTH_LONG).show();
                         break;
                     case 1:
                         getActivity().runOnUiThread(new Runnable() {
@@ -109,7 +112,7 @@ public class ChatFragment extends Fragment {
                             public void run() {
                                 List<Group> tmp = (List<Group>) msg.obj;
                                 List<Group> groups = new ArrayList<Group>();
-                                List<Long> stamps = new ArrayList<Long>();
+                                Log.d("debug:",groups.size()+"");
                                 // to check group chats
                                 for(Group g:tmp){
                                     long timestamp = MsgCache.getPair(g.getGroupId()+"");
@@ -117,10 +120,11 @@ public class ChatFragment extends Fragment {
                                         groups.add(g);
 
                                     }else{
+                                        g.setGroupNew("new");
                                         groups.add(0,g);
                                     }
                                 }
-                                Log.d("debug:",groups.size()+"");
+
                                 adapter.add(groups);
                                 adapter.notifyDataSetChanged();
                             }
@@ -178,18 +182,18 @@ public class ChatFragment extends Fragment {
 
     // TODO a new msg come to group identified by  gid
     public void updateListWhenMsgComes(long gid){
-
+        this.onRecievedMessage(gid);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
 
-        //this.loadGroups(user.getUserId());
+        this.loadGroups(user.getUserId());
         long message=2;
         message=getActivity().getIntent().getLongExtra("message",message);
         Log.d(TAG,message+"this is long");
-        this.onRecievedMessage(message,user.getUserId());
+        //this.onRecievedMessage(message,user.getUserId());
 
     }
 
@@ -219,37 +223,15 @@ public class ChatFragment extends Fragment {
             }
         }.start();
     }
-    private void onRecievedMessage(final long group_id,final long user_id){
-        new Thread(){
-            @Override
-            public void run() {
-                List<Group> groupList = new GroupBiz().loadGroups(user_id);
-                for(int i=0;i<groupList.size();i++)
-                {
-                    if(groupList.get(i).getGroupId()==group_id)
-                    {
-                        groupList.get(i).setGroupNew("new");
-                        Collections.swap(groupList, 0, i);}
-                }
-                if(groupList == null){
-                    Message msg = Message.obtain();
-                    msg.what = 0;
-                    handler.handleMessage(msg);
+    private void onRecievedMessage(final long group_id) {
 
-                }
-                else{
+        adapter.newMsgRecieved(group_id);
+        adapter.notifyDataSetChanged();
 
-                    Message msg = Message.obtain();
-                    msg.what = 1;
-
-                    msg.obj = groupList;
-                    handler.handleMessage(msg);
-                }
-
-
-            }
-        }.start();
     }
+
+
+
 
     private void toChatActivity(Group group){
         Intent intent = new Intent();
