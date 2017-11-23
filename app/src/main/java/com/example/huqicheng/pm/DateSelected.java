@@ -59,6 +59,7 @@ public class DateSelected extends AppCompatActivity {
     private User user;
     public Event event;
     public Event event_save;
+    private Group group;
     private Long deadline;
     private Long assignToId;
     private String str_date;
@@ -109,6 +110,7 @@ public class DateSelected extends AppCompatActivity {
         //Log.d("event description DS",""+event.getDescription());
         //get flag that decide whether it is an edit event of init event
         flag = (int)eventintent.getSerializableExtra("flag");
+        group = (Group)eventintent.getSerializableExtra("group");
 
         if (flag == INIT){
             //Initializing textview textAssignto
@@ -216,6 +218,17 @@ public class DateSelected extends AppCompatActivity {
                             assignresult = eventBiz.assignEventBiz(event_save);
                         }
                     }.start();
+                    //if assigned to user himself from groups other than personal group
+                    //add to personal group
+                   /* if (assignToId == user.getUserId() && event_save.getGroupId() != 1){
+                        event_save.setGroupId(1);
+                    }
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            assignresult = eventBiz.assignEventBiz(event_save);
+                        }
+                    }.start();*/
                     //Log.d(TAG, "assignresult: " + assignresult);
                     DateSelected.this.runOnUiThread(new Runnable() {
                         @Override

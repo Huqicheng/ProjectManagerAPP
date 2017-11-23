@@ -262,6 +262,7 @@ public class GroupProgressSelected extends AppCompatActivity {
                         intent = new Intent(GroupProgressSelected.this, DateSelected.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("event", event);//serializable
+                        bundle.putSerializable("group",selected_group);
                         bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
                         intent.putExtras(bundle);
                         startActivity(intent);

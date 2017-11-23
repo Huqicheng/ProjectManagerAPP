@@ -106,7 +106,7 @@ public class CalendarActivity extends AppCompatActivity implements ServiceConnec
         MenuItem menuItem=menu.getItem(0);
         menuItem.setChecked(true);
         intent = new Intent(CalendarActivity.this, MyService.class);
-        startService(intent);
+        //startService(intent);
     }
 
     @Override
