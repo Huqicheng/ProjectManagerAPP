@@ -3,6 +3,8 @@ package com.example.huqicheng.pm;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
@@ -19,6 +21,7 @@ import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,7 @@ public class Group_drop_list extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private GroupBiz groupBiz;
     private ArrayList<String> arraylist;
+    private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,29 +54,26 @@ public class Group_drop_list extends AppCompatActivity {
         groupBiz = new GroupBiz();
         groupList = new ArrayList<Group>();
         lvGroups = (ListView)findViewById(R.id.lvGroups);
-        new Thread(){
+
+        handler = new Handler(){
             @Override
-            public void run() {
-                groupList = groupBiz.loadGroups(user.getUserId());
-                if(groupList.size()>0)
-                {
-                    Log.d(TAG,"group list size"+groupList.size());
+            public void handleMessage(Message msg) {
+                switch(msg.what){
+                    case 1:
+                        arraylist = (ArrayList<String>) msg.obj;
+                        adapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,arraylist);
+                        lvGroups.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
 
-                    arraylist=new ArrayList<String>();
-                    for(int i=0;i<groupList.size();i++){
-                        arraylist.add(groupList.get(i).getGroupName());
-                    }
-
-                    adapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,arraylist);
-
-                    lvGroups.setAdapter(adapter);
-                    lvGroups.setOnItemClickListener(new ListItemClicker());
                 }
             }
-        }.start();
+        };
+        arraylist = new ArrayList<>();
+        adapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,arraylist);
 
-
-
+        lvGroups.setAdapter(adapter);
+        lvGroups.setOnItemClickListener(new ListItemClicker());
 
 
 
@@ -82,7 +83,28 @@ public class Group_drop_list extends AppCompatActivity {
 
         //load user
 
+        new Thread(){
+            @Override
+            public void run() {
+                groupList = groupBiz.loadGroups(user.getUserId());
+                if(groupList.size()>0)
+                {
+                    Log.d(TAG,"group list size"+groupList.size());
 
+                    ArrayList<String> arr=new ArrayList<String>();
+                    for(int i=0;i<groupList.size();i++){
+                        arr.add(groupList.get(i).getGroupName());
+                    }
+
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+                    msg.obj = arr;
+                    handler.handleMessage(msg);
+
+
+                }
+            }
+        }.start();
 
 
 
