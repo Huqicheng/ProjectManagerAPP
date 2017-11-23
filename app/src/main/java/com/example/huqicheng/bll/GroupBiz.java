@@ -1,11 +1,14 @@
 package com.example.huqicheng.bll;
 
+import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.EventStat;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.nao.GroupNao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by huqicheng on 2017/10/14.
@@ -40,6 +43,10 @@ public class GroupBiz {
 
     public List<Group> loadGroupinProgress(long user_id){
         return groupNao.getGroupsInProgress(user_id);
+    }
+
+    public Map<Integer,EventStat> loadGropStats(long user_id){
+        return  groupNao.getGroupStats(user_id);
     }
 
 }

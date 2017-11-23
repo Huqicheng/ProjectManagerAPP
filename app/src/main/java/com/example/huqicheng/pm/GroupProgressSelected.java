@@ -90,7 +90,7 @@ public class GroupProgressSelected extends AppCompatActivity {
         Intent groupintent = this.getIntent();
         //get event selected
         selected_group = (Group) groupintent.getSerializableExtra("group");
-        Log.d("selected eid",""+selected_group.getGroupId());
+        //Log.d("selected eid",""+selected_group.getGroupId());
 
         //get current user_id
         userBiz = new UserBiz(this);

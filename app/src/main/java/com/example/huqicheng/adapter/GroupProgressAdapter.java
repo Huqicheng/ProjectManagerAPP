@@ -67,6 +67,7 @@ public class GroupProgressAdapter  extends BaseAdapter {
             holder.getGroupDeadline = (TextView) convertView.findViewById(R.id.group_deadline) ;
             convertView.setTag(holder);
             convertView.setTag(R.id.group_bar,holder.groupProgressBar);
+            convertView.setTag(R.id.group_progress_text,holder.groupProgressText);
         }else{
             holder = (GroupProgressAdapter.ViewHolder)convertView.getTag();
         }
@@ -80,8 +81,11 @@ public class GroupProgressAdapter  extends BaseAdapter {
 
         }
         holder.groupName.setText(group.getGroupName());
-        //holder.groupProgressText.setText(""+group.getDeadline());
+        holder.groupProgressText.setText("");
+        holder.groupProgressBar.setMax(100);
+        holder.groupProgressBar.setProgress(50);
         holder.groupProgressBar.setTag(getItemId(i));
+        holder.groupProgressText.setTag(getItemId(i));
 
         return convertView;
     }
