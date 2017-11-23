@@ -16,6 +16,7 @@ import com.example.huqicheng.pm.R;
 import com.example.huqicheng.utils.AsyncImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,6 +50,15 @@ public class GroupAdapter extends BaseAdapter{
             }
         });
 
+    }
+
+    public void newMsgRecieved(long group_id){
+        for (int i = 0; i < groupList.size(); i++) {
+            if (groupList.get(i).getGroupId() == group_id) {
+                groupList.get(i).setGroupNew("new");
+                Collections.swap(groupList, 0, i);
+            }
+        }
     }
 
     @Override
