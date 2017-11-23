@@ -72,7 +72,12 @@ public class NettyClientBootstrap {
                     public void run() {  
                         try {
                         	client.start();
-						} catch (InterruptedException e) {
+                            BaseMsg loginMsg=new BaseMsg();
+                            loginMsg.setType(MsgType.LOGIN);
+                            loginMsg.putParams("user", "huqicheng");
+                            loginMsg.putParams("pwd", "huqicheng");
+                            ClientUtils.send(loginMsg);
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -83,7 +88,7 @@ public class NettyClientBootstrap {
       
       
     }  
-    public void start() throws InterruptedException {
+    public void start() throws Exception {
         EventLoopGroup eventLoopGroup=new NioEventLoopGroup();
         Bootstrap bootstrap=new Bootstrap();
         bootstrap.channel(NioSocketChannel.class);
