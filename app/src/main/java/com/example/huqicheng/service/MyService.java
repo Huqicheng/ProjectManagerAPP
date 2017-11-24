@@ -87,7 +87,7 @@ public class MyService extends Service {
 
 
 
-        //client = ClientUtils.getInstance(client_id);
+        client = ClientUtils.getInstance(client_id);
 
 
 
