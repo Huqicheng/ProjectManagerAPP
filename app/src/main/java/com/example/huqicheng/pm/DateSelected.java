@@ -117,6 +117,7 @@ public class DateSelected extends AppCompatActivity {
             textAssignto = (TextView) findViewById(R.id.tvAssignto);
             //Initializing the Assign-to Spinner
             spinner = (Spinner) findViewById(R.id.spinnerAssignto);
+            save.setText("save");
             new Thread(){
                 @Override
                 public void run() {
@@ -125,6 +126,22 @@ public class DateSelected extends AppCompatActivity {
                 }
             }.start();
         }
+        if (flag == EDIT) {
+            Date date = new Date(event.getDeadLine());
+            //Timestamp timestamp = new Timestamp(event.getDeadLine());
+            CalendarDay calendarDay = CalendarDay.from(date);
+            sYear = calendarDay.getYear();
+            sMonth = calendarDay.getMonth()+1;
+            sDay = calendarDay.getDay();
+            sHour = date.getHours();
+            sMinute = date.getMinutes();
+            //Log.d("Time in DS",""+sYear+sMonth+sDay+sHour+sMinute);
+            Log.d("Date in DS",""+date.toString());
+            eventName.setText(event.getEventTitle());
+            eventDiscription.setText(event.getDescription());
+            save.setText("update");
+        }
+
 
         handler = new Handler() {
             @Override
@@ -176,24 +193,7 @@ public class DateSelected extends AppCompatActivity {
             }
         };
 
-        if (flag == EDIT) {
-            Date date = new Date(event.getDeadLine());
-            Timestamp timestamp = new Timestamp(event.getDeadLine());
-            CalendarDay calendarDay = CalendarDay.from(date);
-            sYear = calendarDay.getYear();
-            sMonth = calendarDay.getMonth()+1;
-            sDay = calendarDay.getDay();
-            sHour = date.getHours();
-            sMinute = date.getMinutes();
-            //Log.d("Time in DS",""+sYear+sMonth+sDay+sHour+sMinute);
-            Log.d("Date in DS",""+date.toString());
-            eventName.setText(event.getEventTitle());
-            eventDiscription.setText(event.getDescription());
-            save.setText("update");
-        }
-        if (flag == INIT) {
-            save.setText("save");
-        }
+
 
         //get timestamp and string date
         deadline = event.getDeadLine();
@@ -219,16 +219,23 @@ public class DateSelected extends AppCompatActivity {
                             assignresult = eventBiz.assignEventBiz(event_save);
                         }
                     }.start();
-                    //Log.d(TAG, "assignresult: " + assignresult);
                     DateSelected.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             if (assignresult == "success") {
                                 Toast.makeText(DateSelected.this, "Event saved", Toast.LENGTH_SHORT).show();
+                                Intent saveintent = new Intent(getApplicationContext(), ProgressActivity.class);
+                                startActivity(saveintent);
                                 //returnToEventListView();
                             } else if (assignresult == null) {
                                 Toast.makeText(DateSelected.this, "Failed to save event", Toast.LENGTH_SHORT).show();
                             }
+
                         }
                     });
 
@@ -244,12 +251,20 @@ public class DateSelected extends AppCompatActivity {
                     DateSelected.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             if (assignresult == "success") {
                                 Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_SHORT).show();
+                                Intent editintent = new Intent(getApplicationContext(), ProgressActivity.class);
+                                startActivity(editintent);
                                 //returnToEventListView();
                             } else if (assignresult == null) {
                                 Toast.makeText(DateSelected.this, "Failed to update event", Toast.LENGTH_SHORT).show();
                             }
+
                         }
                     });
                 }
