@@ -98,7 +98,7 @@ public class GroupProgressSelected extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                loadEvents(selected_group.getGroupId(),user.getUserId(),"started");
+                loadEvents(selected_group.getGroupId(),user.getUserId());
             }
         }.start();
 
@@ -115,9 +115,16 @@ public class GroupProgressSelected extends AppCompatActivity {
                         bar.setProgress(0);
                         progress_text = (TextView) findViewById(R.id.progress_text);
                         complete_btn = (ImageButton) findViewById(R.id.complete_btn);
-                        //eventComplete(complete_btn);
                         add_btn = (ImageButton) findViewById(R.id.add_btn);
-                        eventAdd(add_btn);
+                        if(selected_group.getGroupId() != 1){
+
+                            eventAdd(add_btn);
+                        }
+                        else {
+                            add_btn.setVisibility(View.INVISIBLE);
+                        }
+                        //eventComplete(complete_btn);
+
                         event_list = (ListView) findViewById(R.id.eventlist);
 
                         adapter = new EventListAdapter(GroupProgressSelected.this,null);
@@ -179,8 +186,8 @@ public class GroupProgressSelected extends AppCompatActivity {
 
     }
 
-    private void loadEvents(final long group_id, final long user_id, String status) {
-        List<Event> eventList =  new EventBiz().loadEventsByGroup(group_id,user_id,status);
+    private void loadEvents(final long group_id, final long user_id) {
+        List<Event> eventList =  new EventBiz().loadEventsByGroup(group_id,user_id);
         Message msg = Message.obtain();
         msg.what = 1;
         msg.obj = eventList;

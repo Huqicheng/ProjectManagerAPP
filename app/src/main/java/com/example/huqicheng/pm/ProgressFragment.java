@@ -39,7 +39,9 @@ import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.message.MsgCache;
 
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +61,8 @@ public class ProgressFragment extends Fragment {
 
     private GroupProgressAdapter adapter;
     private GroupBiz groupBiz;
-    private Map<Integer,EventStat> event_stats;
+    private Map<Long,EventStat> event_stats = new HashMap<Long,EventStat>();
+
     private  Handler handler = null;
     private User user = null;
 
@@ -148,14 +151,14 @@ public class ProgressFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter = new GroupProgressAdapter(getActivity(),null);
+                                adapter = new GroupProgressAdapter(getActivity(),null,null);
                                 groups.setAdapter(adapter);
-                                adapter.add(groupList);
+                                adapter.add(groupList,event_stats);
                                 for (int i  =0;i<groupList.size();i++){
-                                    int gid = (int) groupList.get(i).getGroupId();
+                                    Long gid =  groupList.get(i).getGroupId();
                                     if (event_stats.containsKey(gid)){
                                         //bar.setProgress(100);
-                                    Log.d("lol",""+groupList.get(i).getGroupId());
+                                    Log.d("lol",""+event_stats.get(gid));
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
@@ -233,8 +236,13 @@ public class ProgressFragment extends Fragment {
             @Override
             public void run() {
                 List<Group> groupList = new GroupBiz().loadGroupinProgress(user_id);
-                event_stats =  new GroupBiz().loadGropStats(user_id);
-
+                Map<Integer,EventStat> eventStatMap = new GroupBiz().loadGropStats(user_id);
+                //event_stats =  ;
+                for (Integer key : eventStatMap.keySet()){
+                    Log.d("key",""+Long.valueOf(key) );
+                    Log.d("val", ""+eventStatMap.get(key));
+                    event_stats.put(Long.valueOf(key),eventStatMap.get(key));
+                }
                 if(groupList == null){
                     Message msg = Message.obtain();
                     msg.what = 0;

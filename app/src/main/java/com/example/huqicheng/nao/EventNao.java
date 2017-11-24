@@ -181,14 +181,13 @@ public class EventNao {
         return str;
     }
 
-    public List<Event> getEventsByGroup(long group_id, long user_id, String status){
+    public List<Event> getEventsByGroup(long group_id, long user_id){
         List<Event> res = null;
         try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("group_id",group_id+""));
             params.add(new BasicNameValuePair("user_id",user_id+""));
-            params.add(new BasicNameValuePair("status",status));
 
             //modify url according to interface doc
             HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getEventsByGroup.do",params,HttpUtils.GET);

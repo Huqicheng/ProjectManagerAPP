@@ -58,8 +58,8 @@ public class DateSelected extends AppCompatActivity {
     public Context context = this;
     private User user;
     public Event event;
-    public Event event_save;
     private Group group;
+    public Event event_save;
     private Long deadline;
     private Long assignToId;
     private String str_date;
@@ -210,7 +210,8 @@ public class DateSelected extends AppCompatActivity {
                     event_save.setDeadLine(deadline);
                     event_save.setEventTitle(eventName.getText().toString());
                     event_save.setDescription(eventDiscription.getText().toString());
-                    event_save.setGroupId(1);
+                    //event_save.setGroupId(1);
+                    event_save.setGroupId(group.getGroupId());
 
                     new Thread() {
                         @Override
@@ -218,25 +219,15 @@ public class DateSelected extends AppCompatActivity {
                             assignresult = eventBiz.assignEventBiz(event_save);
                         }
                     }.start();
-                    //if assigned to user himself from groups other than personal group
-                    //add to personal group
-                   /* if (assignToId == user.getUserId() && event_save.getGroupId() != 1){
-                        event_save.setGroupId(1);
-                    }
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            assignresult = eventBiz.assignEventBiz(event_save);
-                        }
-                    }.start();*/
                     //Log.d(TAG, "assignresult: " + assignresult);
                     DateSelected.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (assignresult == "success") {
-                                Toast.makeText(DateSelected.this, "Event saved", Toast.LENGTH_LONG).show();
+                                Toast.makeText(DateSelected.this, "Event saved", Toast.LENGTH_SHORT).show();
+                                //returnToEventListView();
                             } else if (assignresult == null) {
-                                Toast.makeText(DateSelected.this, "Failed to save event", Toast.LENGTH_LONG).show();
+                                Toast.makeText(DateSelected.this, "Failed to save event", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -254,9 +245,10 @@ public class DateSelected extends AppCompatActivity {
                         @Override
                         public void run() {
                             if (assignresult == "success") {
-                                Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_LONG).show();
+                                Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_SHORT).show();
+                                //returnToEventListView();
                             } else if (assignresult == null) {
-                                Toast.makeText(DateSelected.this, "Failed to update event", Toast.LENGTH_LONG).show();
+                                Toast.makeText(DateSelected.this, "Failed to update event", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -305,6 +297,14 @@ public class DateSelected extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void returnToEventListView() {
+        intent = new Intent(DateSelected.this, GroupProgressSelected.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("group", group);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void displayPickedTime(Long time) {

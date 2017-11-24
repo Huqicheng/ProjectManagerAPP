@@ -70,6 +70,7 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
 
+
         super.onCreate();
 
         ClientUtils.setContext(this);
@@ -83,6 +84,7 @@ public class MyService extends Service {
         }catch (Exception e){
             e.printStackTrace();
         }
+
 
 
         //client = ClientUtils.getInstance(client_id);

@@ -3,6 +3,7 @@ package com.example.huqicheng.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.EventStat;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.pm.R;
 import com.example.huqicheng.utils.AsyncImageLoader;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jiaxinf on 2017-11-19.
@@ -28,13 +32,20 @@ import java.util.List;
 public class GroupProgressAdapter  extends BaseAdapter {
 
     private List<Group> groupList = null;
+    private Map<Long,EventStat> eventStatMap;
     private LayoutInflater inflater;
 
-    public GroupProgressAdapter(Context context, List<Group> groupList) {
-        if(groupList != null)
+    public GroupProgressAdapter(Context context, List<Group> groupList, Map<Long,EventStat> eventStats) {
+        if(groupList != null){
             this.groupList = groupList;
-        else
+            this.eventStatMap = eventStats;
+        }
+
+        else{
             this.groupList = new ArrayList<>();
+            this.eventStatMap = new HashMap<Long, EventStat>();
+        }
+
         this.inflater = LayoutInflater.from(context);
 
     }
@@ -81,19 +92,34 @@ public class GroupProgressAdapter  extends BaseAdapter {
 
         }
         holder.groupName.setText(group.getGroupName());
-        holder.groupProgressText.setText("");
-        holder.groupProgressBar.setMax(100);
-        holder.groupProgressBar.setProgress(50);
+
+        if (eventStatMap.containsKey((Long) group.getGroupId())){
+            int started =  eventStatMap.get(group.getGroupId()).getStarted();
+            int finished = eventStatMap.get(group.getGroupId()).getFinished();
+            holder.groupProgressBar.setMax(started+finished);
+            holder.groupProgressText.setText(""+finished+"/"+(started+finished));
+            holder.groupProgressBar.setProgress(finished);
+
+        }
+        else{
+            holder.groupProgressBar.setProgress(0);
+            holder.groupProgressText.setText("0/0");
+        }
+
         holder.groupProgressBar.setTag(getItemId(i));
         holder.groupProgressText.setTag(getItemId(i));
+
 
         return convertView;
     }
 
 
-    public void add(List<Group> groups){
+    public void add(List<Group> groups,Map<Long,EventStat> eventStats){
         if(groups != null)
             this.groupList.addAll(groups);
+        if (eventStats != null)
+            this.eventStatMap.putAll(eventStats);
+
         notifyDataSetChanged();
     }
 
