@@ -44,7 +44,9 @@ public class GroupProgressSelected extends AppCompatActivity {
     private ListView event_list;
     private UserBiz userBiz;
     private User user;
-    private ArrayList<Event> events;
+    private ArrayList<Event> events = new ArrayList<>();
+    private  ArrayList<Event> started_events = new ArrayList<>();
+    private ArrayList<Event> finished_events = new ArrayList<>();
     private ImageButton complete_btn;
     private ImageButton add_btn;
     private Group selected_group;
@@ -105,19 +107,29 @@ public class GroupProgressSelected extends AppCompatActivity {
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg){
-                events = (ArrayList<Event>) msg.obj;
+               ArrayList<Event> tmp = (ArrayList<Event>) msg.obj;
+                for (Event e : tmp){
+                    if (e.getEventStatus().equals("started"))
+                        started_events.add(e);
+                    else if( e.getEventStatus().equals("finished"))
+                        finished_events.add(e);
+                }
+                events.addAll(started_events);
+                events.addAll(finished_events);
+
 
                 GroupProgressSelected.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         setContentView(R.layout.single_group_events);
                         bar = (ProgressBar) findViewById(R.id.bar);
-                        bar.setProgress(0);
+                        bar.setMax(events.size());
+                        bar.setProgress(finished_events.size());
                         progress_text = (TextView) findViewById(R.id.progress_text);
+                        progress_text.setText(finished_events.size() + " of " + events.size() + " completed");
                         complete_btn = (ImageButton) findViewById(R.id.complete_btn);
                         add_btn = (ImageButton) findViewById(R.id.add_btn);
                         if(selected_group.getGroupId() != 1){
-
                             eventAdd(add_btn);
                         }
                         else {

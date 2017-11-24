@@ -12,12 +12,26 @@
         android:focusable="false"
         android:scaleType="fitCenter" />
 
+   <!-- <ImageView
+        android:layout_width="26dp"
+        android:layout_marginTop="12dp"
+        android:layout_height="26dp"
+        android:id="@+id/check_view"
+        android:background="@drawable/complete"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/relativeLayout"
+        android:layout_marginEnd="12dp"
+        android:visibility="invisible"/>-->
+
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_weight="1.0"
-        android:layout_toRightOf="@id/chk_box">
+        android:layout_toRightOf="@id/chk_box"
+        android:id="@+id/relativeLayout">
+
 
         <TextView
             android:id="@+id/title"
@@ -25,19 +39,31 @@
             android:layout_height="wrap_content"
             android:padding="3dp"
             android:text="Debug"
-            android:textColor="@color/colorBlack" />
+            android:textColor="@color/colorBlack"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"/>
 
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
             android:padding="3dp"
             android:singleLine="true"
             android:text="created by haha"
             android:textSize="12sp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            android:layout_below="@+id/title"
+            android:layout_alignParentStart="true" />
 
+      <!--  <TextView
+            android:id="@+id/creator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:text="Created by"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
+-->
 
     </RelativeLayout>
 

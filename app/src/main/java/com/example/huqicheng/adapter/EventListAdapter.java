@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.huqicheng.entity.Event;
@@ -27,6 +28,8 @@ public class EventListAdapter extends BaseAdapter {
     }
 
     ArrayList<Event> eventList;
+    ArrayList<Event> startedList = new ArrayList<>();
+    ArrayList<Event> finishedList = new ArrayList<>();
     private LayoutInflater inflater;
     public int checkCount;
     public List<Long> selectedEvents = new ArrayList<>();
@@ -80,6 +83,8 @@ public class EventListAdapter extends BaseAdapter {
             holder.title = (TextView)convertView.findViewById(R.id.title);
             holder.description = (TextView)convertView.findViewById(R.id.description);
             holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
+            //holder.checkView = (ImageView)convertView.findViewById(R.id.check_view);
+            //holder.creator = (TextView)convertView.findViewById(R.id.creator);
 
 
             final CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener(){
@@ -93,23 +98,41 @@ public class EventListAdapter extends BaseAdapter {
             holder.checkBox.setOnCheckedChangeListener(checkListener);
             convertView.setTag(holder);
             convertView.setTag(R.id.chk_box,holder.checkBox);
+            //convertView.setTag(R.id.check_view,holder.checkView);
 
         }else{
             holder = (EventListAdapter.ViewHolder)convertView.getTag();
         }
         holder.checkBox.setTag(eventList.get(i).getEventID());
+        //holder.checkView.setTag(eventList.get(i).getEventID());
 
         Event event = getItem(i);
-        holder.title.setText(event.getEventTitle());
+        //holder.title.setText(event.getEventTitle());
         holder.description.setText(event.getDescription());
         holder.checkBox.setChecked(eventList.get(i).isSelected());
+
+        if(event.getEventStatus().equals("finished")){
+            holder.title.setText(event.getEventTitle()+"  --- finished ");
+
+            //holder.checkView.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.title.setText(event.getEventTitle());
+
+        }
+
+
+            //holder.checkView.setVisibility(View.INVISIBLE);
+
 
         return convertView;
     }
 
-    public void add(List<Event> events){
-        if(events != null)
+    public void add(ArrayList<Event> events){
+        //Log.d("size",""+events.size());
+        if(events != null){
             this.eventList.addAll(events);
+        }
         notifyDataSetChanged();
 
     }
@@ -122,7 +145,7 @@ public class EventListAdapter extends BaseAdapter {
         else{
             selectedEvents.remove(iid);
         }
-        Log.d("checked size", ""+selectedEvents.size());
+        //Log.d("checked size", ""+selectedEvents.size());
     }
     private Event getEventById(long id){
         Event returnE = new Event();
@@ -138,6 +161,8 @@ public class EventListAdapter extends BaseAdapter {
     class ViewHolder{
         TextView title;
         TextView description;
+        //TextView creator;
+        //ImageView checkView;
         CheckBox checkBox;
 
     }
