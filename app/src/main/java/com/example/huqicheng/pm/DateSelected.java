@@ -136,10 +136,15 @@ public class DateSelected extends AppCompatActivity {
             sHour = date.getHours();
             sMinute = date.getMinutes();
             //Log.d("Time in DS",""+sYear+sMonth+sDay+sHour+sMinute);
-            Log.d("Date in DS",""+date.toString());
+            //Log.d("Date in DS",""+date.toString());
             eventName.setText(event.getEventTitle());
             eventDiscription.setText(event.getDescription());
             save.setText("update");
+            if (!event.getEventStatus().equals("started")){
+                save.setVisibility(View.INVISIBLE);
+                //save.setOnClickListener(null);
+            }
+
         }
 
 

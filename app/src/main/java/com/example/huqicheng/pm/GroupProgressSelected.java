@@ -151,9 +151,9 @@ public class GroupProgressSelected extends AppCompatActivity {
 
                         event_list = (ListView) findViewById(R.id.eventlist);
 
-                        adapter = new EventListAdapter(GroupProgressSelected.this,null);
+                        adapter = new EventListAdapter(GroupProgressSelected.this,null,null);
                         event_list.setAdapter(adapter);
-                        adapter.add(events);
+                        adapter.add(events,user);
                         event_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -506,5 +506,15 @@ public class GroupProgressSelected extends AppCompatActivity {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(this, ProgressActivity.class);
+        Bundle bundle = new Bundle();
+
+        backIntent.putExtras(bundle);
+        this.setResult(1, backIntent);
+        this.finish();
+        startActivity(backIntent);
     }
 }

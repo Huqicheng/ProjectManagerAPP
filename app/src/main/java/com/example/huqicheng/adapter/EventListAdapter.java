@@ -1,6 +1,7 @@
 package com.example.huqicheng.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.User;
 import com.example.huqicheng.pm.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,16 +31,22 @@ public class EventListAdapter extends BaseAdapter {
     }
 
     ArrayList<Event> eventList;
+    User user;
     private LayoutInflater inflater;
     public int checkCount;
     public ArrayList<Integer> selectedEvents = new ArrayList<>();
 
-    public EventListAdapter(Context context, ArrayList<Event> eventList) {
+    public EventListAdapter(Context context, ArrayList<Event> eventList, User user) {
 
         if(eventList != null)
             this.eventList = eventList;
         else
             this.eventList = new ArrayList<>();
+
+        if (user != null)
+            this.user = user;
+        else
+            this.user = new User();
 
         checkCount = 0;
         inflater = this.inflater = LayoutInflater.from(context);
@@ -80,9 +89,11 @@ public class EventListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.title = (TextView)convertView.findViewById(R.id.title);
             holder.description = (TextView)convertView.findViewById(R.id.description);
+
+            holder.deadline = (TextView) convertView.findViewById(R.id.deadline);
+            holder.notes = (TextView)convertView.findViewById(R.id.notes);
+
             holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
-            //holder.checkView = (ImageView)convertView.findViewById(R.id.check_view);
-            //holder.creator = (TextView)convertView.findViewById(R.id.creator);
 
 
             final CompoundButton.OnCheckedChangeListener checkListener = new CompoundButton.OnCheckedChangeListener(){
@@ -94,6 +105,8 @@ public class EventListAdapter extends BaseAdapter {
                 }
             };
             holder.checkBox.setOnCheckedChangeListener(checkListener);
+
+
             convertView.setTag(holder);
             convertView.setTag(R.id.chk_box,holder.checkBox);
             //convertView.setTag(R.id.check_view,holder.checkView);
@@ -101,6 +114,7 @@ public class EventListAdapter extends BaseAdapter {
         }else{
             holder = (EventListAdapter.ViewHolder)convertView.getTag();
         }
+
         holder.checkBox.setTag(eventList.get(i).getEventID());
         //holder.checkView.setTag(eventList.get(i).getEventID());
 
@@ -109,31 +123,50 @@ public class EventListAdapter extends BaseAdapter {
         holder.description.setText(event.getDescription());
         holder.checkBox.setChecked(eventList.get(i).isSelected());
 
-        if(event.getEventStatus().equals("finished")){
-            holder.title.setText(event.getEventTitle()+"  --- finished ");
 
-            //holder.checkView.setVisibility(View.VISIBLE);
+
+        switch (event.getEventStatus()){
+            case "started":
+                holder.title.setText(event.getEventTitle());
+                holder.title.setTextColor(Color.parseColor("#FF8A65"));
+                if(user.getUserId() == event.getAssignedTo()){
+                    holder.notes.setText("You");
+                    holder.notes.setTextColor(Color.parseColor("#FF8A65"));
+                }
+                else{
+                    holder.notes.setText("");
+                }
+                String[] deadline_str = new Date(event.getDeadLine()).toString().split("\\s");
+                String res = deadline_str[0] + " " + deadline_str[1] + " " + deadline_str[2] + " "+ deadline_str[5] ;
+                holder.deadline.setText(res);
+                break;
+            case "finished":
+                holder.title.setText(event.getEventTitle());
+                holder.notes.setText("Finished");
+                holder.title.setTextColor(Color.parseColor("#4CAF50"));
+                holder.notes.setTextColor(Color.parseColor("#4CAF50"));
+                holder.deadline.setText("");
+                break;
+            case "dropped":
+                holder.title.setText(event.getEventTitle());
+                holder.notes.setText("DROPPED");
+                holder.title.setTextColor(Color.parseColor("#BDBDBD"));
+                holder.description.setTextColor(Color.parseColor("#BDBDBD"));
+                holder.notes.setTextColor(Color.parseColor("#BDBDBD"));
+                holder.deadline.setText("");
+                break;
+
         }
-        else if(event.getEventStatus().equals("dropped")){
-            holder.title.setText(event.getEventTitle()+"  --- dropped ");
-        }
-        else{
-            holder.title.setText(event.getEventTitle());
-
-        }
-
-
-            //holder.checkView.setVisibility(View.INVISIBLE);
-
 
         return convertView;
     }
 
-    public void add(ArrayList<Event> events){
+    public void add(ArrayList<Event> events,User user){
         //Log.d("size",""+events.size());
         if(events != null){
             this.eventList.addAll(events);
         }
+        this.user = user;
         notifyDataSetChanged();
 
     }
@@ -163,7 +196,8 @@ public class EventListAdapter extends BaseAdapter {
     class ViewHolder{
         TextView title;
         TextView description;
-        //TextView creator;
+        TextView notes;
+        TextView deadline;
         //ImageView checkView;
         CheckBox checkBox;
 
