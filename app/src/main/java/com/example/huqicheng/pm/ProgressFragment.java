@@ -154,13 +154,13 @@ public class ProgressFragment extends Fragment {
                                 adapter = new GroupProgressAdapter(getActivity(),null,null);
                                 groups.setAdapter(adapter);
                                 adapter.add(groupList,event_stats);
-                                for (int i  =0;i<groupList.size();i++){
+                                /*for (int i  =0;i<groupList.size();i++){
                                     Long gid =  groupList.get(i).getGroupId();
                                     if (event_stats.containsKey(gid)){
                                         //bar.setProgress(100);
                                     Log.d("lol",""+event_stats.get(gid));
                                     }
-                                }
+                                }*/
                                 adapter.notifyDataSetChanged();
 
                             }
@@ -215,19 +215,18 @@ public class ProgressFragment extends Fragment {
             @Override
             public void run() {
                 loadGroups(user.getUserId());
-                //loadStats(user.getUserId());
             }
         }.start();
     }
 
-    private void loadStats(final long userId) {
+   /* private void loadStats(final long userId) {
         Map<Integer,EventStat> estat=  new GroupBiz().loadGropStats(userId);
         Message msg = Message.obtain();
         msg.what = 2;
         msg.obj = estat;
         handler.handleMessage(msg);
 
-    }
+    }*/
 
     public void loadGroups(final long user_id){
        // event_stats = new Mp;

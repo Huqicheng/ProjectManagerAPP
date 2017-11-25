@@ -28,11 +28,9 @@ public class EventListAdapter extends BaseAdapter {
     }
 
     ArrayList<Event> eventList;
-    ArrayList<Event> startedList = new ArrayList<>();
-    ArrayList<Event> finishedList = new ArrayList<>();
     private LayoutInflater inflater;
     public int checkCount;
-    public List<Long> selectedEvents = new ArrayList<>();
+    public ArrayList<Integer> selectedEvents = new ArrayList<>();
 
     public EventListAdapter(Context context, ArrayList<Event> eventList) {
 
@@ -116,6 +114,9 @@ public class EventListAdapter extends BaseAdapter {
 
             //holder.checkView.setVisibility(View.VISIBLE);
         }
+        else if(event.getEventStatus().equals("dropped")){
+            holder.title.setText(event.getEventTitle()+"  --- dropped ");
+        }
         else{
             holder.title.setText(event.getEventTitle());
 
@@ -138,12 +139,13 @@ public class EventListAdapter extends BaseAdapter {
     }
     private void countCheck(boolean isChecked, long eid) {
         Long iid = (Long) eid;
+        Integer id = Integer.valueOf(iid.intValue());
 //        checkCount += isChecked ? 1 : -1 ;
-        if (isChecked && !selectedEvents.contains(iid)){
-            selectedEvents.add(iid);
+        if (isChecked && !selectedEvents.contains(id)){
+            selectedEvents.add(id);
         }
         else{
-            selectedEvents.remove(iid);
+            selectedEvents.remove(id);
         }
         //Log.d("checked size", ""+selectedEvents.size());
     }

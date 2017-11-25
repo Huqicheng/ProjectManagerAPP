@@ -211,24 +211,16 @@ public class EventNao {
         return res;
     }
 
-    public String markEvents(long event_id, long assignTo, String newtitle, String newdescription, long newdeadline){
-        List<Event> res = null;
+    public String markEvents(ArrayList<Integer> selected_events, String status){
+
         try{
-            // decoding here
-            // Type:   simple objects: ObjectName.class
-            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
-
-
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("deadline",newdeadline+""));
-            params.add(new BasicNameValuePair("title", newtitle));
-            params.add(new BasicNameValuePair("description",newdescription));
-            params.add(new BasicNameValuePair("assignTo",assignTo+""));
-            params.add(new BasicNameValuePair("event_id",event_id+""));
+            params.add(new BasicNameValuePair("arrEvents",selected_events+""));
+            params.add(new BasicNameValuePair("status", status));
 
             //modify url according to interface doc
-            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/updateEvent.do",params,HttpUtils.POST);
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/updateEventBatches.do",params,HttpUtils.POST);
 
             if(entity == null){
                 return null;
