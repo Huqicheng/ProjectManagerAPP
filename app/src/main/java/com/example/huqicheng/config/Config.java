@@ -6,11 +6,11 @@ package com.example.huqicheng.config;
 
 public class Config {
     // modify to the real ip address
-    public static final String SERVER_IP = "http://192.168.137.1:8080/PM";
+    public static final String SERVER_IP = "http://192.168.23.1:8080/PM";
 
 
     //configuration for socket client
-    public static final String SOCKET_SERVER_IP = "192.168.137.1";
+    public static final String SOCKET_SERVER_IP = "192.168.23.1";
 
     public static final int SOCKET_SERVER_PORT = 8000;
 }
