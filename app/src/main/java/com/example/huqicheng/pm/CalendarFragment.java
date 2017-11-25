@@ -220,7 +220,7 @@ public class CalendarFragment extends Fragment {
             @Override
             public void run() {
                 //CalendarView.addDecorator(decorator);
-                loadDates(user.getUserId(),"started");
+                loadDates(user.getUserId());
             }
         }.start();
     }
@@ -242,13 +242,24 @@ public class CalendarFragment extends Fragment {
     }
 
 
-    void loadDates(long user_id, String status){
+    void loadDates(long user_id){
         eventBiz = new EventBiz();
         stampList = new ArrayList<>();
         try {
-            stampList = eventBiz.loadDatesHavingEvents(user_id, status);
-            for (int i = 0; i < stampList.size();i++){
+            List<Long> templist = eventBiz.loadDatesHavingEvents(user_id, "started");
+            for (int i = 0; i < templist.size();i++){
                 //Log.e(TAG, "timestamp=" + new Date(stampList.get(i)).toString());
+                stampList.add(templist.get(i));
+            }
+            templist = eventBiz.loadDatesHavingEvents(user_id, "finished");
+            for (int i = 0; i < templist.size();i++){
+                //Log.e(TAG, "timestamp=" + new Date(stampList.get(i)).toString());
+                stampList.add(templist.get(i));
+            }
+            templist = eventBiz.loadDatesHavingEvents(user_id, "dropped");
+            for (int i = 0; i < templist.size();i++){
+                //Log.e(TAG, "timestamp=" + new Date(stampList.get(i)).toString());
+                stampList.add(templist.get(i));
             }
             if(stampList == null){
                 return;
