@@ -211,4 +211,37 @@ public class EventNao {
         return res;
     }
 
+    public String markEvents(long event_id, long assignTo, String newtitle, String newdescription, long newdeadline){
+        List<Event> res = null;
+        try{
+            // decoding here
+            // Type:   simple objects: ObjectName.class
+            //         complex objects such as List, Map: TypeToken<ArrayList<ObjectName>>(){}.getType();
+
+
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("deadline",newdeadline+""));
+            params.add(new BasicNameValuePair("title", newtitle));
+            params.add(new BasicNameValuePair("description",newdescription));
+            params.add(new BasicNameValuePair("assignTo",assignTo+""));
+            params.add(new BasicNameValuePair("event_id",event_id+""));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/updateEvent.do",params,HttpUtils.POST);
+
+            if(entity == null){
+                return null;
+            }
+
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String str = "success";
+        return str;
+    }
+
 }
