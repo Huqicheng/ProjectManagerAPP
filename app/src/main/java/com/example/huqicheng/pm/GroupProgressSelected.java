@@ -261,7 +261,7 @@ public class GroupProgressSelected extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                
+
                 new Thread() {
                     @Override
                     public void run() {
