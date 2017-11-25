@@ -34,12 +34,16 @@ import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.dao.dbHandler;
 import com.example.huqicheng.dao.dbHandler2;
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.EventStat;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
 import com.example.huqicheng.message.MsgCache;
 
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -57,12 +61,14 @@ public class ProgressFragment extends Fragment {
 
     private GroupProgressAdapter adapter;
     private GroupBiz groupBiz;
+    private Map<Long,EventStat> event_stats = new HashMap<Long,EventStat>();
+
     private  Handler handler = null;
     private User user = null;
 
-    TextView progress_text;
-    TextView group_deadline;
-    ProgressBar bar;
+    private TextView progress_text;
+    private TextView group_deadline;
+    private ProgressBar bar;
     public long groupSelected;
 
     int progress_Max = 100;
@@ -101,7 +107,7 @@ public class ProgressFragment extends Fragment {
 
     }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
         //init event listview
@@ -111,9 +117,13 @@ public class ProgressFragment extends Fragment {
             @Override
             public void run() {
                 groups = view.findViewById(R.id.group_progress_list);
-                progress_text = (TextView) view.findViewById(R.id.group_progress_text);
-                bar = (ProgressBar) view.findViewById(R.id.group_bar);
-                group_deadline = (TextView) view.findViewById(R.id.group_deadline);
+                //View view = inflater.inflate(R.layout.group_progress_list_row, container, false);
+//
+//                progress_text = (TextView) view.findViewById(R.id.group_progress_text);
+//                bar = (ProgressBar) view.findViewById(R.id.group_bar);
+//                bar.setMax(progress_Max);
+//                bar.setProgress(0);
+//                group_deadline = (TextView) view.findViewById(R.id.group_deadline);
 
             }
         });
@@ -141,14 +151,21 @@ public class ProgressFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter = new GroupProgressAdapter(getActivity(),null);
+                                adapter = new GroupProgressAdapter(getActivity(),null,null);
                                 groups.setAdapter(adapter);
-                                adapter.add(groupList);
-
+                                adapter.add(groupList,event_stats);
+                                /*for (int i  =0;i<groupList.size();i++){
+                                    Long gid =  groupList.get(i).getGroupId();
+                                    if (event_stats.containsKey(gid)){
+                                        //bar.setProgress(100);
+                                    Log.d("lol",""+event_stats.get(gid));
+                                    }
+                                }*/
                                 adapter.notifyDataSetChanged();
 
                             }
                         });
+
                         break;
 
                 }
@@ -197,19 +214,34 @@ public class ProgressFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                //CalendarView.addDecorator(decorator);
                 loadGroups(user.getUserId());
             }
         }.start();
     }
 
+   /* private void loadStats(final long userId) {
+        Map<Integer,EventStat> estat=  new GroupBiz().loadGropStats(userId);
+        Message msg = Message.obtain();
+        msg.what = 2;
+        msg.obj = estat;
+        handler.handleMessage(msg);
+
+    }*/
+
     public void loadGroups(final long user_id){
+       // event_stats = new Mp;
 
         new Thread(){
             @Override
             public void run() {
                 List<Group> groupList = new GroupBiz().loadGroupinProgress(user_id);
-
+                Map<Integer,EventStat> eventStatMap = new GroupBiz().loadGropStats(user_id);
+                //event_stats =  ;
+                for (Integer key : eventStatMap.keySet()){
+                    Log.d("key",""+Long.valueOf(key) );
+                    Log.d("val", ""+eventStatMap.get(key));
+                    event_stats.put(Long.valueOf(key),eventStatMap.get(key));
+                }
                 if(groupList == null){
                     Message msg = Message.obtain();
                     msg.what = 0;

@@ -11,5 +11,6 @@ public class Config {
 
     //configuration for socket client
     public static final String SOCKET_SERVER_IP = "192.168.23.1";
+
     public static final int SOCKET_SERVER_PORT = 8000;
 }

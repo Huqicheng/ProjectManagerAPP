@@ -1,7 +1,6 @@
 package com.example.huqicheng.pm;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,9 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -21,13 +18,17 @@ import android.widget.Toast;
 
 import com.example.huqicheng.adapter.EventListAdapter;
 import com.example.huqicheng.bll.EventBiz;
+import com.example.huqicheng.bll.GroupBiz;
 import com.example.huqicheng.bll.UserBiz;
 import com.example.huqicheng.entity.Event;
+import com.example.huqicheng.entity.EventStat;
 import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.entity.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -44,23 +45,35 @@ public class GroupProgressSelected extends AppCompatActivity {
     private ListView event_list;
     private UserBiz userBiz;
     private User user;
-    private ArrayList<Event> events;
+    private ArrayList<Event> events = new ArrayList<>();
+    private  ArrayList<Event> started_events = new ArrayList<>();
+    private ArrayList<Event> finished_events = new ArrayList<>();
+    private ArrayList<Event> dropped_events = new ArrayList<>();
+
     private ImageButton complete_btn;
+    private ImageButton dropped_btn;
     private ImageButton add_btn;
-    private Group selected_group;
+
+    private Group selected_group = new Group();
     public ArrayList<Event> eventList;
     private EventListAdapter adapter;
     private  Handler handler = null;
     TextView progress_text;
     ProgressBar bar;
+    public EventBiz eventBiz = new EventBiz();
+    public String updateResult = "";
     int progress_Max = 100;
     int totalEvents = 0;
     int complete_count = 0;
     Intent intent;
-    //dbHandler2 myDb2;
-    int Date;
+
 
     private OnFragmentInteractionListener mListener;
+    private Map<Long, EventStat> event_stats =  new HashMap<>();
+    private int started_num = 0;
+    private int finished_num = 0;
+    private int total_num = 0;
+
 
  /*   public GroupProgressSelected() {
         // Required empty public constructor
@@ -98,26 +111,44 @@ public class GroupProgressSelected extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                loadEvents(selected_group.getGroupId(),user.getUserId(),"started");
+                loadEvents(selected_group.getGroupId(),user.getUserId());
             }
         }.start();
 
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg){
-                events = (ArrayList<Event>) msg.obj;
+               ArrayList<Event> tmp = (ArrayList<Event>) msg.obj;
+                sortEventByStatus(tmp);
 
                 GroupProgressSelected.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         setContentView(R.layout.single_group_events);
                         bar = (ProgressBar) findViewById(R.id.bar);
-                        bar.setProgress(0);
+                        if(event_stats.containsKey(selected_group.getGroupId())){
+                            started_num = event_stats.get(selected_group.getGroupId()).getStarted();
+                            finished_num = event_stats.get(selected_group.getGroupId()).getFinished();
+                        }
+
+                        total_num = started_num +finished_num;
+                        bar.setMax(total_num);
+                        bar.setProgress(finished_num);
                         progress_text = (TextView) findViewById(R.id.progress_text);
+                        progress_text.setText(finished_num + " of " + total_num + " completed");
                         complete_btn = (ImageButton) findViewById(R.id.complete_btn);
-                        //eventComplete(complete_btn);
+                        eventComplete(complete_btn);
+                        dropped_btn = (ImageButton) findViewById(R.id.delete_btn);
+                        eventDrop(dropped_btn);
                         add_btn = (ImageButton) findViewById(R.id.add_btn);
-                        eventAdd(add_btn);
+                        if(selected_group.getGroupId() != 1){
+                            eventAdd(add_btn);
+                        }
+                        else {
+                            add_btn.setVisibility(View.INVISIBLE);
+                        }
+
+
                         event_list = (ListView) findViewById(R.id.eventlist);
 
                         adapter = new EventListAdapter(GroupProgressSelected.this,null);
@@ -179,8 +210,29 @@ public class GroupProgressSelected extends AppCompatActivity {
 
     }
 
-    private void loadEvents(final long group_id, final long user_id, String status) {
-        List<Event> eventList =  new EventBiz().loadEventsByGroup(group_id,user_id,status);
+    private void sortEventByStatus(ArrayList<Event> tmp) {
+        for (Event e : tmp){
+            if (e.getEventStatus().equals("started"))
+                started_events.add(e);
+            else if( e.getEventStatus().equals("finished"))
+                finished_events.add(e);
+            else if(e.getEventStatus().equals("dropped"))
+                dropped_events.add(e);
+        }
+        events.addAll(started_events);
+        events.addAll(finished_events);
+        events.addAll(dropped_events);
+    }
+
+    private void loadEvents(final long group_id, final long user_id) {
+        List<Event> eventList =  new EventBiz().loadEventsByGroup(group_id,user_id);
+        Map<Integer,EventStat> eventStatMap = new GroupBiz().loadGropStats(user_id);
+        //event_stats =  ;
+        for (Integer key : eventStatMap.keySet()){
+            Log.d("key",""+Long.valueOf(key) );
+            Log.d("val", ""+eventStatMap.get(key));
+            event_stats.put(Long.valueOf(key),eventStatMap.get(key));
+        }
         Message msg = Message.obtain();
         msg.what = 1;
         msg.obj = eventList;
@@ -195,7 +247,7 @@ public class GroupProgressSelected extends AppCompatActivity {
 
         //delete selected events
         ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
-        eventDelete(del_btn);
+        eventDrop(del_btn);
 
         //add new event
         ImageButton add_btn = (ImageButton) view.findViewById(R.id.add_btn);
@@ -209,38 +261,78 @@ public class GroupProgressSelected extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                complete_count += adapter.selectedEvents.size();
-                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
-                bar.setProgress(complete_count*progress_Max/totalEvents);
 
-                for (Long i : adapter.selectedEvents){
-                    adapter.remove(i);
-                    adapter.notifyDataSetChanged();
-                }
-                MsgDisplay("complete.");
-                //Log.d("esize", ""+eventList.size());
-                adapter.selectedEvents.clear();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        updateResult = eventBiz.updateEventStatus(adapter.selectedEvents,"finished");
 
+                    }
+                }.start();
+                GroupProgressSelected.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (updateResult == "success") {
+                            Toast.makeText(GroupProgressSelected.this, adapter.selectedEvents.size()+"event(s) completed!", Toast.LENGTH_SHORT).show();
+
+                            intent = new Intent(getApplicationContext(), GroupProgressSelected.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("group", selected_group);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+
+                        } else if (updateResult == null) {
+                            Toast.makeText(GroupProgressSelected.this, "Failed to update event status", Toast.LENGTH_SHORT).show();
+                        }
+                        adapter.selectedEvents.clear();
+                    }
+                });
             }
 
         });
     }
 
-    public void eventDelete(ImageButton del_btn) {
+    public void eventDrop(ImageButton del_btn) {
         del_btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
             {
-                totalEvents -= adapter.selectedEvents.size();
-                progress_text.setText(complete_count+" of " + totalEvents + " completed ");
-                bar.setProgress(complete_count*progress_Max/totalEvents);
-                for (Long i : adapter.selectedEvents){
-                    adapter.remove(i);
-                    eventList.remove(i);
-                    adapter.notifyDataSetChanged();
-                }
-                MsgDisplay("deleted.");
-                adapter.selectedEvents.clear();
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        updateResult = eventBiz.updateEventStatus(adapter.selectedEvents,"dropped");
+
+                    }
+                }.start();
+                GroupProgressSelected.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (updateResult == "success") {
+                            Toast.makeText(GroupProgressSelected.this, adapter.selectedEvents.size()+"event(s) dropped!", Toast.LENGTH_SHORT).show();
+                            //bar.setMax(finished_num+started_num-adapter.selectedEvents.size());
+                            intent = new Intent(getApplicationContext(), GroupProgressSelected.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("group", selected_group);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+
+                        } else if (updateResult == null) {
+                            Toast.makeText(GroupProgressSelected.this, "Failed to update event status", Toast.LENGTH_SHORT).show();
+                        }
+                        adapter.selectedEvents.clear();
+                    }
+                });
             }
 
         });
@@ -262,6 +354,7 @@ public class GroupProgressSelected extends AppCompatActivity {
                         intent = new Intent(GroupProgressSelected.this, DateSelected.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("event", event);//serializable
+                        bundle.putSerializable("group",selected_group);
                         bundle.putSerializable("flag", DateSelected.INIT);//indicating EDIT event or INIT event
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -354,15 +447,14 @@ public class GroupProgressSelected extends AppCompatActivity {
         //display opertaion messages
 
         if(adapter.selectedEvents.size() == 1){
-            //Toast.makeText(getActivity(), adapter.selectedEvents.size()+" event " +s, Toast.LENGTH_SHORT).show();
+            Toast.makeText(GroupProgressSelected.this, adapter.selectedEvents.size()+" event " +s, Toast.LENGTH_SHORT).show();
 
         }
         else if (adapter.selectedEvents.size() >1){
-            //Toast.makeText(getActivity(), adapter.selectedEvents.size()+" events "+s, Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(GroupProgressSelected.this, adapter.selectedEvents.size()+" events "+s, Toast.LENGTH_SHORT).show();
         }
         else{
-            //Toast.makeText(getActivity(), "Please make a selection.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(GroupProgressSelected.this, "Please make a selection.", Toast.LENGTH_SHORT).show();
 
         }
     }

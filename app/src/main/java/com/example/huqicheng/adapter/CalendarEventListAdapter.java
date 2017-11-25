@@ -2,6 +2,7 @@ package com.example.huqicheng.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.pm.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,6 +86,7 @@ public class CalendarEventListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.title = (TextView)convertView.findViewById(R.id.title);
             holder.description = (TextView)convertView.findViewById(R.id.description);
+            holder.deadline = (TextView)convertView.findViewById(R.id.deadline);
 
             /*
             holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
@@ -108,6 +111,23 @@ public class CalendarEventListAdapter extends BaseAdapter {
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
         holder.description.setText(event.getDescription());
+        holder.deadline.setText(new Date(event.getDeadLine()).toString());
+        //holder.deadline.setTextColor(Color.parseColor("#FF4081"));
+
+        switch (event.getEventStatus()){
+            case "started":
+                holder.deadline.setTextColor(Color.parseColor("#FF8A65"));
+                break;
+            case "finished":
+                holder.deadline.setTextColor(Color.parseColor("#4CAF50"));
+                break;
+            case "dropped":
+                holder.deadline.setTextColor(Color.parseColor("#BDBDBD"));
+                break;
+
+        }
+
+
         //holder.checkBox.setChecked(eventList.get(i).isSelected());
 
         return convertView;
@@ -146,6 +166,7 @@ public class CalendarEventListAdapter extends BaseAdapter {
     class ViewHolder{
         TextView title;
         TextView description;
+        TextView deadline;
         //CheckBox checkBox;
 
     }
