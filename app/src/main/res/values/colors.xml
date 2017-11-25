@@ -6,4 +6,6 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="edittext_floating">#444a42</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorGreen">#00E676</color>
+    <color name="colorGrey">#BDBDBD</color>
 </resources>

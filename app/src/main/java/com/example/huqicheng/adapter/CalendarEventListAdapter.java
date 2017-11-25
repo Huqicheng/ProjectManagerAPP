@@ -2,6 +2,7 @@ package com.example.huqicheng.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,6 +112,22 @@ public class CalendarEventListAdapter extends BaseAdapter {
         holder.title.setText(event.getEventTitle());
         holder.description.setText(event.getDescription());
         holder.deadline.setText(new Date(event.getDeadLine()).toString());
+        //holder.deadline.setTextColor(Color.parseColor("#FF4081"));
+
+        switch (event.getEventStatus()){
+            case "started":
+                holder.deadline.setTextColor(Color.parseColor("#FF8A65"));
+                break;
+            case "finished":
+                holder.deadline.setTextColor(Color.parseColor("#4CAF50"));
+                break;
+            case "dropped":
+                holder.deadline.setTextColor(Color.parseColor("#BDBDBD"));
+                break;
+
+        }
+
+
         //holder.checkBox.setChecked(eventList.get(i).isSelected());
 
         return convertView;
