@@ -18,6 +18,7 @@ import com.example.huqicheng.entity.Group;
 import com.example.huqicheng.pm.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,6 +85,7 @@ public class CalendarEventListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.title = (TextView)convertView.findViewById(R.id.title);
             holder.description = (TextView)convertView.findViewById(R.id.description);
+            holder.deadline = (TextView)convertView.findViewById(R.id.deadline);
 
             /*
             holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
@@ -108,6 +110,7 @@ public class CalendarEventListAdapter extends BaseAdapter {
         Event event = getItem(i);
         holder.title.setText(event.getEventTitle());
         holder.description.setText(event.getDescription());
+        holder.deadline.setText(new Date(event.getDeadLine()).toString());
         //holder.checkBox.setChecked(eventList.get(i).isSelected());
 
         return convertView;
@@ -146,6 +149,7 @@ public class CalendarEventListAdapter extends BaseAdapter {
     class ViewHolder{
         TextView title;
         TextView description;
+        TextView deadline;
         //CheckBox checkBox;
 
     }

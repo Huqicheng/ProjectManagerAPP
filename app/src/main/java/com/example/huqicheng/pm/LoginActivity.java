@@ -168,7 +168,9 @@ public class LoginActivity extends AppCompatActivity {
         btnFacebook = (Button) findViewById(R.id.btnFacebook);
         btnGoogle = (Button) findViewById(R.id.btnGoogle);
 
-
+        Intent intent = this.getIntent();
+        etEmail.setText(intent.getStringExtra("username"));
+        etPassword.setText(intent.getStringExtra("pwd"));
 
     }
 

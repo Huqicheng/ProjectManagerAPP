@@ -181,14 +181,13 @@ public class EventNao {
         return str;
     }
 
-    public List<Event> getEventsByGroup(long group_id, long user_id, String status){
+    public List<Event> getEventsByGroup(long group_id, long user_id){
         List<Event> res = null;
         try{
             // add your parameters here
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("group_id",group_id+""));
             params.add(new BasicNameValuePair("user_id",user_id+""));
-            params.add(new BasicNameValuePair("status",status));
 
             //modify url according to interface doc
             HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/getEventsByGroup.do",params,HttpUtils.GET);
@@ -210,6 +209,31 @@ public class EventNao {
         }
 
         return res;
+    }
+
+    public String markEvents(ArrayList<Integer> selected_events, String status){
+
+        try{
+            // add your parameters here
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("arrEvents",selected_events+""));
+            params.add(new BasicNameValuePair("status", status));
+
+            //modify url according to interface doc
+            HttpEntity entity = HttpUtils.execute(Config.SERVER_IP+"/updateEventBatches.do",params,HttpUtils.POST);
+
+            if(entity == null){
+                return null;
+            }
+
+            //convert stream to json String
+            String json = EntityUtils.toString(entity);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String str = "success";
+        return str;
     }
 
 }

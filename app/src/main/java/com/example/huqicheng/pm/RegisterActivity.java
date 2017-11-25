@@ -37,6 +37,10 @@ public class RegisterActivity extends AppCompatActivity {
                     public void run() {
                         String username = currentUser.getUsername();
                         Toast.makeText(getApplicationContext(), username + " registered successfully", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        intent.putExtra("username",username);
+                        intent.putExtra("pwd",currentUser.getPassword());
+                        startActivity(intent);
                     }
                 });
             }
