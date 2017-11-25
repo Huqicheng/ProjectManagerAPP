@@ -13,13 +13,13 @@
 
         <Button
             android:id="@+id/btn_back"
-            android:layout_width="70dp"
+            android:layout_width="85dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:background="@drawable/selector_btn_back"
             android:paddingLeft="10dp"
-            android:text="返回"
+            android:text="Back"
             android:textColor="#ffffff"
             android:textSize="18sp" />
 
@@ -47,7 +47,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:text="发送" />
+            android:text="Send" />
 
         <EditText
             android:id="@+id/et_sendmessage"
