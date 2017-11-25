@@ -15,7 +15,7 @@ public class User {
     String facebook;
     long createdAt;
     long updateAt;
-    String avatar;
+    String avatar="images/user/2.gif";
 
 
     public long getUserId() {

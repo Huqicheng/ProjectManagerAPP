@@ -63,7 +63,7 @@ public class CalendarFragment extends Fragment {
     public List<CalendarDay> datesList = new ArrayList<>();
     public HighlightDeadlineDecorator deadlineDecorator;
     public HighlightCurrentdayDecorator currentdayDecorator;
-    static final String TAG="TAG";
+    static final String TAG="CalenderFragment";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -130,6 +130,8 @@ public class CalendarFragment extends Fragment {
         eventBiz = new EventBiz();
         //load user
         user = new UserBiz(getActivity()).readUser();
+        Log.d(TAG,user.toString());
+        Log.d(TAG,user.getUsername());
         //listView listener: show DateSelected activity and edit event
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

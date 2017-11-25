@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "325140431274",
+    "project_id": "fiery-bonbon-187115"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325140431274:android:8afee1820c97aa99",
+        "android_client_info": {
+          "package_name": "com.example.huqicheng.pm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325140431274-o05jnkugqprgtj74rul3uj2as3iitf3i.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "325140431274-015i29aje1fmuhrofovrrbr2nngcjm5j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.huqicheng.pm",
+            "certificate_hash": "854ee277b32ce6e2c10b2af774e13cc08a101689"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3tp5qYeoK0EXlaNnvBFeM2L1rcAI0CAE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

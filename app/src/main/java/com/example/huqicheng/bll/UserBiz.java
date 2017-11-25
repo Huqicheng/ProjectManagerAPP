@@ -19,7 +19,10 @@ public class UserBiz {
         userNao = new UserNao();
         userDao = new UserDao(context);
     }
+    public void saveUser(User user){
+        userDao.saveUser(user);
 
+    }
     public User doLogin(User user,String type){
         User res = userNao.doLoginByUsername(user);
         if(res == null) return null;
