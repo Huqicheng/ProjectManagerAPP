@@ -118,14 +118,14 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 
             }break;
             case ChatMsg:{
-                // TODO call different interfaces for different UI
+                //call different interfaces for different UI
                 if(ClientUtils.onChatMsgRecievedForWeChat(baseMsg)){
                     break;
                 }
-                //TODO notify the new comming msg if wechat activity is not existed
+                //notify the new comming msg if wechat activity is not existed
                 ClientUtils.notification(baseMsg);
 
-                //TODO notify ChatFragment to update UI
+                //notify ChatFragment to update UI
                 if(ClientUtils.onChatMsgRecievedForGroupList(baseMsg)){
                     break;
                 }
@@ -136,6 +136,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
             case ReplyForChatMsg:{
                 ClientUtils.onChatMsgRecievedForWeChat(baseMsg);
                 //ClientUtils.notification(baseMsg);
+//                if(ClientUtils.onChatMsgRecievedForGroupList(baseMsg)){
+//                    break;
+//                }
+
             }break;
 
             default:break;

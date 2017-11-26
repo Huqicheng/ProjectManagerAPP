@@ -152,7 +152,7 @@ public class ChatFragment extends Fragment {
                 if(msg == null || msg.getType() == null){
                     return;
                 }
-                if(!msg.getType().equals(MsgType.ReplyForChatMsg)||!msg.getType().equals(MsgType.ChatMsg)){
+                if(!msg.getType().equals(MsgType.ReplyForChatMsg)&&!msg.getType().equals(MsgType.ChatMsg)){
                     return;
                 }
 
