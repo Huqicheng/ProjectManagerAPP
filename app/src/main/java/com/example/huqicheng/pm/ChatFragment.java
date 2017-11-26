@@ -115,6 +115,7 @@ public class ChatFragment extends Fragment {
                                 Log.d("debug:",groups.size()+"");
                                 // to check group chats
                                 for(Group g:tmp){
+                                    ClientUtils.add(g.getGroupId()+"",g);
                                     long timestamp = MsgCache.getPair(g.getGroupId()+"");
                                     if(timestamp == 0){
                                         groups.add(g);
