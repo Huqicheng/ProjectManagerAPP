@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,7 +40,7 @@ import java.util.Map;
  * Use the {@link GroupProgressSelected#} factory method to
  * create an instance of this fragment.
  */
-public class GroupProgressSelected extends AppCompatActivity {
+public class GroupProgressSelected extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     //dbHandler myDb;
     private ListView event_list;
@@ -53,6 +54,7 @@ public class GroupProgressSelected extends AppCompatActivity {
     private ImageButton complete_btn;
     private ImageButton dropped_btn;
     private ImageButton add_btn;
+    private SearchView searchView;
 
     private Group selected_group = new Group();
     public ArrayList<Event> eventList;
@@ -126,6 +128,20 @@ public class GroupProgressSelected extends AppCompatActivity {
                     public void run() {
                         setContentView(R.layout.single_group_events);
                         bar = (ProgressBar) findViewById(R.id.bar);
+                        searchView = (SearchView)findViewById(R.id.search_box);
+                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                adapter.getFilter().filter(newText);
+                                Log.d("fil",newText);
+                                return false;
+                            }
+                        });
                         if(event_stats.containsKey(selected_group.getGroupId())){
                             started_num = event_stats.get(selected_group.getGroupId()).getStarted();
                             finished_num = event_stats.get(selected_group.getGroupId()).getFinished();
@@ -135,7 +151,7 @@ public class GroupProgressSelected extends AppCompatActivity {
                         bar.setMax(total_num);
                         bar.setProgress(finished_num);
                         progress_text = (TextView) findViewById(R.id.progress_text);
-                        progress_text.setText(finished_num + " of " + total_num + " completed");
+                        progress_text.setText(finished_num + "/" + total_num);
                         complete_btn = (ImageButton) findViewById(R.id.complete_btn);
                         eventComplete(complete_btn);
                         dropped_btn = (ImageButton) findViewById(R.id.delete_btn);
@@ -154,6 +170,8 @@ public class GroupProgressSelected extends AppCompatActivity {
                         adapter = new EventListAdapter(GroupProgressSelected.this,null,null);
                         event_list.setAdapter(adapter);
                         adapter.add(events,user);
+                        event_list.setTextFilterEnabled(true);
+                        //initSearchView();
                         event_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -208,6 +226,26 @@ public class GroupProgressSelected extends AppCompatActivity {
 
         //return view;
 
+    }
+
+    private void initSearchView() {
+        searchView.setIconifiedByDefault(false);
+        //searchView.setOnQueryTextListener(this);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setQueryHint("Search an event");
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d("text change", "onQueryTextSubmit: query->"+query);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.d("text change", "onQueryTextChange: newText->" + newText);
+        adapter.getFilter().filter(newText);
+        return true;
     }
 
     private void sortEventByStatus(ArrayList<Event> tmp) {

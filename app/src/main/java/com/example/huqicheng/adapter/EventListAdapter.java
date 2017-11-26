@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,29 +26,37 @@ import java.util.List;
  * Created by jiaxinf on 2017-10-17.
  */
 
-public class EventListAdapter extends BaseAdapter {
+public class EventListAdapter extends BaseAdapter implements Filterable{
 
     public ArrayList<Event> getEventList() {
         return eventList;
     }
 
-    ArrayList<Event> eventList;
+    ArrayList<Event> eventList = new ArrayList<>();
     User user;
+    CustomFilter filter;
+    ArrayList<Event> filterList = new ArrayList<>();
     private LayoutInflater inflater;
     public int checkCount;
     public ArrayList<Integer> selectedEvents = new ArrayList<>();
 
     public EventListAdapter(Context context, ArrayList<Event> eventList, User user) {
 
-        if(eventList != null)
+        if(eventList != null){
             this.eventList = eventList;
-        else
+        }
+
+        else{
             this.eventList = new ArrayList<>();
+
+        }
+
 
         if (user != null)
             this.user = user;
         else
             this.user = new User();
+        this.filterList = this.eventList;
 
         checkCount = 0;
         inflater = this.inflater = LayoutInflater.from(context);
@@ -193,6 +203,14 @@ public class EventListAdapter extends BaseAdapter {
 
     }
 
+    public Filter getFilter() {
+        if (filter == null)
+            filter = new CustomFilter();
+
+
+        return filter;
+    }
+
     class ViewHolder{
         TextView title;
         TextView description;
@@ -203,4 +221,45 @@ public class EventListAdapter extends BaseAdapter {
 
     }
 
+
+    private class CustomFilter extends Filter{
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results=new FilterResults();
+            if(constraint != null && constraint.length()>0)
+            {
+                //CONSTARINT TO UPPER
+                String cons =constraint.toString().toUpperCase();
+                ArrayList<Event> filters=new ArrayList<Event>();
+                //get specific items
+                Log.d(filterList.size()+"","fillist");
+
+                for(int i=0;i<filterList.size();i++)
+                {
+                    if(filterList.get(i).getEventTitle().toUpperCase().contains(cons))
+                    {
+                        Event e = filterList.get(i);
+                        filters.add(e);
+                        Log.d("filter","fail");
+                    }
+
+
+                }
+                results.count=filters.size();
+                results.values=filters;
+            }else
+            {
+                results.count=filterList.size();
+                results.values=filterList;
+        }
+        return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            eventList = (ArrayList<Event>)results.values;
+            notifyDataSetChanged();
+
+        }
+    }
 }
