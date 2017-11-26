@@ -129,6 +129,7 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
                         setContentView(R.layout.single_group_events);
                         bar = (ProgressBar) findViewById(R.id.bar);
                         searchView = (SearchView)findViewById(R.id.search_box);
+                        searchView.setQueryHint("Search an event");
                         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                             @Override
                             public boolean onQueryTextSubmit(String query) {
@@ -195,37 +196,6 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
 
 
 
-
-
-        //init event listview
-
-        //Log.d("groupselected",""+ProgressFragment.newInstance().groupSelected);
-
-
-/*
-        eventList = new ArrayList<>();
-        for(int i = 0;i<10;i++){
-
-            Event e = new Event();
-            long id = Integer.valueOf(String.valueOf(20)+String.valueOf(i));
-            e.setEventID(id);
-            e.setEventTitle("Debug " + i);
-            e.setDescription("woa " + i);
-            eventList.add(e);
-        }
-        totalEvents = eventList.size();*/
-
-        //adapter = new EventListAdapter(getActivity(),null);
-        //listView.setAdapter(adapter);
-        //adapter.add(eventList);
-        //progress_text = (TextView) view.findViewById(R.id.progress_text);
-        //bar = (ProgressBar) view.findViewById(R.id.bar);
-
-        //progress_text.setText(complete_count + " of " + eventList.size() + " completed ");
-        //ProgressButtonClick(view);
-
-        //return view;
-
     }
 
     private void initSearchView() {
@@ -265,10 +235,8 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
     private void loadEvents(final long group_id, final long user_id) {
         List<Event> eventList =  new EventBiz().loadEventsByGroup(group_id,user_id);
         Map<Integer,EventStat> eventStatMap = new GroupBiz().loadGropStats(user_id);
-        //event_stats =  ;
+
         for (Integer key : eventStatMap.keySet()){
-            Log.d("key",""+Long.valueOf(key) );
-            Log.d("val", ""+eventStatMap.get(key));
             event_stats.put(Long.valueOf(key),eventStatMap.get(key));
         }
         Message msg = Message.obtain();
@@ -278,19 +246,6 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
 
     }
 
-    public void ProgressButtonClick(View view) {
-        //mark selected events as complete
-        ImageButton complete_btn = (ImageButton) view.findViewById(R.id.complete_btn);
-        eventComplete(complete_btn);
-
-        //delete selected events
-        ImageButton del_btn = (ImageButton) view.findViewById(R.id.delete_btn);
-        eventDrop(del_btn);
-
-        //add new event
-        ImageButton add_btn = (ImageButton) view.findViewById(R.id.add_btn);
-        eventAdd(add_btn);
-    }
 
 
 
@@ -299,6 +254,7 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
             @Override
             public void onClick(View v)
             {
+                if (adapter.selectedEvents.size() >0){
 
                 new Thread() {
                     @Override
@@ -327,9 +283,22 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
                         } else if (updateResult == null) {
                             Toast.makeText(GroupProgressSelected.this, "Failed to update event status", Toast.LENGTH_SHORT).show();
                         }
-                        adapter.selectedEvents.clear();
+
                     }
                 });
+            }
+            else
+                {
+                    GroupProgressSelected.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupProgressSelected.this, "Please make a selection", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+                adapter.selectedEvents.clear();
+
             }
 
         });
@@ -340,37 +309,48 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
             @Override
             public void onClick(View v)
             {
+                if(adapter.selectedEvents.size() > 0) {
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        updateResult = eventBiz.updateEventStatus(adapter.selectedEvents,"dropped");
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            updateResult = eventBiz.updateEventStatus(adapter.selectedEvents, "dropped");
 
-                    }
-                }.start();
-                GroupProgressSelected.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
-                        if (updateResult == "success") {
-                            Toast.makeText(GroupProgressSelected.this, adapter.selectedEvents.size()+"event(s) dropped!", Toast.LENGTH_SHORT).show();
-                            //bar.setMax(finished_num+started_num-adapter.selectedEvents.size());
-                            intent = new Intent(getApplicationContext(), GroupProgressSelected.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("group", selected_group);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
+                    }.start();
+                    GroupProgressSelected.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if (updateResult == "success") {
+                                Toast.makeText(GroupProgressSelected.this, adapter.selectedEvents.size() + "event(s) dropped!", Toast.LENGTH_SHORT).show();
+                                //bar.setMax(finished_num+started_num-adapter.selectedEvents.size());
+                                intent = new Intent(getApplicationContext(), GroupProgressSelected.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("group", selected_group);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
 
-                        } else if (updateResult == null) {
-                            Toast.makeText(GroupProgressSelected.this, "Failed to update event status", Toast.LENGTH_SHORT).show();
+                            } else if (updateResult == null) {
+                                Toast.makeText(GroupProgressSelected.this, "Failed to update event status", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        adapter.selectedEvents.clear();
-                    }
-                });
+                    });
+                }
+                else {
+                    GroupProgressSelected.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(GroupProgressSelected.this, "Please make a selection", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+                adapter.selectedEvents.clear();
             }
 
         });
@@ -495,15 +475,6 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
             Toast.makeText(GroupProgressSelected.this, "Please make a selection.", Toast.LENGTH_SHORT).show();
 
         }
-    }
-    private void toEditActivity(Event e){
-        Intent intent = new Intent();
-        //TODO jump to event edit activity
-
-
-        //intent.setClass(getActivity(),DateSelected.class);
-        //startActivityForResult(intent,1);
-
     }
 
 

@@ -127,6 +127,8 @@ public class DateSelected extends AppCompatActivity {
             }.start();
         }
         if (flag == EDIT) {
+            //spinner = (Spinner) findViewById(R.id.spinnerAssignto);
+
             Date date = new Date(event.getDeadLine());
             //Timestamp timestamp = new Timestamp(event.getDeadLine());
             CalendarDay calendarDay = CalendarDay.from(date);
@@ -180,9 +182,9 @@ public class DateSelected extends AppCompatActivity {
                                 //User tempuser = (User)arg0.getItemAtPosition(arg2);
 
                                 String str = arg0.getItemAtPosition(arg2).toString();
-                                Log.d("spinner list in DS", "" + str);
+                                //Log.d("spinner list in DS", "" + str);
                                 //String str = arg0.getItemAtPosition(arg2).toString();
-                                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
                                 assignToId = assignToList.get(arg2).getUserId();
                                 //Log.d("assignToId in DS", "" + assignToId);
                             }
@@ -209,6 +211,7 @@ public class DateSelected extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (flag == INIT) {
+
                     event_save = new Event();
                     event_save.setAssignedBy(user.getUserId());
                     event_save.setAssignedTo(assignToId);
@@ -243,6 +246,7 @@ public class DateSelected extends AppCompatActivity {
 
                         }
                     });
+
 
                 }
                 if (flag == EDIT) {
