@@ -7,7 +7,7 @@
     <CheckBox
         android:id="@+id/chk_box"
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:layout_alignParentLeft="true"
         android:focusable="false"
         android:scaleType="fitCenter" />
@@ -27,7 +27,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:layout_weight="1.0"
         android:layout_toRightOf="@id/chk_box"
         android:id="@+id/relativeLayout">
@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:padding="3dp"
             android:text="Debug"
@@ -45,25 +45,38 @@
 
         <TextView
             android:id="@+id/description"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:padding="3dp"
             android:singleLine="true"
             android:text="created by haha"
             android:textSize="12sp"
             android:textStyle="italic"
-            android:layout_below="@+id/title"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"/>
 
-      <!--  <TextView
-            android:id="@+id/creator"
+        <TextView
+            android:id="@+id/notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="3dp"
-            android:text="Created by"
+            android:text="Notes"
+            android:layout_marginRight="10dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"/>
--->
+
+        <TextView
+            android:id="@+id/deadline"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="5dp"
+            android:padding="3dp"
+            android:textSize="11sp"
+            android:text="Deadline"
+            android:textAlignment="textEnd"
+            android:textStyle="italic" />
 
     </RelativeLayout>
 
