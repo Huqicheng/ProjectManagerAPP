@@ -203,7 +203,7 @@ public class CalendarFragment extends Fragment {
                             public void run() {
                                 adapter = new CalendarEventListAdapter(getActivity(),eventList,user);
                                 listView.setAdapter(adapter);
-                                adapter.add(eventList,user);
+                                //adapter.add(eventList,user);
                                 adapter.notifyDataSetChanged();
                             }
                         });

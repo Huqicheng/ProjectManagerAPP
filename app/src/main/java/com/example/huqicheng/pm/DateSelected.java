@@ -49,7 +49,7 @@ public class DateSelected extends AppCompatActivity {
     private EditText eventName,eventDiscription;
     private Button save;
     private Button time_picker, date_picker;
-    private TextView textClock,textDate, textAssignto;
+    private TextView textClock,textDate, textAssignto, textAssignedbyName;
     private Spinner spinner;
     static final String TAG="TAG";
     public String assignresult = "";
@@ -90,6 +90,7 @@ public class DateSelected extends AppCompatActivity {
         //Initializing the TextViews of the Activity
         textClock = (TextView) findViewById(R.id.tvDisplaytime);
         textDate = (TextView) findViewById(R.id.tvCurrentdate);
+        textAssignedbyName = (TextView) findViewById(R.id.tvAssignbyName);
 
 
         //creating the instance of the calander
@@ -110,8 +111,9 @@ public class DateSelected extends AppCompatActivity {
         //getting event
         event = (Event)eventintent.getSerializableExtra("event");
         assignToId = event.getAssignedTo();
+        textAssignedbyName.setText(event.getAssignByName());
 
-        //Log.d("event description DS",""+event.getDescription());
+                //Log.d("event description DS",""+event.getDescription());
         //get flag that decide whether it is an edit event of init event
         flag = (int)eventintent.getSerializableExtra("flag");
         group = (Group)eventintent.getSerializableExtra("group");
@@ -203,7 +205,7 @@ public class DateSelected extends AppCompatActivity {
 
                                     @Override
                                     public void onNothingSelected(AdapterView<?> arg0) {
-                                        // TODO Auto-generated method stub
+                                        //// TODO Auto-generated method stub
 
                                     }
                                 });
@@ -367,9 +369,9 @@ public class DateSelected extends AppCompatActivity {
         // 格式化日期返回 String 类型，format 中传入 Date 类型或者其子类（例如Timestamp 类）
         String s = sdf.format(new Timestamp(time));
         if (sMinute < 10){
-            textClock.setText("Event DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+ "0"+sMinute+":"+"00");
+            textClock.setText("Task DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+ "0"+sMinute+":"+"00");
         } else {
-            textClock.setText("Event DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+sMinute+":"+"00");
+            textClock.setText("Task DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+sMinute+":"+"00");
         }
 
     }

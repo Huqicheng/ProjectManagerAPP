@@ -15,8 +15,8 @@
     <string name="drawer_close">Close navigation drawer</string>
     <!-- begin for calendar-->
     <string name="save">Save</string>
-    <string name="event_title">Event Title</string>
-    <string name="event_discription">Event Discription</string>
+    <string name="event_title">Task Title</string>
+    <string name="event_discription">Task Discription</string>
     <string name="event_name1">Event Name</string>
     <string name="update">Update</string>
     <string name="group_name">Group Name</string>
