@@ -124,7 +124,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 signOut();
             }
         });
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickRegister();
+            }
+        });
 
+        tvRestore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickRestore();
+            }
+        });
     }
 
     private void signOut(){
