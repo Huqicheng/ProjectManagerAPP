@@ -49,7 +49,7 @@ public class DateSelected extends AppCompatActivity {
     private EditText eventName,eventDiscription;
     private Button save;
     private Button time_picker, date_picker;
-    private TextView textClock,textDate, textAssignto;
+    private TextView textClock,textDate, textAssignto, textAssignedbyName;
     private Spinner spinner;
     static final String TAG="TAG";
     public String assignresult = "";
@@ -61,7 +61,7 @@ public class DateSelected extends AppCompatActivity {
     private Group group;
     public Event event_save;
     private Long deadline;
-    private Long assignToId;
+    private long assignToId;
     private String str_date;
     private int sYear = 0;
     private int sMonth = 0;
@@ -90,6 +90,7 @@ public class DateSelected extends AppCompatActivity {
         //Initializing the TextViews of the Activity
         textClock = (TextView) findViewById(R.id.tvDisplaytime);
         textDate = (TextView) findViewById(R.id.tvCurrentdate);
+        textAssignedbyName = (TextView) findViewById(R.id.tvAssignbyName);
 
 
         //creating the instance of the calander
@@ -98,16 +99,21 @@ public class DateSelected extends AppCompatActivity {
         textClock.setText(calendar.get(Calendar.HOUR) + " : " + calendar.get(Calendar.MINUTE));
         textDate.setText(calendar.get(Calendar.YEAR)+" / "+month_x+" / "+calendar.get(Calendar.DATE));
 
+        spinner = (Spinner) findViewById(R.id.spinnerAssignto);
+
         //load user
         userBiz = new UserBiz(this);
         user = userBiz.readUser();
-        assignToId = user.getUserId();
 
         //getting intent
         Intent eventintent = this.getIntent();
+
         //getting event
         event = (Event)eventintent.getSerializableExtra("event");
-        //Log.d("event description DS",""+event.getDescription());
+        assignToId = event.getAssignedTo();
+        textAssignedbyName.setText(event.getAssignByName());
+
+                //Log.d("event description DS",""+event.getDescription());
         //get flag that decide whether it is an edit event of init event
         flag = (int)eventintent.getSerializableExtra("flag");
         group = (Group)eventintent.getSerializableExtra("group");
@@ -116,18 +122,19 @@ public class DateSelected extends AppCompatActivity {
             //Initializing textview textAssignto
             textAssignto = (TextView) findViewById(R.id.tvAssignto);
             //Initializing the Assign-to Spinner
-            spinner = (Spinner) findViewById(R.id.spinnerAssignto);
+
             save.setText("save");
             new Thread(){
                 @Override
                 public void run() {
                     //CalendarView.addDecorator(decorator);
-                    loadAssignToList();
+                    loadAssignToList(flag);
                 }
             }.start();
         }
         if (flag == EDIT) {
             Date date = new Date(event.getDeadLine());
+
             //Timestamp timestamp = new Timestamp(event.getDeadLine());
             CalendarDay calendarDay = CalendarDay.from(date);
             sYear = calendarDay.getYear();
@@ -140,10 +147,17 @@ public class DateSelected extends AppCompatActivity {
             eventName.setText(event.getEventTitle());
             eventDiscription.setText(event.getDescription());
             save.setText("update");
-            if (!event.getEventStatus().equals("started")){
+            if (!event.getEventStatus().equals("started") || event.getAssignedTo() != user.getUserId()){
                 save.setVisibility(View.INVISIBLE);
                 //save.setOnClickListener(null);
             }
+            new Thread(){
+                @Override
+                public void run() {
+                    loadAssignToList(flag);
+                }
+            }.start();
+
 
         }
 
@@ -151,50 +165,77 @@ public class DateSelected extends AppCompatActivity {
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg){
-                assignToList = (ArrayList<User>)msg.obj;
-                for (int k = 0; k < assignToList.size(); k++) {
-                    //Log.d("spinner list in DS", "" + assignToList.get(k));
-                    //cityList.add(assignToList.get(k));
-                }
-                assignToStringList.clear();
-                for (int m = 0; m < assignToList.size(); m++){
-                    assignToStringList.add(assignToList.get(m).getUsername());
-                    //Log.d("spinner list in DS", "" + assignToList.get(m).getUsername());
-                }
-                //getApplicationContext()
+                switch (msg.what){
+                    case 1:
+                        assignToList = (ArrayList<User>)msg.obj;
+                        /*for (int k = 0; k < assignToList.size(); k++) {
+                            //Log.d("spinner list in DS", "" + assignToList.get(k));
+                            //cityList.add(assignToList.get(k));
+                        }*/
+                        assignToStringList.clear();
+                        for (int m = 0; m < assignToList.size(); m++){
+                            assignToStringList.add(assignToList.get(m).getUsername());
+                            //Log.d("spinner list in DS", "" + assignToList.get(m).getUsername());
+                        }
+                        //getApplicationContext()
 
 
-                DateSelected.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                                getApplicationContext(), R.layout.spinner_style,
-                                assignToStringList);
-                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
-                        spinner.setAdapter(adapter);
-                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+                        DateSelected.this.runOnUiThread(new Runnable() {
                             @Override
-                            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                                       int arg2, long arg3) {
-                                //User tempuser = (User)arg0.getItemAtPosition(arg2);
+                            public void run() {
+                                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                        getApplicationContext(), R.layout.spinner_style,
+                                        assignToStringList);
+                                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                                spinner.setAdapter(adapter);
+                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                                String str = arg0.getItemAtPosition(arg2).toString();
-                                Log.d("spinner list in DS", "" + str);
-                                //String str = arg0.getItemAtPosition(arg2).toString();
-                                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_LONG).show();
-                                assignToId = assignToList.get(arg2).getUserId();
-                                //Log.d("assignToId in DS", "" + assignToId);
-                            }
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                                               int arg2, long arg3) {
+                                        //User tempuser = (User)arg0.getItemAtPosition(arg2);
 
-                            @Override
-                            public void onNothingSelected(AdapterView<?> arg0) {
-                                // TODO Auto-generated method stub
+                                        String str = arg0.getItemAtPosition(arg2).toString();
+                                        //Log.d("spinner list in DS", "" + str);
+                                        //String str = arg0.getItemAtPosition(arg2).toString();
+                                        Toast.makeText(getApplicationContext(), "Assign to "+str, Toast.LENGTH_SHORT).show();
+                                        assignToId = assignToList.get(arg2).getUserId();
+                                        //Log.d("assignToId in DS", "" + assignToId);
+                                    }
 
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> arg0) {
+                                        //// TODO Auto-generated method stub
+
+                                    }
+                                });
                             }
                         });
-                    }
-                });
+
+                        break;
+                    case 2:
+                        assignToList = (ArrayList<User>)msg.obj;
+                        Log.d("assign2",assignToId+"");
+                        DateSelected.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                        getApplicationContext(), R.layout.spinner_style,
+                                        assignToStringList);
+                                adapter.setDropDownViewResource(R.layout.spinner_dropdown_style);
+                                spinner.setAdapter(adapter);
+                                for(int j = 0;j < assignToList.size();j++){
+                                    if(assignToList.get(j).getUserId() == assignToId){
+                                        spinner.setSelection(j);
+                                    }
+                                }
+                                spinner.setEnabled(false);
+                            }
+                        });
+                        break;
+                }
+
+
             }
         };
 
@@ -209,6 +250,7 @@ public class DateSelected extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (flag == INIT) {
+
                     event_save = new Event();
                     event_save.setAssignedBy(user.getUserId());
                     event_save.setAssignedTo(assignToId);
@@ -244,12 +286,13 @@ public class DateSelected extends AppCompatActivity {
                         }
                     });
 
+
                 }
                 if (flag == EDIT) {
                     new Thread() {
                         @Override
                         public void run() {
-                            assignresult = eventBiz.updateEvent(event.getEventID(), user.getUserId(),eventName.getText().toString(),eventDiscription.getText().toString(),deadline);
+                            assignresult = eventBiz.updateEvent(event.getEventID(), assignToId,eventName.getText().toString(),eventDiscription.getText().toString(),deadline);
                         }
                     }.start();
                     //Log.d(TAG, "assignresult: " + assignresult);
@@ -265,7 +308,7 @@ public class DateSelected extends AppCompatActivity {
                                 Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_SHORT).show();
                                 Intent editintent = new Intent(getApplicationContext(), ProgressActivity.class);
                                 startActivity(editintent);
-                                //returnToEventListView();
+
                             } else if (assignresult == null) {
                                 Toast.makeText(DateSelected.this, "Failed to update event", Toast.LENGTH_SHORT).show();
                             }
@@ -319,27 +362,21 @@ public class DateSelected extends AppCompatActivity {
 
     }
 
-    private void returnToEventListView() {
-        intent = new Intent(DateSelected.this, GroupProgressSelected.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("group", group);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
+
 
     private void displayPickedTime(Long time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         // 格式化日期返回 String 类型，format 中传入 Date 类型或者其子类（例如Timestamp 类）
         String s = sdf.format(new Timestamp(time));
         if (sMinute < 10){
-            textClock.setText("Event DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+ "0"+sMinute+":"+"00");
+            textClock.setText("Task DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+ "0"+sMinute+":"+"00");
         } else {
-            textClock.setText("Event DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+sMinute+":"+"00");
+            textClock.setText("Task DeadLine :  " + sYear+"-"+sMonth+"-"+sDay+" "+sHour+":"+sMinute+":"+"00");
         }
 
     }
 
-    void loadAssignToList(){
+    void loadAssignToList(int flag){
         groupBiz = new GroupBiz();
         groupList = new ArrayList<Group>();
         userList = new ArrayList<User>();
@@ -360,8 +397,13 @@ public class DateSelected extends AppCompatActivity {
             userList.clear();
         }
         Message msg = Message.obtain();
-        msg.what = 1;
+        if(flag == INIT)
+            msg.what = 1;
+        else if(flag == EDIT)
+            msg.what = 2;
+
         msg.obj = assignToList;
         handler.handleMessage(msg);
     }
+
 }

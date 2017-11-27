@@ -69,7 +69,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void handleMessage(Message msg) {
                 switch (msg.what){
                     case 0:
-                        //TODO show a dialog to notify that login is rejected by the server
+                        LoginActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                     case 1:
                         /** start notification service after user login**/

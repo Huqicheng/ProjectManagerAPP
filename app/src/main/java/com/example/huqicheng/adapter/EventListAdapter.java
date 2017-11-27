@@ -101,7 +101,7 @@ public class EventListAdapter extends BaseAdapter implements Filterable{
             holder.description = (TextView)convertView.findViewById(R.id.description);
 
             holder.deadline = (TextView) convertView.findViewById(R.id.deadline);
-            holder.notes = (TextView)convertView.findViewById(R.id.notes);
+            holder.notes = (ImageView) convertView.findViewById(R.id.notes);
 
             holder.checkBox = (CheckBox)convertView.findViewById(R.id.chk_box);
 
@@ -126,7 +126,12 @@ public class EventListAdapter extends BaseAdapter implements Filterable{
         }
 
         holder.checkBox.setTag(eventList.get(i).getEventID());
-        //holder.checkView.setTag(eventList.get(i).getEventID());
+
+        //fail to make checkbox invisible
+        /*if(!eventList.get(i).getEventStatus().equals("started")){
+            holder.checkBox.setVisibility(View.INVISIBLE);
+        }*/
+
 
         Event event = getItem(i);
         //holder.title.setText(event.getEventTitle());
@@ -140,11 +145,10 @@ public class EventListAdapter extends BaseAdapter implements Filterable{
                 holder.title.setText(event.getEventTitle());
                 holder.title.setTextColor(Color.parseColor("#FF8A65"));
                 if(user.getUserId() == event.getAssignedTo()){
-                    holder.notes.setText("You");
-                    holder.notes.setTextColor(Color.parseColor("#FF8A65"));
+                    holder.notes.setBackgroundResource(R.drawable.you);
                 }
-                else{
-                    holder.notes.setText("");
+                else {
+                    holder.notes.setBackgroundResource(0);
                 }
                 String[] deadline_str = new Date(event.getDeadLine()).toString().split("\\s");
                 String res = deadline_str[0] + " " + deadline_str[1] + " " + deadline_str[2] + " "+ deadline_str[5] ;
@@ -152,17 +156,17 @@ public class EventListAdapter extends BaseAdapter implements Filterable{
                 break;
             case "finished":
                 holder.title.setText(event.getEventTitle());
-                holder.notes.setText("Finished");
+                //holder.notes.setText("Done");
                 holder.title.setTextColor(Color.parseColor("#4CAF50"));
-                holder.notes.setTextColor(Color.parseColor("#4CAF50"));
+                holder.notes.setBackgroundResource(R.drawable.done);
                 holder.deadline.setText("");
                 break;
             case "dropped":
                 holder.title.setText(event.getEventTitle());
-                holder.notes.setText("DROPPED");
+                //holder.notes.setText("DROPPED");
                 holder.title.setTextColor(Color.parseColor("#BDBDBD"));
                 holder.description.setTextColor(Color.parseColor("#BDBDBD"));
-                holder.notes.setTextColor(Color.parseColor("#BDBDBD"));
+                holder.notes.setBackgroundResource(R.drawable.dropped);
                 holder.deadline.setText("");
                 break;
 
@@ -214,7 +218,7 @@ public class EventListAdapter extends BaseAdapter implements Filterable{
     class ViewHolder{
         TextView title;
         TextView description;
-        TextView notes;
+        ImageView notes;
         TextView deadline;
         //ImageView checkView;
         CheckBox checkBox;
