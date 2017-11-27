@@ -103,10 +103,10 @@ public class DateSelected extends AppCompatActivity {
         //load user
         userBiz = new UserBiz(this);
         user = userBiz.readUser();
-        //assignToId = user.getUserId();
 
         //getting intent
         Intent eventintent = this.getIntent();
+
         //getting event
         event = (Event)eventintent.getSerializableExtra("event");
         assignToId = event.getAssignedTo();
@@ -145,7 +145,7 @@ public class DateSelected extends AppCompatActivity {
             eventName.setText(event.getEventTitle());
             eventDiscription.setText(event.getDescription());
             save.setText("update");
-            if (!event.getEventStatus().equals("started")){
+            if (!event.getEventStatus().equals("started") || event.getAssignedTo() != user.getUserId()){
                 save.setVisibility(View.INVISIBLE);
                 //save.setOnClickListener(null);
             }
@@ -166,10 +166,10 @@ public class DateSelected extends AppCompatActivity {
                 switch (msg.what){
                     case 1:
                         assignToList = (ArrayList<User>)msg.obj;
-                        for (int k = 0; k < assignToList.size(); k++) {
+                        /*for (int k = 0; k < assignToList.size(); k++) {
                             //Log.d("spinner list in DS", "" + assignToList.get(k));
                             //cityList.add(assignToList.get(k));
-                        }
+                        }*/
                         assignToStringList.clear();
                         for (int m = 0; m < assignToList.size(); m++){
                             assignToStringList.add(assignToList.get(m).getUsername());
@@ -213,6 +213,7 @@ public class DateSelected extends AppCompatActivity {
                         break;
                     case 2:
                         assignToList = (ArrayList<User>)msg.obj;
+                        Log.d("assign2",assignToId+"");
                         DateSelected.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -289,7 +290,7 @@ public class DateSelected extends AppCompatActivity {
                     new Thread() {
                         @Override
                         public void run() {
-                            assignresult = eventBiz.updateEvent(event.getEventID(), user.getUserId(),eventName.getText().toString(),eventDiscription.getText().toString(),deadline);
+                            assignresult = eventBiz.updateEvent(event.getEventID(), assignToId,eventName.getText().toString(),eventDiscription.getText().toString(),deadline);
                         }
                     }.start();
                     //Log.d(TAG, "assignresult: " + assignresult);
@@ -305,7 +306,7 @@ public class DateSelected extends AppCompatActivity {
                                 Toast.makeText(DateSelected.this, "Event updated", Toast.LENGTH_SHORT).show();
                                 Intent editintent = new Intent(getApplicationContext(), ProgressActivity.class);
                                 startActivity(editintent);
-                                //returnToEventListView();
+
                             } else if (assignresult == null) {
                                 Toast.makeText(DateSelected.this, "Failed to update event", Toast.LENGTH_SHORT).show();
                             }
@@ -359,13 +360,7 @@ public class DateSelected extends AppCompatActivity {
 
     }
 
-    private void returnToEventListView() {
-        intent = new Intent(DateSelected.this, GroupProgressSelected.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("group", group);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
+
 
     private void displayPickedTime(Long time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

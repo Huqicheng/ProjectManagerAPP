@@ -280,6 +280,7 @@ public class GroupProgressSelected extends AppCompatActivity implements SearchVi
                             intent.putExtras(bundle);
                             startActivity(intent);
 
+
                         } else if (updateResult == null) {
                             Toast.makeText(GroupProgressSelected.this, "Failed to update event status", Toast.LENGTH_SHORT).show();
                         }
