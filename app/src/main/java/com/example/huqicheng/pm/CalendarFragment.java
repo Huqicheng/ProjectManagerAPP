@@ -192,7 +192,7 @@ public class CalendarFragment extends Fragment {
                         break;
                     //get events on specific day
                     case 2:
-                        eventList = (List<Event>)msg.obj;
+                        eventList = (ArrayList<Event>)msg.obj;
 
                         for (int i = 0; i < eventList.size();i++){
                             //Log.d("events",""+eventList.get(i).getDescription());
@@ -201,9 +201,9 @@ public class CalendarFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter = new CalendarEventListAdapter(getActivity(),null);
+                                adapter = new CalendarEventListAdapter(getActivity(),eventList,user);
                                 listView.setAdapter(adapter);
-                                adapter.add(eventList);
+                                adapter.add(eventList,user);
                                 adapter.notifyDataSetChanged();
                             }
                         });

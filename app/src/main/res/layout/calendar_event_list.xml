@@ -4,42 +4,74 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+    <!-- <ImageView
+         android:layout_width="26dp"
+         android:layout_marginTop="12dp"
+         android:layout_height="26dp"
+         android:id="@+id/check_view"
+         android:background="@drawable/complete"
+         android:layout_alignParentTop="true"
+         android:layout_toStartOf="@+id/relativeLayout"
+         android:layout_marginEnd="12dp"
+         android:visibility="invisible"/>-->
+
+
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_weight="1.0">
+        android:layout_height="52dp"
+        android:layout_weight="1.0"
+        android:id="@+id/relativeLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:padding="3dp"
-            android:text="Event title"/>
+            android:text="Debug"
+            android:textColor="@color/colorBlack"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:id="@+id/description"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
             android:padding="3dp"
+            android:singleLine="true"
+            android:text="created by haha"
             android:textSize="12sp"
             android:textStyle="italic"
-            android:singleLine="true"
-            android:text="Event description"/>
+            android:layout_alignTop="@+id/deadline"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:id="@+id/notes"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="3dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
 
         <TextView
             android:id="@+id/deadline"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="15dp"
+            android:layout_marginRight="5dp"
             android:padding="3dp"
+            android:textSize="11sp"
             android:text="Deadline"
-            android:textSize="12sp" />
-
+            android:textAlignment="textEnd"
+            android:textStyle="italic" />
 
     </RelativeLayout>
+
+
 
 </RelativeLayout>
